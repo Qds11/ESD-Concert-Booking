@@ -1,6 +1,6 @@
 <template>
 
-<h1>hellpo</h1>
+  <h1>hellpo</h1>
 </template>
 
 <script>
@@ -8,7 +8,6 @@
 
 export default {
   name: 'HomePage',
-
 }
 </script>
 
