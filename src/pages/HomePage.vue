@@ -3,7 +3,6 @@
 <h1 class="title">Concerts Available</h1>
 <!-- <v-img :src="require('../assets/concerts/concert1.jpg')"></v-img> -->
  <v-container
-
     >
      <v-row
         align="start"
