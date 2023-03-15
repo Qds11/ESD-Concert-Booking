@@ -1,17 +1,17 @@
 <template>
-
+<NavBar :isLoggedIn="false"/>
   <!-- <HelloWorld msg="Welcome to Your Vue.js App"/> -->
 <router-view></router-view>
 </template>
 
 <script>
 // import HelloWorld from './components/HelloWorld.vue'
-
+import NavBar from './components/shared/NavBar.vue'
 export default {
   name: 'App',
-  // components: {
-  //   HelloWorld
-  // }
+  components: {
+       NavBar
+  }
 }
 </script>
 
@@ -21,7 +21,6 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
   margin-top: 45px;
   background-color:rgb(28, 27, 29) ;
   width:100vw;

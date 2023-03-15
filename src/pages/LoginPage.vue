@@ -6,13 +6,13 @@
           </v-img>
         </v-col>
 
-        <v-col cols="6" class="pr-5" align-self="center">
-          <v-sheet color="black" fluid>
-            <v-container class="text-h3 mb-10">
-              Welcome to TicketPro!
-            </v-container>
-            <v-form @submit.prevent>
-              <v-text-field v-model="username" label="Enter username"></v-text-field>
+      <v-col cols="5">
+        <v-sheet color="black" fluid fill-height class="mx-auto">
+          <v-form @submit.prevent>
+            <v-text-field
+              v-model="firstName"
+              label="First name"
+            ></v-text-field>
 
               <v-text-field v-model="password" label="Enter password"></v-text-field>
 
