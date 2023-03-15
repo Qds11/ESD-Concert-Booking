@@ -77,7 +77,7 @@ export default {
 
 <style>
 #bg {
-  background-image: linear-gradient(#0d0d33, #01010c, #040311);
+  background-image: linear-gradient(#01002c, #01010c, #040311);
   height: 100vh;
   background-repeat: no-repeat;
 }
