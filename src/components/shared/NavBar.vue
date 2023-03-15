@@ -4,13 +4,12 @@
       bg-color="primary"
       class="navbar"
     >
-
-      <v-tab value="one" class="ml-3">TicketMaster</v-tab>
-      <v-tab value="two">Item Two</v-tab>
+      <v-tab value="one" class="ml-3"><b>TicketPRO</b></v-tab>
+      <!-- <v-tab value="two">Item Two</v-tab> -->
       <v-spacer></v-spacer>
-      <v-tab value="three" class="mr-3" v-if="isLoggedIn">Login/ Sign Up</v-tab>
+      <v-tab value="three" class="mr-3" v-if="!isLoggedIn">Login/ Sign Up</v-tab>
       <v-tab value="three" class="mr-3" v-else>
-        Login/ Sign Up
+        {{ userEmail }}
     </v-tab>
     </v-tabs>
 </template>
@@ -20,7 +19,15 @@
 export default {
   name: 'NavBar',
    props: {
-    isLoggedIn: Boolean
+       isLoggedIn: {
+         type: Boolean,
+        default: false
+       },
+       data() {
+           return {
+             userEmail:'test@gmail.com'
+         }
+       }
   }
 
 }

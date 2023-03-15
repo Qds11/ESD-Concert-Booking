@@ -11,7 +11,7 @@
       </v-col>
 
       <v-col cols="5">
-        <v-sheet color="black" fluid fill-height class="mx-auto"> 
+        <v-sheet color="black" fluid fill-height class="mx-auto">
           <v-form @submit.prevent>
             <v-text-field
               v-model="firstName"
