@@ -13,7 +13,6 @@
               v-model="firstName"
               label="First name"
             ></v-text-field>
-
               <v-text-field v-model="password" label="password"></v-text-field>
 
               <v-btn type="submit" block class="mt-2">Submit</v-btn>
