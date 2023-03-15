@@ -3,6 +3,7 @@ import TestComponent from '../components/TestComponent.vue'
 import HomePage from "../pages/HomePage.vue";
 import LoginPage from "../pages/LoginPage.vue"
 import ConcertPage from "../pages/ConcertPage.vue";
+import BookingStatus from "../pages/BookingStatus.vue";
 
 const routes = [
   {
@@ -25,6 +26,12 @@ const routes = [
     name: "ConcertPage",
     component: ConcertPage,
   },
+  {
+    path: "/BookingStatus",
+    name: "BookingStatus",
+    component: BookingStatus,
+  }
+
 ];
 
 const router = createRouter({
