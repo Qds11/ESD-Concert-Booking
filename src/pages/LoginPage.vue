@@ -13,13 +13,17 @@
       <v-col cols="6" align-self="center" class="pa-5">
         <v-sheet color="black" fluid>
           <v-container>
-            <p class="text-h4 mb-10" style="columns: white;">Welcome to TicketPRO!</p>
+            <p class="text-h4 mb-10" style="columns: white">
+              Welcome to TicketPRO!
+            </p>
           </v-container>
 
           <v-form @submit.prevent>
-            <v-text-field v-model="username" label="Enter username"></v-text-field>
-      
-            <v-text-field v-model="password" label="Enter password"></v-text-field>
+            <v-text-field
+              v-model="username"
+              label="Enter username"
+            ></v-text-field>
+              <v-text-field v-model="password" label="password"></v-text-field>
 
             <v-row class="mt-9">
               <v-col>
@@ -27,10 +31,15 @@
               </v-col>
 
               <v-col>
+                <GoogleLogin :callback="callback"/>
+              </v-col>
+
+              <v-col>
                 <SubmitButton action="Register" />
               </v-col>
 
             </v-row>
+
           </v-form>
         </v-sheet>
       </v-col>
@@ -38,8 +47,17 @@
   </v-container>
 </template>
 
+<script setup>
+const callback = (response) => {
+  // This callback will be triggered when the user selects or login to
+  // his Google account from the popup
+  console.log("Handle the response", response)
+}
+</script>
+
+
 <script>
-import SubmitButton from "../components/shared/SubmitButton.vue";
+import SubmitButton from '@/components/shared/SubmitButton.vue';
 
 export default {
   name: "LoginPage",
@@ -49,12 +67,13 @@ export default {
   data() {
     return {};
   },
+
 };
 </script>
 
 <style>
 #bg {
-  background-image: linear-gradient(#0d0d33, #01010c, #040311);
+  background-image: linear-gradient(#01002c, #01010c, #040311);
   height: 100vh;
   background-repeat: no-repeat;
 }
@@ -62,4 +81,5 @@ export default {
 html {
   background-color: black;
 }
+
 </style>

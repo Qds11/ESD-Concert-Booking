@@ -63,13 +63,16 @@
 </template>
 
 <script>
-
+   import axios from "axios";
 // import NavBar from '../components/shared/NavBar.vue'
 export default {
   name: 'HomePage',
   //   components: {
   //   NavBar
   // },
+  async created() {
+    await this.getAllConcertData()
+  },
   data() {
     return {
       recommended: 'txt',
@@ -80,6 +83,16 @@ export default {
       ]
     };
   },
+  methods: {
+    async getAllConcertData() {
+        try {
+          const response = await axios.get(`http://localhost:5005`);
+          console.log(response)
+        } catch (err) {
+            console.log(err)
+        }
+    }
+  }
 
 
 }
