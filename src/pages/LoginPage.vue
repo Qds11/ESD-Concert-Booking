@@ -1,19 +1,32 @@
 <template>
     <v-container id="bg" fluid fill-height>
-      <v-row align="center" style="height: 100vh">
-        <v-col no-gutters cols="7">
-          <v-img fluid :src="require('../assets/concerts/concert4.jpeg')" class="img">
+      <v-row align-self="center" class="h-screen">
+        <v-col no-gutters cols="6">
+          <v-img fluid :src="require('../assets/concerts/concert4.jpeg')" class="img h-screen">
           </v-img>
         </v-col>
 
-        <v-col cols="5">
-          <v-sheet color="black" fluid fill-height class="mx-auto">
+        <v-col cols="6" class="pr-5" align-self="center">
+          <v-sheet color="black" fluid>
+            <v-container class="text-h3 mb-10">
+              Welcome to TicketPro!
+            </v-container>
             <v-form @submit.prevent>
-              <v-text-field v-model="firstName" label="First name"></v-text-field>
+              <v-text-field v-model="username" label="Enter username"></v-text-field>
 
-              <v-text-field v-model="password" label="password"></v-text-field>
+              <v-text-field v-model="password" label="Enter password"></v-text-field>
 
-              <v-btn type="submit" block class="mt-2">Submit</v-btn>
+              <v-row>
+
+                <v-col>
+                  <SubmitButton action="Sign In"/>
+                </v-col>
+
+                <v-col>
+                  <SubmitButton action="Register"/>
+                </v-col>
+              </v-row>
+            
             </v-form>
           </v-sheet>
 
@@ -23,12 +36,17 @@
 </template>
 
 <script>
+import SubmitButton from '../components/shared/SubmitButton.vue';
 
 export default {
   name: "LoginPage",
-  components: {},
+  components: {
+    SubmitButton 
+  },
   data() {
-    return {};
+    return {
+
+    };
   },
 };
 </script>
@@ -41,9 +59,6 @@ export default {
 
 }
 
-.img {
-  height: 100vh;
-}
 
 html {
   background-color: black;
