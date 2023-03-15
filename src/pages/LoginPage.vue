@@ -13,12 +13,12 @@
       <v-col cols="6" align-self="center" class="pa-5">
         <v-sheet color="black" fluid>
           <v-container>
-            <p class="text-h4 mb-10" style="columns: white;">Welcome to TicketPro!</p>
+            <p class="text-h4 mb-10" style="columns: white;">Welcome to TicketPRO!</p>
           </v-container>
 
           <v-form @submit.prevent>
             <v-text-field v-model="username" label="Enter username"></v-text-field>
-
+      
             <v-text-field v-model="password" label="Enter password"></v-text-field>
 
             <v-row class="mt-9">
