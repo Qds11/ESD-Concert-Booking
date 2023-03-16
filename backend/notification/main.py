@@ -5,13 +5,12 @@ app = Flask(__name__)
 
 app.config.from_object(__name__)
 
-# route set
-CORS(app, resources={r"/*":{'origins' : "*"}})
+CORS(app, resources={r"/*":{'origins':"*"}})
 
-# hello world route
+# hello world
 @app.route('/', methods=['GET'])
 def greetings():
-    return ("hello world!")
+    return ("Hello World")
 
 if __name__ == "__main__":
     app.run(debug = True)

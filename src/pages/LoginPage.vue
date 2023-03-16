@@ -23,7 +23,11 @@
               v-model="username"
               label="Enter username"
             ></v-text-field>
-              <v-text-field v-model="password" label="password"></v-text-field>
+
+            <v-text-field
+              v-model="password"
+              label="Enter password"
+            ></v-text-field>
 
             <v-row class="mt-9">
               <v-col>
@@ -31,13 +35,12 @@
               </v-col>
 
               <v-col>
-                <GoogleLogin :callback="callback"/>
+                <GoogleLogin :callback="callback" />
               </v-col>
 
               <v-col>
                 <SubmitButton action="Register" />
               </v-col>
-
             </v-row>
 
           </v-form>
@@ -51,13 +54,12 @@
 const callback = (response) => {
   // This callback will be triggered when the user selects or login to
   // his Google account from the popup
-  console.log("Handle the response", response)
-}
+  console.log("Handle the response", response);
+};
 </script>
 
-
 <script>
-import SubmitButton from '@/components/shared/SubmitButton.vue';
+import SubmitButton from "@/components/shared/SubmitButton.vue";
 
 export default {
   name: "LoginPage",
@@ -67,7 +69,6 @@ export default {
   data() {
     return {};
   },
-
 };
 </script>
 
@@ -81,5 +82,4 @@ export default {
 html {
   background-color: black;
 }
-
 </style>
