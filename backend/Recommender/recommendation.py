@@ -34,7 +34,7 @@ class User(db.Model):
     def json(self):
         return {"user_id": self.user_id, "username": self.username, "email": self.email, "contact": self.contact, "joined_date_time":self.joined_date_time, "birthdate":self.birthdate, "genre_preferred":self.genre_preferred}
 
-@app.route("/book")
+@app.route("/user")
 def get_all():
     users = User.query.all()
     if len(users):
@@ -55,20 +55,16 @@ def get_all():
 
 
 
-@app.route("/book/<string:isbn13>")
-def find_by_user_id(user_id):
+@app.route("/user/<string:user_id>")
+def find_genre_by_user_id(user_id):
     user = User.query.filter_by(user_id=user_id).first()
     if user:
-        return jsonify(
-            {
-                "code": 200,
-                "data": user.json()
-            }
-        )
+        genre_preferred=user.json()['genre_preferred']
+        return genre_preferred
     return jsonify(
         {
             "code": 404,
-            "message": "Book not found."
+            "message": "Preferred Genre not found."
         }
     ), 404
 
