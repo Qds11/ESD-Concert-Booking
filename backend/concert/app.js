@@ -1,9 +1,10 @@
 import express from "express";
-
+import RECOMMENDATION_MICROSERVICE_URL from './config.js'
 //import function from models.js
 import { getConcertById, getAllConcertData } from "./model.js";
 import bodyParser from "body-parser";
 import cors from "cors";
+import request from 'request';
 
 const app = express();
 app.use(cors());
@@ -24,6 +25,20 @@ app.get("/concert/:id", async (req, res) => {
   res.json(concert);
 });
 
+
+const options = {
+  url: RECOMMENDATION_MICROSERVICE_URL,
+  method: "POST",
+  json: { key: "value" }, // This is the data you want to send to the Flask microservice
+};
+
+request(options, (error, response, body) => {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log(body);
+  }
+});
 //PORT
 app.listen(5005, () => {
   console.log("Server is running on port 5000");
