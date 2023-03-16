@@ -36,7 +36,8 @@
 
 <script>
 
-   import axios from "axios";
+import axios from "axios";
+   import { API_BASE_URL_NODEJS } from '../config.js';
 export default {
   name: 'ConcertPage',
 
@@ -82,7 +83,7 @@ export default {
         },
         async getConcertById() {
             try {
-                const response = await axios.get(`http://localhost:5005/concert/${this.id}`);
+                const response = await axios.get(`${API_BASE_URL_NODEJS}/concert/${this.id}`);
                 // console.log("RESPONSE");
                 if (response.data.length < 1) {
                 this.$router.replace(this.$route.query.redirect || '/');

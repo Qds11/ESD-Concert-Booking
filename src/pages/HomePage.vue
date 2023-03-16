@@ -15,17 +15,17 @@
 
     >
     <v-img
-      :src="concert.img"
+     :src="require('../assets/concerts/'+ concert.image_path)"
 
     ></v-img>
 
     <v-card-title class="word-break">
-   {{ concert.desc }}
+   {{ concert.concert_name }}
 
     </v-card-title>
 
     <v-card-subtitle>
-    Date: {{ concert.date }}
+    Date: {{ getDateTime(concert.date_time) }}
     </v-card-subtitle>
 
     <v-card-subtitle>
@@ -33,7 +33,7 @@
     </v-card-subtitle>
 
     <v-card-actions>
-  <router-link :to="{ path: '/concert/' + concert.id }">
+  <router-link :to="{ path: '/concert/' + concert.concert_id }">
         <v-btn
         color="orange-lighten-2"
         variant="text"
@@ -64,34 +64,41 @@
 
 <script>
    import axios from "axios";
-// import NavBar from '../components/shared/NavBar.vue'
+import { API_BASE_URL_NODEJS } from '../config.js';
 export default {
   name: 'HomePage',
   //   components: {
   //   NavBar
   // },
   async created() {
-    await this.getAllConcertData()
+    this.concerts=await this.getAllConcertData()
   },
   data() {
     return {
       recommended: 'txt',
-      concerts: [//to be take from db
-        { id:1, name: 'txt', title:"TXT Sweet Mirage Tour 2023", date: '21/3/2023',ticketSaleDate:'2023-03-20T14:30:00', price: 168, desc: 'Hottest 4th Gen Kpop Group Finally in Singapore!',img:require('../assets/concerts/concert1.jpg')},
-        { id:2, name: 'Mr Cho', title:"Cho Sweet Strings",date: '12/6/2023',ticketSaleDate:'2023-03-23T14:30:00', price: 50, desc: 'Listen to the beautiful violin melodies by the classic Mr Cho', img: require('../assets/concerts/concert2.jpg') },
-        { id:3, name: 'Lil Pip', title:"Pip Install FTW", date: '18/5/2023',ticketSaleDate:'2023-03-18T14:30:00', price: 90, desc: 'Come listen to aggressive rap about python at its finest.', img: require('../assets/concerts/concert3.jpg')}
-      ]
+      concerts: null,
+      show:false
     };
   },
   methods: {
     async getAllConcertData() {
         try {
-          const response = await axios.get(`http://localhost:5005`);
-          console.log(response)
+          const {data} = await axios.get(API_BASE_URL_NODEJS);
+          return data;
         } catch (err) {
             console.log(err)
         }
-    }
+    },
+      getDateTime(datetime) {
+            const date = new Date(datetime);
+            const day = date.getDate().toString().padStart(2, '0'); // get the day of the month (1-31) and pad with leading zeros if necessary
+            const month = (date.getMonth() + 1).toString().padStart(2, '0'); // get the month (0-11) and add 1 to get the correct month number, then pad with leading zeros if necessary
+            const year = date.getFullYear().toString(); // get the year (4 digits)
+            const hours = date.getHours().toString().padStart(2, '0'); // get the hours (0-23) and pad with leading zeros if necessary
+            const minutes = date.getMinutes().toString().padStart(2, '0'); // get the minutes (0-59) and pad with leading zeros if necessary
+            const formattedDate = `${day}/${month}/${year} at ${hours}:${minutes}`;
+            return formattedDate;
+        },
   }
 
 
