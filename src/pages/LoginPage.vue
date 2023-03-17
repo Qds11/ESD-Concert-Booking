@@ -73,17 +73,9 @@ const callback = (response) => {
   const userData = decodeCredential(response.credential);
   console.log("Handle the userData", userData);
   userEmail.value.email = userData.email;
+  console.log(userEmail.value)
   verifyGmailAccount(userEmail);
 
-  if (errorMsg.value.length == 0) {
-    alert(errorMsg.value);
-    return;
-  } 
-  else {
-    alert("Welcome " + userName.value + "!");
-    this.$router.push('/') 
-
-  }
 
   async function verifyGmailAccount(userEmail) {
     console.log("entered verify account");
@@ -96,12 +88,20 @@ const callback = (response) => {
     axios
       .get(path)
       .then((res) => {
-        console.log(res.data);
-        userName.value = res.data.username;
+        console.log(res.data.username);
+        userName.value.username = res.data.username;
+
+        // welcome and redirect
+        alert("Welcome " + userName.value.username + "!");
+        window.location.href = "/"
       })
       .catch((error) => {
-        errorMsg.value = error.message;
+        errorMsg.value.errorMsg = "This gmail account is not registered with any account.\n Please register for an account.";
         console.error(error);
+
+        // shows alert and doesnt let user leave page
+        alert(errorMsg.value.errorMsg);
+        return
       });
   }
 };
