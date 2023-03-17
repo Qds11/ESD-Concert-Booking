@@ -1,7 +1,6 @@
-drop database if exists users;
+USE sql12606226;
 
-create database users;
-use users;
+
 
 CREATE TABLE IF NOT EXISTS user (
 user_id int NOT NULL AUTO_INCREMENT,

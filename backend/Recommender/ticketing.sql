@@ -1,7 +1,6 @@
- drop database if exists ticketing;
+USE sql12606226;
 
-create database ticketing;
-use ticketing;
+
 
 CREATE TABLE IF NOT EXISTS ticket (
 ticket_id int NOT NULL AUTO_INCREMENT,
