@@ -73,7 +73,7 @@ const callback = (response) => {
   const userData = decodeCredential(response.credential);
   console.log("Handle the userData", userData);
   userEmail.value.email = userData.email;
-  verifyAccount(userEmail);
+  verifyGmailAccount(userEmail);
 
   if (errorMsg.value.length == 0) {
     alert(errorMsg.value);
@@ -85,11 +85,11 @@ const callback = (response) => {
 
   }
 
-  async function verifyAccount(userEmail) {
+  async function verifyGmailAccount(userEmail) {
     console.log("entered verify account");
 
     var email = userEmail._rawValue.email;
-    console.log(email);
+    // console.log(email);
 
     // calls the user microservice to check if email exists in the database
     const path = `http://127.0.0.1:5000/users/${email}`;
