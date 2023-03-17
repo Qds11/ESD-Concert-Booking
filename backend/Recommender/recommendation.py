@@ -49,7 +49,7 @@ def get_all():
     return jsonify(
         {
             "code": 404,
-            "message": "There are no books."
+            "message": "There are no users."
         }
     ), 404
 
@@ -67,7 +67,6 @@ def find_genre_by_user_id(user_id):
             "message": "Preferred Genre not found."
         }
     ), 404
-
 
 
 
