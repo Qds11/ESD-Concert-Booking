@@ -1,12 +1,15 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
+
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:8889/users'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://sql12606226:61vMwF9lhJ@sql12.freesqldatabase.com:3306/sql12606226'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
+CORS(app)
 
 class User(db.Model):
     __tablename__ = 'user'
@@ -56,10 +59,15 @@ def get_all():
 
 @app.route("/user/<string:user_id>")
 def find_genre_by_user_id(user_id):
+    print(user_id)
     user = User.query.filter_by(user_id=user_id).first()
     if user:
-        genre_preferred=user.json()['genre_preferred']
-        return genre_preferred
+        return jsonify(
+        {
+            "code": 200,
+            "message": user.json()['genre_preferred']
+        }
+    ), 200
     return jsonify(
         {
             "code": 404,
@@ -70,4 +78,4 @@ def find_genre_by_user_id(user_id):
 
 
 if __name__ == '__main__':
-    app.run(port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5003, debug=True)
