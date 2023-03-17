@@ -21,9 +21,14 @@
           <v-form @submit.prevent>
             <v-text-field
               v-model="username"
+              :rules="nameRules"
               label="Enter username"
             ></v-text-field>
-              <v-text-field v-model="password" label="password"></v-text-field>
+
+            <v-text-field
+              v-model="password"
+              label="Enter password"
+            ></v-text-field>
 
             <v-row class="mt-9">
               <v-col>
@@ -31,15 +36,13 @@
               </v-col>
 
               <v-col>
-                <GoogleLogin :callback="callback"/>
+                <GoogleLogin :callback="callback" />
               </v-col>
 
               <v-col>
                 <SubmitButton action="Register" />
               </v-col>
-
             </v-row>
-
           </v-form>
         </v-sheet>
       </v-col>
@@ -48,26 +51,55 @@
 </template>
 
 <script setup>
+import { decodeCredential } from "vue3-google-login";
+
 const callback = (response) => {
   // This callback will be triggered when the user selects or login to
   // his Google account from the popup
-  console.log("Handle the response", response)
-}
+
+  const userData = decodeCredential(response.credential);
+  console.log("Handle the userData", userData);
+  var email = userData.email;
+  this.verifyAccount(email);
+};
 </script>
 
-
 <script>
-import SubmitButton from '@/components/shared/SubmitButton.vue';
+import SubmitButton from "@/components/shared/SubmitButton.vue";
+import axios from "axios";
 
 export default {
   name: "LoginPage",
   components: {
     SubmitButton,
   },
-  data() {
-    return {};
-  },
+  methods: {
+    verifyAccount(email) {
+      // axios({
+      //   method: "post",
+      //   url: "/login",
+      //   data: {
+      //     email: email // how to know which one is email field and which one is the input?
+      //   },
+      // });
 
+      console.log(email)
+
+      const path = 'http://127.0.0.1:5000/users';
+      axios.get(path)
+        .then((res) => {
+          this.msg = res.data.users;
+        })
+        .catch((error) => {
+          // eslint-disable-next-line
+          console.error(error);
+        });
+    },
+  },
+  data() {
+    return {
+    };
+  },
 };
 </script>
 
@@ -81,5 +113,4 @@ export default {
 html {
   background-color: black;
 }
-
 </style>
