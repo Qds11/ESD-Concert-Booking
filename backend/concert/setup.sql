@@ -1,7 +1,6 @@
-drop database if exists concertdata;
 
-create database concertdata;
-use concertdata;
+
+USE sql12606226;
 
 CREATE TABLE IF NOT EXISTS concert (
 concert_id int NOT NULL AUTO_INCREMENT,

@@ -57,6 +57,7 @@ def get_all():
 
 @app.route("/user/<string:user_id>")
 def find_genre_by_user_id(user_id):
+    print(user_id)
     user = User.query.filter_by(user_id=user_id).first()
     if user:
         genre_preferred=user.json()['genre_preferred']

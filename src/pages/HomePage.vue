@@ -33,7 +33,7 @@
     </v-card-subtitle>
 
     <v-card-actions>
-  <router-link :to="{ path: '/concert/' + concert.concert_id }">
+  <router-link :to="{ path: '/concert/' + concert.concert_id }" class="link-style">
         <v-btn
         color="orange-lighten-2"
         variant="text"
@@ -70,8 +70,11 @@ export default {
   //   components: {
   //   NavBar
   // },
-  async created() {
-    this.concerts=await this.getAllConcertData()
+  async mounted() {
+    this.concerts = await this.getAllConcertData()
+    const userId = 1;
+    const response = await axios.get(`${API_BASE_URL_NODEJS}/reco/${userId}`);
+    this.genre = response.data;
   },
   data() {
     return {
