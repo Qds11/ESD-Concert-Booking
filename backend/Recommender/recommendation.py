@@ -59,8 +59,12 @@ def get_all():
 def find_genre_by_user_id(user_id):
     user = User.query.filter_by(user_id=user_id).first()
     if user:
-        genre_preferred=user.json()['genre_preferred']
-        return genre_preferred
+        return jsonify(
+        {
+            "code": 200,
+            "message": user.json()['genre_preferred']
+        }
+    ), 200
     return jsonify(
         {
             "code": 404,
