@@ -54,7 +54,6 @@ def get_all():
     ), 404
 
 
-
 @app.route("/user/<string:user_id>")
 def find_genre_by_user_id(user_id):
     user = User.query.filter_by(user_id=user_id).first()
