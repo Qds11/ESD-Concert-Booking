@@ -52,52 +52,75 @@
 
 <script setup>
 import { decodeCredential } from "vue3-google-login";
+import { ref } from "vue";
+import axios from "axios";
+
+const userEmail = ref({
+  email: "",
+});
+const userName = ref({
+  username: "",
+});
+
+const errorMsg = ref({
+  errorMsg: "",
+});
 
 const callback = (response) => {
   // This callback will be triggered when the user selects or login to
-  // his Google account from the popup
+  // their Google account from the popup
 
   const userData = decodeCredential(response.credential);
   console.log("Handle the userData", userData);
-  var email = userData.email;
-  this.verifyAccount(email);
+  userEmail.value.email = userData.email;
+  verifyAccount(userEmail);
+
+  if (errorMsg.value.length == 0) {
+    alert(errorMsg.value);
+    return;
+  } 
+  else {
+    alert("Welcome " + userName.value + "!");
+    this.$router.push('/') 
+
+  }
+
+  async function verifyAccount(userEmail) {
+    console.log("entered verify account");
+
+    var email = userEmail._rawValue.email;
+    console.log(email);
+
+    // calls the user microservice to check if email exists in the database
+    const path = `http://127.0.0.1:5000/users/${email}`;
+    axios
+      .get(path)
+      .then((res) => {
+        console.log(res.data);
+        userName.value = res.data.username;
+      })
+      .catch((error) => {
+        errorMsg.value = error.message;
+        console.error(error);
+      });
+  }
 };
 </script>
 
 <script>
 import SubmitButton from "@/components/shared/SubmitButton.vue";
-import axios from "axios";
 
 export default {
   name: "LoginPage",
+
   components: {
     SubmitButton,
   },
-  methods: {
-    verifyAccount(email) {
-      // axios({
-      //   method: "post",
-      //   url: "/login",
-      //   data: {
-      //     email: email // how to know which one is email field and which one is the input?
-      //   },
-      // });
-
-      console.log(email)
-
-      const path = 'http://127.0.0.1:5000/users';
-      axios.get(path)
-        .then((res) => {
-          this.msg = res.data.users;
-        })
-        .catch((error) => {
-          // eslint-disable-next-line
-          console.error(error);
-        });
-    },
-  },
+  methods: {},
   data() {
     return {
+      username: "",
+      password: ""
     };
   },
 };
