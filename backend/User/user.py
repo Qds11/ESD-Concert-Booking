@@ -1,7 +1,10 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 
+
 app = Flask(__name__)
+
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:8889/users'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -34,7 +37,16 @@ class User(db.Model):
     def json(self):
         return {"user_id": self.user_id, "username": self.username, "email": self.email, "contact": self.contact, "joined_date_time":self.joined_date_time, "birthdate":self.birthdate, "genre_preferred":self.genre_preferred}
 
-@app.route("/user")
+
+CORS(app, resources={r'/*': {'origins': '*'}})
+
+# hello world
+@app.route('/', methods=['GET'])
+def greetings():
+    return ("Hello World")
+
+# get all users
+@app.route('/users', methods=['GET'])
 def get_all():
     users = User.query.all()
     if len(users):
@@ -53,22 +65,24 @@ def get_all():
         }
     ), 404
 
+# get users emails
+@app.route('/users/<string:email>', methods=['GET'])
+def get_email(email):
+    email = User.query.filter_by(email=email).first()
+    if email:
+        user_email = email.json()["email"]
+        return user_email
 
-@app.route("/user/<string:user_id>")
-def find_genre_by_user_id(user_id):
-    print(user_id)
-    user = User.query.filter_by(user_id=user_id).first()
-    if user:
-        genre_preferred=user.json()['genre_preferred']
-        return genre_preferred
     return jsonify(
         {
             "code": 404,
-            "message": "Preferred Genre not found."
+            "message": "There are no users with this email."
         }
     ), 404
 
 
 
-if __name__ == '__main__':
-    app.run(port=5000, debug=True)
+
+
+if __name__ == "__main__":
+    app.run(debug = True)
