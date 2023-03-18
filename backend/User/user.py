@@ -2,9 +2,10 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 
-
 app = Flask(__name__)
+cors = CORS(app)
 
+# need to change DB uri accordingly
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:8889/users'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -38,7 +39,7 @@ class User(db.Model):
         return {"user_id": self.user_id, "username": self.username, "email": self.email, "contact": self.contact, "joined_date_time":self.joined_date_time, "birthdate":self.birthdate, "genre_preferred":self.genre_preferred}
 
 
-CORS(app, resources={r'/*': {'origins': '*'}})
+cors = CORS(app, resources={r'/*': {'origins': '*'}})
 
 # hello world
 @app.route('/', methods=['GET'])
@@ -67,11 +68,14 @@ def get_all():
 
 # get users emails
 @app.route('/users/<string:email>', methods=['GET'])
-def get_email(email):
-    email = User.query.filter_by(email=email).first()
-    if email:
-        user_email = email.json()["email"]
-        return user_email
+def get_username_with_email(email):
+    user = User.query.filter_by(email=email).first()
+    if user:
+        username = user.username
+        return jsonify({
+            "hasAccount": True,
+            "username": username
+        })
 
     return jsonify(
         {

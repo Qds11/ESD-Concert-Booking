@@ -1,7 +1,7 @@
 import express from "express";
 import {RECOMMENDATION_MICROSERVICE_URL} from './config.js'
 //import function from models.js
-import { getConcertById, getAllConcertData } from "./model.js";
+import { getConcertById, getAllConcertData, getConcertByGenre } from "./model.js";
 import bodyParser from "body-parser";
 import cors from "cors";
 import axios from 'axios';
@@ -22,17 +22,29 @@ app.get("/concert/:id", async (req, res) => {
   const concert = await getConcertById(id);
   res.json(concert);
 });
+app.get("/concert/:genre", async (req, res) => {
+  const genre = req.params.genre;
+  const concert = await getConcertByGenre(genre);
+  res.json(concert);
+});
 
 
 app.get("/reco/:id", async (req, res) => {
   try {
-    console.log('hello')
     const userId = req.params.id;
+   // console.log(userId)
+    //const userId=1
+    //  const url = "http://127.0.0.1:5003/user/1";
+    //  const url = "http://localhost:5003/user/1";
     const url = `${RECOMMENDATION_MICROSERVICE_URL}/${userId}`;
     const response = await axios.get(url);
+    const genre = response.data.message
+    const concert = await getConcertByGenre(genre);
 
     // Send the response back to the frontend
-    console.log(response);
+    console.log(concert)
+    res.send(concert)
+    console.log(response.data);
     // res.send(response.data);
   } catch (error) {
     console.error(error);
@@ -42,5 +54,5 @@ app.get("/reco/:id", async (req, res) => {
 
 //PORT
 app.listen(5005, () => {
-  console.log("Server is running on port 5005");
+  console.log("Server is running on port 5003");
 });
