@@ -1,5 +1,14 @@
 USE sql12606226;
 
+<<<<<<< Updated upstream
+=======
+-- drop database if exists ticket_db;
+
+-- create database ticket_db;
+-- use ticket_db;
+
+
+>>>>>>> Stashed changes
 CREATE TABLE IF NOT EXISTS user (
 user_id int NOT NULL AUTO_INCREMENT,
 username TEXT,

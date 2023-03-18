@@ -19,3 +19,13 @@ export async function getConcertById(id) {
         return (err)
       }
 }
+export async function getConcertByGenre(genre) {
+    try {
+        const [rows] = await db.query(`select * from concert where genre = ?`, [
+          genre,
+        ]);
+        return rows
+    } catch (err) {
+        return (err)
+      }
+}

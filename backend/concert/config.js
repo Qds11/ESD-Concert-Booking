@@ -1,1 +1,1 @@
-export const RECOMMENDATION_MICROSERVICE_URL = "http://localhost:5000/user";
+export const RECOMMENDATION_MICROSERVICE_URL = "http://127.0.0.1:5003/user";
