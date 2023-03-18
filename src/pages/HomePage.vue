@@ -1,4 +1,30 @@
 <template>
+  <v-banner
+      lines="four"
+      icon="mdi-lock"
+      color="deep-purple-accent-4"
+      class="my-4"
+      v-if="recommended"
+    >
+      <v-banner-text>
+       <h2>Recommended for you!</h2>
+     <b>  {{ recommended.concert_name }}</b>
+       <br>
+       {{ getDateTime(recommended.date_time) }}
+       <br>
+       <router-link :to="{ path: '/concert/' + recommended.concert_id }" class="link-style">
+       <v-btn
+       color="orange-lighten-2"
+       variant="text"
+       >
+       Explore
+     </v-btn>
+   </router-link>
+      </v-banner-text>
+
+
+
+    </v-banner>
 <h1 class="title">Concerts Available</h1>
 <!-- <v-img :src="require('../assets/concerts/concert1.jpg')"></v-img> -->
  <v-container
@@ -74,11 +100,11 @@ export default {
     this.concerts = await this.getAllConcertData()
     const userId = 1;
     const response = await axios.get(`${API_BASE_URL_NODEJS}/reco/${userId}`);
-    this.genre = response.data;
+    this.recommended = response.data[0];
   },
   data() {
     return {
-      recommended: 'txt',
+      recommended: null,
       concerts: null,
       show:false
     };
