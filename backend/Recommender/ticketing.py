@@ -62,7 +62,7 @@ def greetings():
     return ("Hello World")
 
 # get availability by providing concert_id
-@app.route('/ticketing/<string:concert_id>', methods=['GET'])
+@app.route('/avail/<string:concert_id>', methods=['GET'])
 def get_availability(concert_id):
     ticket = Ticket.query.filter_by(concert_id=concert_id).first()
     if len(ticket):
@@ -84,7 +84,7 @@ def get_availability(concert_id):
     ), 404
 
 # get prices by providing concert id 
-@app.route('/ticketing/<string:concert_id>', methods=['GET'])
+@app.route('/price/<string:concert_id>', methods=['GET'])
 def get_prices(concert_id):
     ticket = Ticket.query.filter_by(concert_id=concert_id).first()
     if len(ticket):
