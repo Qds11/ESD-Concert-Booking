@@ -97,10 +97,10 @@ export default {
   //   NavBar
   // },
   async mounted() {
-    this.concerts = await this.getAllConcertData()
-    const userId = 1;
-    const response = await axios.get(`${API_BASE_URL_NODEJS}/reco/${userId}`);
-    this.recommended = response.data[0];
+    await this.getAllConcertData()
+    // const userId = 2;
+    // const response = await axios.get(`${API_BASE_URL_NODEJS}/reco/${userId}`);
+    // this.recommended = response.data[0];
   },
   data() {
     return {
@@ -112,8 +112,11 @@ export default {
   methods: {
     async getAllConcertData() {
         try {
-          const {data} = await axios.get(API_BASE_URL_NODEJS);
-          return data;
+          const response= await axios.get(API_BASE_URL_NODEJS);
+          console.log(response)
+          this.concerts = response.data.concerts
+          this.recommended=response.data.recommended[0]
+          //return data;
         } catch (err) {
             console.log(err)
         }

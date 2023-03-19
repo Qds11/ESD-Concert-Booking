@@ -7,6 +7,7 @@ cors = CORS(app)
 
 # need to change DB uri accordingly
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:8889/users'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/users'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -125,7 +126,5 @@ def find_birthday_by_user_id(user_id):
     ), 404
 
 
-
-
-if __name__ == "__main__":
-    app.run(debug = True)
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000, debug=True)

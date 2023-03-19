@@ -13,7 +13,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 //get all spending data
 app.get("/", async (req, res) => {
   const concerts = await getAllConcertData();
-  return res.json(concerts);
+  const userId = 2;
+  const recommended = await axios.get(`http://localhost:5005/reco/${userId}`);
+  return res.json({ concerts: concerts, recommended: recommended.data });
 });
 
 // //get spending data filtered by date range
@@ -48,5 +50,5 @@ app.get("/reco/:id", async (req, res) => {
 
 //PORT
 app.listen(5005, () => {
-  console.log("Server is running on port 5003");
+  console.log("Server is running on port 5005");
 });
