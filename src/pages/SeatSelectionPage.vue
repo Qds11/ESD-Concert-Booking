@@ -4,7 +4,7 @@
         <v-col no-gutters cols="6">
           <v-img
             fluid
-            :src="require('../assets/concerts/seating_plan.jpg')"
+            :src="require('../assets/concerts/seating_plan_1.jpg')"
             class="img h-screen"
           >
           </v-img>

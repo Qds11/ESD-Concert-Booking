@@ -11,7 +11,7 @@
                 You are now in the queue for (insert concert).
               </p>
               <p class="text-h5 mb-5" style="columns: white">
-                When it is your turn, you will have 10 minutes to enter the ticket booking page.
+                When it is your turn, you will have 10 minutes to book tickets.
               </p>
             </v-container>
             <v-container>
