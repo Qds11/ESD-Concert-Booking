@@ -65,7 +65,7 @@ def greetings():
 @app.route('/avail/<string:concert_id>', methods=['GET'])
 def get_availability(concert_id):
     ticket = Ticket.query.filter_by(concert_id=concert_id).first()
-    if len(ticket):
+    if ticket:
         return jsonify(
             {
                 "code": 200,
@@ -87,7 +87,7 @@ def get_availability(concert_id):
 @app.route('/price/<string:concert_id>', methods=['GET'])
 def get_prices(concert_id):
     ticket = Ticket.query.filter_by(concert_id=concert_id).first()
-    if len(ticket):
+    if ticket:
         return jsonify({
             "code": 200,
             "cat1_price":ticket.json()['cat1_price'],

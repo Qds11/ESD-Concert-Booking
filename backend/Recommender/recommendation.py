@@ -62,7 +62,7 @@ age = (date.today() - date_obj.date()).days // 365
 
 
 
-results = invoke_http("http://127.0.0.1:5000/user/birthday/1", method='GET')
+results = invoke_http("http://127.0.0.1:5000/avail/", method='GET')
     
     
 
