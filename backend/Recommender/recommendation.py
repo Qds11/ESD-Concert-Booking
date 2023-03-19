@@ -15,10 +15,9 @@ CORS(app)
 
 
 
-
+#api endpoint for concert ms to call, will call user ms and return the result from user to concert
 @app.route("/user/<string:user_id>")
 def find_genre_by_calling_user(user_id):
-    print(user_id)
     results = invoke_http("http://127.0.0.1:5000/user/"+user_id, method='GET')
     if results['code']==200:
         return jsonify(
@@ -34,7 +33,7 @@ def find_genre_by_calling_user(user_id):
         }
     ), 404
 
-
+#part2 talking to
 
 
 
