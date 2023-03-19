@@ -1,0 +1,113 @@
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+from flask_sqlalchemy import SQLAlchemy
+
+app = Flask(__name__)
+cors = CORS(app)
+
+# need to change DB uri accordingly
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:8889/halldata'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)
+
+
+class Ticket(db.Model):
+    __tablename__ = 'hall'
+
+
+    hall_id = db.Column(db.Integer)
+    hall_plan = db.Column(db.String(128), nullable=False)
+    hall_name = db.Column(db.String(128), nullable=False)
+    concert_id = db.Column(db.Integer, primary_key=True)
+    concert_date=db.Column(db.Date, nullable=False)
+    cat1_avail=db.Column(db.Integer,nullable=False)
+    cat2_avail=db.Column(db.Integer,nullable=True)
+    cat3_avail=db.Column(db.Integer,nullable=True)
+    cat4_avail=db.Column(db.Integer,nullable=True)
+    cat5_avail=db.Column(db.Integer,nullable=True)
+    cat1_price=db.Column(db.Integer, nullable=False)
+    cat2_price=db.Column(db.Integer, nullable=True)
+    cat3_price=db.Column(db.Integer, nullable=True)
+    cat4_price=db.Column(db.Integer, nullable=True)
+    cat5_price=db.Column(db.Integer, nullable=True)
+
+    def __init__(self, hall_id, hall_plan, hall_name, concert_id, concert_date, cat1_avail, cat2_avail, cat3_avail, cat4_avail, cat5_avail,cat1_price, cat2_price,cat3_price,cat4_price,cat5_price):
+        self.hall_id=hall_id
+        self.hall_plan=hall_plan
+        self.hall_name=hall_name
+        self.concert_id=concert_id
+        self.concert_date=concert_date
+        self.cat1_avail=cat1_avail
+        self.cat2_avail=cat2_avail
+        self.cat3_avail=cat3_avail
+        self.cat4_avail=cat4_avail
+        self.cat5_avail=cat5_avail
+        self.cat1_price=cat1_price
+        self.cat2_price=cat2_price
+        self.cat3_price=cat3_price
+        self.cat4_price=cat4_price
+        self.cat5_price=cat5_price
+
+
+    def json(self):
+        return {"hall_id": self.hall_id, "hall_plan":self.hall_plan, "hall_name":self.hall_name, "concert_id":self.concert_id, "concert_date":self.concert_date, "cat1_avail":self.cat1_avail, "cat2_avail":self.cat2_avail, "cat3_avail":self.cat3_avail, "cat4_avail":self.cat4_avail, "cat5_avail":self.cat5_avail,"cat1_price":self.cat1_price, "cat2_price":self.cat2_price, "cat3_price":self.cat3_price, "cat4_price":self.cat4_price, "cat5_price":self.cat5_price}
+
+
+cors = CORS(app, resources={r'/*': {'origins': '*'}})
+
+# hello world
+@app.route('/', methods=['GET'])
+def greetings():
+    return ("Hello World")
+
+# get availability by providing concert_id
+@app.route('/ticketing/<string:concert_id>', methods=['GET'])
+def get_availability(concert_id):
+    ticket = Ticket.query.filter_by(concert_id=concert_id).first()
+    if len(ticket):
+        return jsonify(
+            {
+                "code": 200,
+                "cat1_avail": ticket.json()['cat1_avail'],
+                "cat2_avail": ticket.json()['cat2_avail'],
+                "cat3_avail": ticket.json()['cat3_avail'],
+                "cat4_avail": ticket.json()['cat4_avail'],
+                "cat5_avail": ticket.json()['cat5_avail'],
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "message": "There are concerts by that concert id."
+        }
+    ), 404
+
+# get prices by providing concert id 
+@app.route('/ticketing/<string:concert_id>', methods=['GET'])
+def get_prices(concert_id):
+    ticket = Ticket.query.filter_by(concert_id=concert_id).first()
+    if len(ticket):
+        return jsonify({
+            "code": 200,
+            "cat1_price":ticket.json()['cat1_price'],
+            "cat2_price":ticket.json()['cat2_price'],
+            "cat3_price":ticket.json()['cat3_price'],
+            "cat4_price":ticket.json()['cat4_price'],
+            "cat5_price":ticket.json()['cat5_price']
+        })
+
+    return jsonify(
+        {
+            "code": 404,
+            "message": "There are no concerts by that concert id."
+        }
+    ), 404
+
+
+
+
+
+
+if __name__ == "__main__":
+    app.run(debug = True)
