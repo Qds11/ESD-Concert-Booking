@@ -8,6 +8,7 @@ import QueuePage from "../pages/QueuePage.vue";
 import SeatSelectionPage from "../pages/SeatSelectionPage.vue";
 
 
+
 const routes = [
   {
     path: "/test",
@@ -44,6 +45,7 @@ const routes = [
     name: "SeatSelectionPage",
     component: SeatSelectionPage,
   }
+
 
 ];
 

@@ -2,81 +2,29 @@ from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import requests
+from invokes import invoke_http
+results = invoke_http("http://localhost:5000/user/1", method='GET')
 
+
+# app = Flask(__name__)
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:8889/ticket_db'
+# # for local db
+# # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/ticket_db'
+# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# db = SQLAlchemy(app)
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://sql12606226:61vMwF9lhJ@sql12.freesqldatabase.com:3306/sql12606226'
-# for local db
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/ticket_db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-db = SQLAlchemy(app)
-
 CORS(app)
 
-class User(db.Model):
-    __tablename__ = 'user'
+print( type(results) )
+print()
+print( results )
 
 
-    user_id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(64), nullable=False)
-    email = db.Column(db.String(128), nullable=False)
-    contact = db.Column(db.Integer, nullable=False)
-    joined_date_time=db.Column(db.DateTime, nullable=False)
-    birthdate=db.Column(db.DateTime,nullable=False)
-    genre_preferred=db.Column(db.String(64),nullable=False)
 
 
-    def __init__(self, user_id, username, email, contact, joined_date_time, birthdate, genre_preferred):
-        self.user_id = user_id
-        self.username = username
-        self.email = email
-        self.contact = contact
-        self.joined_date_time=joined_date_time
-        self.birthdate=birthdate
-        self.genre_preferred=genre_preferred
 
-
-    def json(self):
-        return {"user_id": self.user_id, "username": self.username, "email": self.email, "contact": self.contact, "joined_date_time":self.joined_date_time, "birthdate":self.birthdate, "genre_preferred":self.genre_preferred}
-
-@app.route("/user")
-def get_all():
-    users = User.query.all()
-    if len(users):
-        return jsonify(
-            {
-                "code": 200,
-                "data": {
-                    "users": [user.json() for user in users]
-                }
-            }
-        )
-    return jsonify(
-        {
-            "code": 404,
-            "message": "There are no users."
-        }
-    ), 404
-
-
-@app.route("/user/<string:user_id>")
-def find_genre_by_user_id(user_id):
-    print(user_id)
-    user = User.query.filter_by(user_id=user_id).first()
-    if user:
-        return jsonify(
-        {
-            "code": 200,
-            "message": user.json()['genre_preferred']
-        }
-    ), 200
-    return jsonify(
-        {
-            "code": 404,
-            "message": "Preferred Genre not found."
-        }
-    ), 404
 
 
 
