@@ -84,7 +84,7 @@ def get_username_with_email(email):
         }
     ), 404
 
-
+# get genre,birthday from username input
 
 
 
