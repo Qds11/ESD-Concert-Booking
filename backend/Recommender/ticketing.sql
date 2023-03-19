@@ -28,3 +28,4 @@ INSERT INTO hall (hall_id,hall_plan,hall_name,concert_id,concert_date,cat1_avail
 (2,'../../src/assets/halls/f9f85ae0-fb2f-11eb-a641-4e23b81c2c33.jpg','Victoria Theatre', 2,'2023-10-15', 500, 500, 500, null, null, 50,30,20,null,null),
 (1,'../../src/assets/halls/seating_plan_2.jpg','Singapore Stadium',3, '2023-09-29', 1000, 2000, 500, 700, 800, 188, 188, 168, 158, 88)
 
+

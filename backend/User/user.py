@@ -84,6 +84,7 @@ def get_username_with_email(email):
         }
     ), 404
 
+
 #get specific user based on user_id
 @app.route("/user/<string:user_id>")
 def find_genre_by_user_id(user_id):
@@ -102,6 +103,9 @@ def find_genre_by_user_id(user_id):
             "message": "Preferred Genre not found."
         }
     ), 404
+
+
+# get genre,birthday from username input
 
 
 
