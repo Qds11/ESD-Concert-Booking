@@ -4,6 +4,10 @@ import HomePage from "../pages/HomePage.vue";
 import LoginPage from "../pages/LoginPage.vue"
 import ConcertPage from "../pages/ConcertPage.vue";
 import BookingStatus from "../pages/BookingStatus.vue";
+import QueuePage from "../pages/QueuePage.vue";
+import SeatSelectionPage from "../pages/SeatSelectionPage.vue";
+
+
 
 const routes = [
   {
@@ -30,7 +34,18 @@ const routes = [
     path: "/BookingStatus",
     name: "BookingStatus",
     component: BookingStatus,
+  },
+  {
+    path: "/queuePage",
+    name: "QueuePage",
+    component: QueuePage,
+  },
+  {
+    path: "/seatSelectionPage",
+    name: "SeatSelectionPage",
+    component: SeatSelectionPage,
   }
+
 
 ];
 

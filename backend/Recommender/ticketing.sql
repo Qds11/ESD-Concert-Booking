@@ -1,28 +1,31 @@
-USE sql12606226;
 
+drop database if exists halldata;
 
+create database halldata;
+use halldata;
 
-CREATE TABLE IF NOT EXISTS ticket (
-ticket_id int NOT NULL AUTO_INCREMENT,
-num_tickets int NOT NULL,
-user_id int NOT NULL,
-username TEXT,
-date_time DATETIME,
-artist TEXT,
-concert_name TEXT,
-price DECIMAL(10,2),
-hall_id int,
-ticket_sale_date_time DATETIME,
-description TEXT,
-image_path TEXT,
-PRIMARY KEY(ticket_id)
+CREATE TABLE IF NOT EXISTS hall (
+hall_id int NOT NULL,
+hall_plan TEXT,
+hall_name TEXT,
+concert_id int,
+concert_date DATE,
+cat1_avail int,
+cat2_avail int,
+cat3_avail int,
+cat4_avail int,
+cat5_avail int,
+cat1_price DECIMAL(10,2),
+cat2_price DECIMAL(10,2),
+cat3_price DECIMAL(10,2),
+cat4_price DECIMAL(10,2),
+cat5_price DECIMAL(10,2),
+PRIMARY KEY(concert_id)
 );
 
-INSERT INTO ticket (num_tickets, user_id, username, date_time, artist, concert_name, price, hall_id, ticket_sale_date_time,description,image_path) VALUES
-(3,1,'jigglypuff','2023-06-23T19:30:00','txt','TXT Sweet Mirage Tour 2023' ,168.00,1,'2023-03-20T14:30:00','Hottest 4th Gen Kpop Group Finally in Singapore!','concert1.jpg'),
-(5,1,'jigglypuff','2023-10-15T19:00:00','Mr Cho','Cho Sweet Strings' ,50.00,1,'2023-05-20T14:30:00','Listen to the beautiful violin melodies by the classic Mr Cho','concert2.jpg'),
-(2,5,'squirtle','2023-09-29T19:00:00','Lil Pip','Pip Install FTW' ,90.00,2,'2023-07-20T14:30:00','Come listen to aggressive rap about python at its finest.','concert3.jpg'),
-(1,3,'snorlax','2023-09-29T19:00:00','Lil Pip','Pip Install FTW' ,90.00,2,'2023-07-20T14:30:00','Come listen to aggressive rap about python at its finest.','concert3.jpg'),
-(4,2,'pikachu','2023-10-15T19:00:00','Mr Cho','Cho Sweet Strings' ,50.00,1,'2023-05-20T14:30:00','Listen to the beautiful violin melodies by the classic Mr Cho','concert2.jpg'),
-(2,4,'mew','2023-09-29T19:00:00','Lil Pip','Pip Install FTW' ,90.00,2,'2023-07-20T14:30:00','Come listen to aggressive rap about python at its finest.','concert3.jpg')
+INSERT INTO hall (hall_id,hall_plan,hall_name,concert_id,concert_date,cat1_avail,cat2_avail,cat3_avail,cat4_avail,cat5_avail,cat1_price,cat2_price,cat3_price,cat4_price,cat5_price) VALUES
+(1,'../../src/assets/halls/seating_plan_2.jpg','Singapore Stadium',1, '2023-06-23', 1000, 2000, 500, 700, 800, 288, 288, 268, 228, 198),
+(2,'../../src/assets/halls/f9f85ae0-fb2f-11eb-a641-4e23b81c2c33.jpg','Victoria Theatre', 2,'2023-10-15', 500, 500, 500, null, null, 50,30,20,null,null),
+(1,'../../src/assets/halls/seating_plan_2.jpg','Singapore Stadium',3, '2023-09-29', 1000, 2000, 500, 700, 800, 188, 188, 168, 158, 88)
+
 
