@@ -11,13 +11,7 @@ app = Flask(__name__)
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/ticket_db'
 # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-
-
-
 CORS(app)
-
-
-
 
 
 #api endpoint for concert ms to call, will call user ms and return the result from user to concert
@@ -63,14 +57,6 @@ age = (date.today() - date_obj.date()).days // 365
 
 
 results = invoke_http("http://127.0.0.1:5000/avail/", method='GET')
-    
-    
-
-
-
-
-
-
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5003, debug=True)
