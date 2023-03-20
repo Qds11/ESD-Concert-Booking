@@ -2,11 +2,7 @@
   <v-container id="bg" fluid fill-height>
     <v-row align-self="center" class="h-screen">
       <v-col no-gutters cols="6">
-        <v-img
-          fluid
-          :src="require('../assets/concerts/concert4.jpeg')"
-          class="img h-screen"
-        >
+        <v-img fluid :src="require('../assets/concerts/concert4.jpeg')" class="img h-screen">
         </v-img>
       </v-col>
 
@@ -14,21 +10,14 @@
         <v-sheet color="black" fluid>
           <v-container>
             <p class="text-h4 mb-10" style="columns: white">
-              Welcome to TicketPRO!
+              Welcome to TicketPRO! {{ userID.userid }}
             </p>
           </v-container>
 
           <v-form @submit.prevent>
-            <v-text-field
-              v-model="username"
-              :rules="nameRules"
-              label="Enter username"
-            ></v-text-field>
+            <v-text-field v-model="username" label="Enter username"></v-text-field>
 
-            <v-text-field
-              v-model="password"
-              label="Enter password"
-            ></v-text-field>
+            <v-text-field v-model="password" label="Enter password"></v-text-field>
 
             <v-row class="mt-9">
               <v-col>
@@ -58,50 +47,54 @@ import axios from "axios";
 const userEmail = ref({
   email: "",
 });
-const userName = ref({
-  username: "",
-});
+
 const errorMsg = ref({
   errorMsg: "",
 });
 
-const callback = (response) => {
+  
+  const callback = (response) => {
   // This callback will be triggered when the user selects or login to
   // their Google account from the popup
 
   const userData = decodeCredential(response.credential);
   console.log("Handle the userData", userData);
+
   userEmail.value.email = userData.email;
   console.log(userEmail.value)
-  verifyGmailAccount(userEmail);
 
+  const userId = verifyGmailAccount(userEmail)
+  console.log(userId.data)
 
   async function verifyGmailAccount(userEmail) {
     console.log("entered verify account");
 
     var email = userEmail._rawValue.email;
-    // console.log(email);
-
     // calls the user microservice to check if email exists in the database
     const path = `http://127.0.0.1:5000/users/${email}`;
     axios
       .get(path)
       .then((res) => {
-        console.log(res.data.username);
-        userName.value.username = res.data.username;
+        // console.log(res.data.userId);
+        // console.log(res.data.username);
+     
+        localStorage.setItem('userid', JSON.stringify(res.data.userId))
+        localStorage.setItem('username', JSON.stringify(res.data.username))
 
         // welcome and redirect
-        alert("Welcome " + userName.value.username + "!");
+        alert("Welcome " + res.data.username + " !")
         window.location.href = "/"
+       
       })
       .catch((error) => {
         errorMsg.value.errorMsg = "This gmail account is not registered with any account.\n Please register for an account.";
         console.error(error);
 
         // shows alert and doesnt let user leave page
-        alert(errorMsg.value.errorMsg);
+        alert(error);
         return
       });
+
   }
 };
 </script>
@@ -115,11 +108,11 @@ export default {
   components: {
     SubmitButton,
   },
-  methods: {},
+  methods: {
+  },
   data() {
     return {
       username: "",
-      password: ""
     };
   },
 };

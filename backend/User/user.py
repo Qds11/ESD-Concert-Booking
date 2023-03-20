@@ -67,15 +67,16 @@ def get_all():
         }
     ), 404
 
-# get users emails
+# get username and userid with email
 @app.route('/users/<string:email>', methods=['GET'])
 def get_username_with_email(email):
     user = User.query.filter_by(email=email).first()
     if user:
+        user_id = user.user_id
         username = user.username
         return jsonify({
-            "hasAccount": True,
-            "username": username
+            "username": username,
+            "userId": user_id
         })
 
     return jsonify(
@@ -87,7 +88,7 @@ def get_username_with_email(email):
 
 
 #get specific user based on user_id
-@app.route("/user/<string:user_id>")
+@app.route("/users/<string:user_id>")
 def find_genre_by_user_id(user_id):
     print(user_id)
     user = User.query.filter_by(user_id=user_id).first()
