@@ -10,7 +10,7 @@
         <v-sheet color="black" fluid>
           <v-container>
             <p class="text-h4 mb-10" style="columns: white">
-              Welcome to TicketPRO! {{ userID.userid }}
+              Welcome to TicketPRO!
             </p>
           </v-container>
 
