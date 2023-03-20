@@ -71,7 +71,7 @@ const errorMsg = ref({
 
     var email = userEmail._rawValue.email;
     // calls the user microservice to check if email exists in the database
-    const path = `http://127.0.0.1:5000/users/${email}`;
+    const path = `http://127.0.0.1:5000/user/${email}`;
     axios
       .get(path)
       .then((res) => {
@@ -80,7 +80,7 @@ const errorMsg = ref({
      
         localStorage.setItem('userid', JSON.stringify(res.data.userId))
         localStorage.setItem('username', JSON.stringify(res.data.username))
-
+        
         // welcome and redirect
         alert("Welcome " + res.data.username + " !")
         window.location.href = "/"

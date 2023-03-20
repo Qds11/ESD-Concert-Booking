@@ -15,6 +15,7 @@ app = Flask(__name__)
 @app.route('/sendNotification')
 def send_notif(phone_num):
 # call user here?
+
    # Your Account SID from twilio.com/console
    account_sid = "ACb73a42a689c04ad6bf175a645cfa9282"
    # Your Auth Token from twilio.com/console
