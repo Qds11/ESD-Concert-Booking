@@ -1,9 +1,14 @@
 -- USE sql12606226;
 
+
+-- drop database if exists ticket_db;
+
 drop database if exists users;
+
 
 create database users;
 use users;
+
 
 
 CREATE TABLE IF NOT EXISTS user (

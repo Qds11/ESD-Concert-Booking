@@ -107,7 +107,24 @@ def find_genre_by_user_id(user_id):
     ), 404
 
 
-# get genre,birthday from username input
+# get birthday from user_id input
+@app.route("/user/birthday/<string:user_id>")
+def find_birthday_by_user_id(user_id):
+    print(user_id)
+    user = User.query.filter_by(user_id=user_id).first()
+    if user:
+        return jsonify(
+        {
+            "code": 200,
+            "message": user.json()['birthdate']
+        }
+    ), 200
+    return jsonify(
+        {
+            "code": 404,
+            "message": "User not found."
+        }
+    ), 404
 
 
 if __name__ == '__main__':
