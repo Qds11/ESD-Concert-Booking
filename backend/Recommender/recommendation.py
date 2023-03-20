@@ -13,11 +13,11 @@ app = Flask(__name__)
 
 CORS(app)
 
-
+# hello siyu i think this one is the duplicate code - ur secxiest friend clara
 #api endpoint for concert ms to call, will call user ms and return the result from user to concert
 @app.route("/user/<string:user_id>")
 def find_genre_by_calling_user(user_id):
-    results = invoke_http("http://127.0.0.1:5000/user/"+user_id, method='GET')
+    results = invoke_http("http://127.0.0.1:5000/users/"+ user_id, method='GET')
     if results['code']==200:
         return jsonify(
         {
