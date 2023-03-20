@@ -47,7 +47,7 @@ def greetings():
     return ("Hello World")
 
 # get all users
-@app.route('/users', methods=['GET'])
+@app.route('/user', methods=['GET'])
 def get_all():
     users = User.query.all()
     if len(users):
@@ -67,7 +67,7 @@ def get_all():
     ), 404
 
 # get username and userid with email
-@app.route('/users/<string:email>', methods=['GET'])
+@app.route('/user/<string:email>', methods=['GET'])
 def get_username_with_email(email):
     user = User.query.filter_by(email=email).first()
     if user:
@@ -87,7 +87,7 @@ def get_username_with_email(email):
 
 
 #get specific user based on user_id
-@app.route("/users/<string:user_id>")
+@app.route("/user/<string:user_id>")
 def find_genre_by_user_id(user_id):
     print(user_id)
     user = User.query.filter_by(user_id=user_id).first()
@@ -124,6 +124,20 @@ def find_birthday_by_user_id(user_id):
             "message": "User not found."
         }
     ), 404
+
+# get phone number with user id
+def get_phone_num(user_id):
+    user = User.query.filter_by(user_id=user_id).first()
+    if user:
+        return jsonify({
+            "phone_num": user.json()['contact']
+        }
+    ), 200
+    return jsonify({
+        "code" : 404,
+        "message": "User not found"
+    }), 404
+    
 
 
 if __name__ == '__main__':
