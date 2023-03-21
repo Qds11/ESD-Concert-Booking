@@ -63,34 +63,35 @@ def find_recommendation(concert_id):
     
     
     results = invoke_http("http://127.0.0.1:5004/avail/"+concert_id, method='GET')
-    cat1=results['cat1_avail']
-    cat2=results['cat2_avail']
-    cat3=results['cat3_avail']
-    cat4=results['cat4_avail']
-    cat5=results['cat5_avail']
+    
+  
     
     hall_results = invoke_http("http://127.0.0.1:5004/hall/"+concert_id, method='GET')
-    hall=hall_results['data']
-    print(hall)
+    print(hall_results)
+   
+  
 
     # #here come the rules~~~
     recommendation_list=[]
-    if cat2!=0 and cat2!=None and age>50:
+    if results['cat2_avail']!=0 and results['cat2_avail']!=None and age>50:
         recommendation_list.append({'cat2':'Considering your comfort and concert experience, we recommend you this seating section nearest to the stage!'})
-    elif cat1!=0 and cat1!=None and age<50:
+    elif results['cat1_avail']!=0 and results['cat1_avail']!=None and age<50:
         recommendation_list.append({'cat1':'We recommend this section as it is the nearest to the stage!'})
-    elif cat2!=0 and cat2!=None and  hall!=3:
+    elif results['cat2_avail']!=0 and results['cat2_avail']!=None and  hall!=3:
         recommendation_list.append({'cat2':'We recommend this section as it is the nearest non-standing seats for your comfort!'})
-    elif cat2!=0 and cat2!=None and  hall==3:
+    elif results['cat2_avail']!=0 and  results['cat2_avail']!=None and  hall==3:
         recommendation_list.append({'cat2':'We recommend this section as it is the nearest to stage!'})
-    elif cat3!=0 and cat3!=None and  hall==3:
+    elif results['cat3_avail']!=0 and results['cat3_avail']!=None and  hall==3:
         recommendation_list.append({'cat2':'This is the last section left! Grab it Fast!'})
-    elif cat3!=0 and cat3!=None:
-        recommendation_list.append({'cat3':'We recommend this section which is the next nearest non-standing seats!'})
-    elif cat4!=0 and cat4!=None:
-        recommendation_list.append({'cat4':'We recommend this next best section as all the other sections are sold out.'})
-    elif cat5!=0 and cat5!=None:
-        recommendation_list.append({'cat3':'This is the last section left! Grab it Fast!'})
+    elif  results['cat3_avail']!=None:
+        if results['cat3_avail']!=0:
+            recommendation_list.append({'cat3':'We recommend this section which is the next nearest non-standing seats!'})
+    elif results['cat4_avail']!=None:
+        if results['cat4_avail']!=0:
+            recommendation_list.append({'cat4':'We recommend this next best section as all the other sections are sold out.'})
+    elif results['cat5_avail']!=None:
+        if results['cat5_avail']!=0:
+            recommendation_list.append({'cat3':'This is the last section left! Grab it Fast!'})
     else:
         recommendation_list.append('All Sold Out!')
         print(recommendation_list)
