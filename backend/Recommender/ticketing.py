@@ -104,10 +104,25 @@ def get_prices(concert_id):
         }
     ), 404
 
+#get hall_id
+@app.route('/hall/<string:concert_id>', methods=['GET'])
+def get_hall(concert_id):
+    ticket = Ticket.query.filter_by(concert_id=concert_id).first()
+    if ticket:
+        return jsonify({
+            "code": 200,
+           "data":ticket.json()['hall_id']
+        })
 
+    return jsonify(
+        {
+            "code": 404,
+            "message": "There are no concerts by that concert id."
+        }
+    ), 404
 
 
 
 
 if __name__ == "__main__":
-    app.run(debug = True)
+    app.run(host='0.0.0.0', port=5004, debug=True)
