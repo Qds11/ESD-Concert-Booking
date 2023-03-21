@@ -1,6 +1,4 @@
 
-
-
 -- for local db
 drop database if exists queue_database;
 

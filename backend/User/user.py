@@ -12,7 +12,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-
 class User(db.Model):
     __tablename__ = 'user'
 
@@ -48,7 +47,7 @@ def greetings():
     return ("Hello World")
 
 # get all users
-@app.route('/users', methods=['GET'])
+@app.route('/user', methods=['GET'])
 def get_all():
     users = User.query.all()
     if len(users):
@@ -67,15 +66,16 @@ def get_all():
         }
     ), 404
 
-# get users emails
-@app.route('/users/<string:email>', methods=['GET'])
+# get username and userid with email
+@app.route('/user/<string:email>', methods=['GET'])
 def get_username_with_email(email):
     user = User.query.filter_by(email=email).first()
     if user:
+        user_id = user.user_id
         username = user.username
         return jsonify({
-            "hasAccount": True,
-            "username": username
+            "username": username,
+            "userId": user_id
         })
 
     return jsonify(
@@ -124,6 +124,20 @@ def find_birthday_by_user_id(user_id):
             "message": "User not found."
         }
     ), 404
+
+# get phone number with user id
+def get_phone_num(user_id):
+    user = User.query.filter_by(user_id=user_id).first()
+    if user:
+        return jsonify({
+            "phone_num": user.json()['contact']
+        }
+    ), 200
+    return jsonify({
+        "code" : 404,
+        "message": "User not found"
+    }), 404
+    
 
 
 if __name__ == '__main__':

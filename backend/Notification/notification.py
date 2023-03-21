@@ -1,23 +1,34 @@
 from flask import Flask
-from flask_mail import Mail, Message
+import os
+import twilio
+from twilio.rest import Client
+
 
 app = Flask(__name__)
-mail= Mail(app)
 
-app.config['MAIL_SERVER']='smtp.gmail.com'
-app.config['MAIL_PORT'] = 465
-app.config['MAIL_USERNAME'] = 'clara.aw.2021@scis.smu.edu.sg'
-app.config['MAIL_PASSWORD'] = '@li3nKud0'
-app.config['MAIL_USE_TLS'] = False
-app.config['MAIL_USE_SSL'] = True
-mail = Mail(app)
+# Download the helper library from https://www.twilio.com/docs/python/install
 
-@app.route("/")
-def index():
-   msg = Message('Hello', sender = 'clara.aw.ca@gmail.com', recipients = ['teamjigglypuff335@gmail.com'])
-   msg.body = "Hello Flask message sent from Flask-Mail"
-   mail.send(msg)
-   return "Sent"
+# Set environment variables for your credentials
+# Read more at http://twil.io/secure
+
+# get phone num frm user
+@app.route('/sendNotification')
+def send_notif(phone_num):
+# call user here?
+
+   # Your Account SID from twilio.com/console
+   account_sid = "ACb73a42a689c04ad6bf175a645cfa9282"
+   # Your Auth Token from twilio.com/console
+   auth_token  = "72769e6ae2bb619d91fd600733634fbb"
+
+   client = Client(account_sid, auth_token)
+
+   message = client.messages.create(
+      to="+65" + {phone_num}, 
+      from_="+15178269570",
+      body="Hello from Python!")
+
+   print(message.sid)
 
 if __name__ == '__main__':
    app.run(debug = True)

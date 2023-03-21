@@ -4,7 +4,7 @@
         <v-col no-gutters cols="6">
           <v-img
             fluid
-            :src="require('../assets/concerts/seating_plan_1.jpg')"
+            src="require('../assets/concerts/seating_plan_1.jpg')"
             class="img h-screen"
           >
           </v-img>
@@ -111,7 +111,7 @@
   import SubmitButton from "@/components/shared/SubmitButton.vue";
   
   export default {
-    name: "LoginPage",
+    name: "SeatSelection",
   
     components: {
       SubmitButton,
