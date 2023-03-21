@@ -8,8 +8,8 @@ app = Flask(__name__)
 
 # #app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://sql12606226:61vMwF9lhJ@sql12.freesqldatabase.com:3306/sql12606226'
 # # for local db
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/ticket_db'
-# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/ticket_db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 CORS(app)
 
@@ -33,7 +33,7 @@ def find_genre_by_calling_user(user_id):
     ), 404
 
 
-#part2 talking to ticketing to retrieve seating availability and recommend, retrieve user birthdate and recommend 
+#part2 talking to ticketing to retrieve seating availability and recommend, retrieve user birthdate and recommend
 
 results = invoke_http("http://127.0.0.1:5000/user/birthday/1", method='GET')
 

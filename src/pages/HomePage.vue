@@ -74,11 +74,12 @@ import { API_BASE_URL_NODEJS } from "../config.js";
 export default {
   name: "HomePage",
   async mounted() {
-    this.userid = JSON.parse(localStorage.getItem('userid'))
-    this.username = JSON.parse(localStorage.getItem('username'))
-    
-    await this.getAllConcertData();
-   
+
+    // this.userid = JSON.parse(localStorage.getItem('userid'))
+    // this.username = JSON.parse(localStorage.getItem('username'))
+
+    await this.getAllConcertData(this.userid);
+
     // const userId = 2;
     // const response = await axios.get(`${API_BASE_URL_NODEJS}/reco/${userId}`);
     // this.recommended = response.data[0];
@@ -88,14 +89,17 @@ export default {
       recommended: null,
       concerts: null,
       show: false,
-      userid: "",
+      userid: null,
       username: ""
     };
   },
   methods: {
     async getAllConcertData() {
       try {
-        const response = await axios.get(API_BASE_URL_NODEJS);
+        if(localStorage.getItem('userid')){
+          this.userid = JSON.parse(localStorage.getItem('userid'))
+        }
+        const response = await axios.get(API_BASE_URL_NODEJS,{params:{ userid: this.userid }} );
         console.log(response);
         this.concerts = response.data.concerts;
         this.recommended = response.data.recommended[0];
@@ -116,7 +120,7 @@ export default {
       return formattedDate;
     },
   },
-  
+
 };
 </script>
 
