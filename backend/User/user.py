@@ -87,7 +87,7 @@ def get_username_with_email(email):
 
 
 #get specific user based on user_id
-@app.route("/user/<string:user_id>")
+@app.route("/genre/<string:user_id>")
 def find_genre_by_user_id(user_id):
     print(user_id)
     user = User.query.filter_by(user_id=user_id).first()

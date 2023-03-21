@@ -24,7 +24,8 @@ current_user_id='1'
 #api endpoint for concert ms to call, will call user ms and return the result from user to concert
 @app.route("/user/<string:user_id>")
 def find_genre_by_calling_user(user_id):
-    results = invoke_http("http://127.0.0.1:5000/users/"+ user_id, method='GET')
+    results = invoke_http("http://127.0.0.1:5000/genre/"+ user_id, method='GET')
+    print(results)
     if results['code']==200:
         current_user_id=user_id
         return jsonify(
