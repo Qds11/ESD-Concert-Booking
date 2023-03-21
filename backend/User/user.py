@@ -6,8 +6,8 @@ app = Flask(__name__)
 cors = CORS(app)
 
 # need to change DB uri accordingly
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:8889/users'
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/users'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:8889/users'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/users'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -137,7 +137,7 @@ def get_phone_num(user_id):
         "code" : 404,
         "message": "User not found"
     }), 404
-    
+
 
 
 if __name__ == '__main__':

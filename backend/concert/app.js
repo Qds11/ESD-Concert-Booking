@@ -13,12 +13,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 //get all concerts
 app.get("/", async (req, res) => {
   const concerts = await getAllConcertData();
-  const userId = req.query.userid;
+  // const userId = req.query.userid;
+   const userId=null
   if (userId) {
-
     const recommended = await axios.get(`http://localhost:5005/reco/${userId}`);
+    return res.json({ concerts: concerts, recommended: recommended.data });
   }
-  return res.json({ concerts: concerts, recommended: recommended.data });
+  return res.json({concerts:concerts,recommended:null})
 });
 
 //get concert by id
@@ -38,6 +39,7 @@ app.get("/concert/:genre", async (req, res) => {
 //call recommendation microservice
 app.get("/reco/:id", async (req, res) => {
   try {
+    console.lof("HELLP")
     const userId = req.params.id;
     const url = `${RECOMMENDATION_MICROSERVICE_URL}/${userId}`;
     const response = await axios.get(url);

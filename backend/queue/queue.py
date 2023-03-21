@@ -19,6 +19,7 @@ class Queue(db.Model):
     concert_id = db.Column(db.Integer, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
+###### queue ui call this once to queue user regardless whether they actually need to queue####
 @app.route('/queue', methods=['POST'])
 def add_to_queue():
     # Check the number of rows with the status 'serving' (add seat selection page)
@@ -36,7 +37,7 @@ def add_to_queue():
 
     return jsonify({'id': new_queue.id,'status': new_queue.status})
 
-#freqeuently call this to updated queue position
+##### queue iu freqeuently call this to updated queue position #####
 @app.route('/waiting-queue/<int:id>')
 def waiting_queue(id):
     # Get the count of rows with the status 'waiting' who entered the queue earlier
@@ -47,7 +48,8 @@ def waiting_queue(id):
     waiting_count = Queue.query.filter(Queue.status == 'waiting', Queue.concert_id==user.concert_id, Queue.created_at < user.created_at).count()
     return jsonify({'queue_position': waiting_count+1})
 
-#delete user from queue table
+###### seat selection UI call this if user exceed 10mins ######
+#### payment call this once payment completed (btw, what happens if payment fails?)######
 @app.route('/delete-from-queue/<int:id>', methods=['DELETE'])
 def delete_from_queue(id):
     user = Queue.query.get(id)

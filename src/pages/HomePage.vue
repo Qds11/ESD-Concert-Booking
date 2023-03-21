@@ -102,7 +102,9 @@ export default {
         const response = await axios.get(API_BASE_URL_NODEJS,{params:{ userid: this.userid }} );
         console.log(response);
         this.concerts = response.data.concerts;
-        this.recommended = response.data.recommended[0];
+        if (response.data.recommended) {
+          this.recommended = response.data.recommended[0];
+        }
         //return data;
       } catch (err) {
         console.log(err);
