@@ -68,4 +68,4 @@ def delete_from_queue(id):
     return jsonify({'message': 'user with queue_id ' + str(id) + ' have been deleted and queue status updated'})
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5004, debug=True)
+    app.run(host='0.0.0.0', port=5009, debug=True)
