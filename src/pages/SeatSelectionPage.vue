@@ -1,87 +1,45 @@
 <template>
-    <v-container id="bg" fluid fill-height>
-      <v-row align-self="center" class="h-screen">
-        <v-col no-gutters cols="6">
-          <v-img
-            fluid
-            src="require('../assets/concerts/seating_plan_1.jpg')"
-            class="img h-screen"
-          >
-          </v-img>
-        </v-col>
-  
-        <v-col cols="6" align-self="center" class="pa-5">
-          <v-sheet color="black" fluid>
-            <v-container>
-              <p class="text-h4 mb-5" style="columns: white">
-                Seat Selection
-              </p>
-            </v-container>
-            <v-container>
-              <p class="text-h6 mb-5" style="columns: white">
-                Recommended Categories: Cat 1 Blink VIP, Cat 2 Standing, Cat 3 Standing, Cat 4 Standing
-              </p>
-            </v-container>
-  
-            <v-form @submit.prevent>
-              <v-row >
-                <v-col cols="6">
-                  <p class="text-h7 mt-5" style="columns: white">
-                    Cat 1 Blink VIP: $398
-                  </p>
-                  <p class="text-h7 mt-5" style="columns: white">
-                    Cat 2 Standing: $328
-                  </p>
-                  <p class="text-h7 mt-5" style="columns: white">
-                    Cat 3 Standing: $248
-                  </p>
-                  <p class="text-h7 mt-5" style="columns: white">
-                    Cat 4 Standing: $168
-                  </p>
-                  <p class="text-h7 mt-5" style="columns: white">
-                    Cat 5: $328
-                  </p>
-                  <p class="text-h7 mt-5" style="columns: white">
-                    Cat 6: $278
-                  </p>
-                  <p class="text-h7 mt-5" style="columns: white">
-                    Cat 7: $228
-                  </p>
-                  <p class="text-h7 mt-5" style="columns: white">
-                    Cat 8: $208
-                  </p>
-                  <p class="text-h7 mt-5" style="columns: white">
-                    Cat 9: $168
-                  </p>
-                  <p class="text-h7 mt-5" style="columns: white">
-                    Cat 10 (Restricted View): $168
-                  </p>
-                </v-col>
+  <v-container id="bg" fluid fill-height>
+    <v-row align-self="center" class="h-screen">
+      <v-col no-gutters cols="6">
+        <v-img
+          fluid
+          :src="require('../assets/halls/seating_plan_1.jpg')"
+          class="img h-screen"
+        >
+        </v-img>
+      </v-col>
+
+      <v-col cols="6" align-self="center" class="pa-5">
+        <v-sheet color="black" fluid>
+          <v-container>
+            <p class="text-h4 mb-5" style="columns: white">
+              Seat Selection
+            </p>
+          </v-container>
+          <v-container>
+            <p class="text-h6 mb-5" style="columns: white">
+              Recommended Categories: Cat 1 Blink VIP, Cat 2 Standing, Cat 3 Standing, Cat 4 Standing
+            </p>
+          </v-container>
+
+          <v-form @submit.prevent>
+            <v-row>
+              <v-col cols="6">
+                <!-- <v-btn
+                    variant="flat"
+                    color="secondary"
+                    disabled
+                ></v-btn> -->
+                <p class="text-h7 mt-5" style="columns: white">
+                  Cat 1 Blink VIP: $398
+                </p>
+              </v-col>
                 <v-col cols="6">
                   <v-select
-                    label="Quantity"
-                    :items="[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"
-                  ></v-select>
-                  <v-select
-                    label="Quantity"
-                    :items="[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"
-                  ></v-select>
-                  <v-select
-                    label="Quantity"
-                    :items="[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"
-                  ></v-select>
-                  <v-select
-                    label="Quantity"
-                    :items="[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"
-                  ></v-select>
-                  <v-select
-                    label="Quantity"
-                    :items="[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"
-                  ></v-select>
-                  <v-select
-                    label="Quantity"
-                    :items="[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"
-                  ></v-select>
+                  label="Quantity"
+                  :items="[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"
+                ></v-select>
                 </v-col>
               </v-row>
               <v-row class="mt-5">
@@ -93,48 +51,100 @@
                 <v-col>
                   <SubmitButton action="Proceed to Payment" />
                 </v-col>
-              </v-row>
-            </v-form>
-          </v-sheet>
-        </v-col>
-      </v-row>
-    </v-container>
-  </template>
-  
-  <script setup>
+            </v-row>
+          </v-form>
+        </v-sheet>
+      </v-col>
+    </v-row>
+  </v-container>
+</template>
 
-  
-  
-  </script>
-  
-  <script>
-  import SubmitButton from "@/components/shared/SubmitButton.vue";
-  
-  export default {
-    name: "SeatSelection",
-  
-    components: {
-      SubmitButton,
-    },
-    methods: {},
-    data() {
+<script setup>
+
+
+
+</script>
+
+<script>
+import SubmitButton from "@/components/shared/SubmitButton.vue";
+import axios from "axios";
+
+
+export default {
+  name: "SeatSelectionPage",
+  async created() {
+    //this.id = this.$route.params.id
+    await this.get_availability();
+    // find concert with id, if not exist then redirect to homepage
+  // this.targetConcert = this.concerts.find((c) => c.id == this.id)
+  // //find out if ticket sale is open
+  // this.isTicketSaleOpen=this.compareDateTime(this.targetConcert.date)
+  },
+  components: {
+    SubmitButton,
+  },
+  computed: {
+      // hasBooks: function () {
+      //     return this.books.length > 0;
+      // }
+  },
+  data() {
       return {
-        username: "",
-        password: ""
+          isbn13: "",
+          "books": [],
+          message: "",
+          newTitle: "",
+          newISBN13: "",
+          newPrice: "",
+          newAvailability: "",
+          bookAdded: false,
+          addBookError: "",
+          orderedBook: "",
+          orderPlaced: false,
+          orderSuccessful: false,
+          //recommended: 'txt',
+          id: null,
+          targetConcert:null,
+          ticketAvail: null
       };
-    },
-  };
-  </script>
+  },
+  methods: {
+    async get_availability() {
+      var concert_id = 1;
+      console.log("concert_id", concert_id);
+      try{
+        console.log("trying");
+
+        const response = await axios.get(`http://127.0.0.1:5004/avail/${concert_id}`);
+        console.log("response", response);
+
+        if (response.data.length < 1) { //no data
+          console.log("not cryin");
+        }
+        else{
+          console.log("i am sane");
+
+        }
+      } catch (error) {
+        // Errors when calling the service; such as network error, 
+        // service offline, etc
+        console.log(error);
+      }
+
+  },
   
-  <style>
-  #bg {
-    background-image: linear-gradient(#01002c, #01010c, #040311);
-    height: 100vh;
-    background-repeat: no-repeat;
-  }
-  
-  html {
-    background-color: black;
-  }
-  </style>
-  
+  },
+};
+</script>
+
+<style>
+#bg {
+  background-image: linear-gradient(#01002c, #01010c, #040311);
+  height: 100vh;
+  background-repeat: no-repeat;
+}
+
+html {
+  background-color: black;
+}
+</style>
