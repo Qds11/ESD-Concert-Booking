@@ -130,13 +130,6 @@
             <v-row>
                 <v-col cols="6">
                   <p class="text-h7 mt-5" style="columns: white">
-
-                    Cat 1 Blink VIP: {{ticketPrices}}
-                  </p>
-                </div>
-                <div v-else></div>
-              </v-col>
-
                       Cat 2: ${{ticketPrices.cat2_price}}
                     </p>
                 </v-col>
@@ -259,7 +252,6 @@
           <div v-else-if='hallDetails.data==2'>
             <!-- Cat 1 -->
             <v-row>
-
                 <v-col cols="6">
                   <p class="text-h7 mt-5" style="columns: white">
                       Zone A: ${{ticketPrices.cat1_price}}
@@ -417,7 +409,7 @@ export default {
   methods: {
     //get hall_details
     async get_hall() {
-      var concert_id = 1; // CHANGE THIS FOR HALL 2
+      var concert_id = 2; // CHANGE THIS FOR HALL 2
       console.log("concert_id", concert_id);
       try{
         console.log("trying get_hall()");
@@ -441,7 +433,7 @@ export default {
     },
     //get availability by providing concert_id
     async get_availability() {
-      var concert_id = 1; // CHANGE THIS FOR HALL 2
+      var concert_id = 2; // CHANGE THIS FOR HALL 2
       console.log("concert_id", concert_id);
       try{
         console.log("trying get_availability()");
@@ -466,7 +458,7 @@ export default {
     },
     //get prices by providing concert_id
     async get_prices() {
-      var concert_id = 1; // CHANGE THIS FOR HALL 2
+      var concert_id = 2; // CHANGE THIS FOR HALL 2
       console.log("concert_id", concert_id);
       try{
         console.log("trying get_prices()");

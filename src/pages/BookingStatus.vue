@@ -1,4 +1,6 @@
+
 <template>
+
     <v-container class="box">
       <v-layout align-center justify-center class="h-100 align-center justify-center">
         <v-flex xs12 sm8 md6>
@@ -20,13 +22,20 @@
   </template>
   
   <script>
+
   export default {
+
     name: "SuccessPage",
     data() {
     return {
-      isSuccessful: true, // Set this to true or false based on whether the booking was successful
+      isSuccessful: null, // Set this to true or false based on whether the booking was successful,
     };
   },
+    mounted(){
+      this.isSuccessful=JSON.parse(localStorage.getItem('paymentStatus'))
+
+
+    }
   };
   
   </script>

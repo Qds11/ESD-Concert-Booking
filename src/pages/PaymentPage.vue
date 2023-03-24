@@ -124,6 +124,9 @@ export default {
       .catch((error) => {
         console.error("failed to load the PayPal JS SDK script", error);
       });
+
+      
+      localStorage.setItem('paymentStatus', JSON.stringify(this.paymentStatus))
   },
   // mounted() {
   //   // Add PayPal script to the document
