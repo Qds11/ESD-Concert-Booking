@@ -6,6 +6,7 @@ import ConcertPage from "../pages/ConcertPage.vue";
 import BookingStatus from "../pages/BookingStatus.vue";
 import QueuePage from "../pages/QueuePage.vue";
 import SeatSelectionPage from "../pages/SeatSelectionPage.vue";
+import PaymentPage from "../pages/PaymentPage.vue";
 
 
 
@@ -44,6 +45,11 @@ const routes = [
     path: "/seatSelectionPage",
     name: "SeatSelectionPage",
     component: SeatSelectionPage,
+  },
+  {
+    path: "/PaymentPage",
+    name: "PaymentPage",
+    component: PaymentPage,
   }
 
 

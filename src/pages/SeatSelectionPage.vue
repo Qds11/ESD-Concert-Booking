@@ -2,12 +2,23 @@
   <v-container id="bg" fluid fill-height>
     <v-row align-self="center" class="h-screen">
       <v-col no-gutters cols="6">
-        <v-img
-          fluid
-          :src="require('../../src/assets/halls/seating_plan_2.jpg')"
-          class="img h-screen"
-        >
-        </v-img>
+        <div v-if='hallDetails.data==1'>
+          <v-img
+            fluid
+            :src="require('../../src/assets/halls/seating_plan_2.jpg')"
+            class="img h-screen"
+          >
+          </v-img>
+        </div>
+        <div v-else-if='hallDetails.data==2'>
+          <v-img
+            fluid
+            :src="require('../../src/assets/halls/f9f85ae0-fb2f-11eb-a641-4e23b81c2c33.jpg')"
+            class="img h-screen"
+          >
+          </v-img>
+        </div>
+        <div v-else></div>
       </v-col>
 
       <v-col cols="6" align-self="center" class="pa-5">
@@ -18,42 +29,342 @@
             </p>
           </v-container>
           <v-container>
-            <p class="text-h6 mb-5" style="columns: white">
+            <p class="text-h7 mb-5" style="columns: white">
               Recommended Categories: Cat 1 Blink VIP, Cat 2 Standing, Cat 3 Standing, Cat 4 Standing
+            </p>
+            <v-divider :thickness="2" color="white"></v-divider>
+            <p class="text-h7 mb-5 pt-5" style="columns: white">
+              You are only allowed to purchase a maximum of 10 tickets.
             </p>
           </v-container>
 
           <v-form @submit.prevent>
-            <v-row>
-              <v-col cols="6">
-                <!-- <v-btn
-                    variant="flat"
-                    color="secondary"
-                    disabled
-                ></v-btn> -->
-                <div v-if='concert_id==1'>
+            <!-- Singapore Stadium -->
+
+            <div v-if='hallDetails.data==1'>
+              <!-- Cat 1 -->
+              <v-row>
+                <v-col cols="6">
                   <p class="text-h7 mt-5" style="columns: white">
+                      Cat 1 (Standing): ${{ticketPrices.cat1_price}}
+                    </p>
+                </v-col>
+                <v-col cols="6">
+                  <!-- check if sold out -->
+                  <div v-if='ticketAvailability.cat1_avail==0'>
+                    <v-select
+                      v-model="cat1_quantity"
+                      label="Quantity"
+                      :items="[0]"
+                      disabled
+                    ></v-select>
+                    <p class="text-h8" style="columns: white; color: red;">
+                      Sold out.
+                    </p>
+                  </div>
+                  <!-- NOT sold out -->
+                  <div v-else>
+                    <v-select
+                      v-model="cat1_quantity"
+                      label="Quantity"
+                      :items="getQuantityList(ticketAvailability.cat1_avail)"
+                      @update:modelValue="select_seat_popup = true"
+                    ></v-select>
+                  </div>
+                </v-col>
+              </v-row>
+
+              <!-- SEATS POPUP -->
+              <v-dialog
+                v-model="select_seat_popup"
+                width="auto"
+                persistent
+              >
+                <v-card>
+                  <v-card-text>
+                    <v-container>
+                      <v-row>
+                        <p class="text-h5 mb-5" style="columns: white">
+                          Are you ok with these seats?
+                        </p>
+                      </v-row>
+                      <v-row align-self="center">
+                        <v-col no-gutters cols="8">
+                          <v-img
+                            fluid
+                            :src="require('../../src/assets/seats/seats_B6_B7.png')"
+                            :width="600"
+                          >
+                          </v-img>
+                        </v-col>
+                        <v-col no-gutters cols="4">
+                          <p class="text-h6 mb-5" style="columns: white">
+                            Seats: B6, B7
+                          </p>
+                        </v-col>
+                      </v-row>
+                    </v-container>
+                  </v-card-text>
+                  <v-card-actions>
+                    <!-- <v-btn color="primary" block @click="dialog = false">Close Dialog</v-btn> -->
+                    <v-spacer></v-spacer>
+                    <v-btn
+                      color="deep-purple-accent-1"
+                      variant="text"
+                      @click="select_seat_popup = false"
+                    >
+                      Reselect
+                    </v-btn>
+                    <v-btn
+                      color="deep-purple-accent-1"
+                      variant="text"
+                      @click="select_seat_popup = false"
+                    >
+                      <span style="font-weight: bold;">Select these seats</span>
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+            <!-- Cat 2 -->
+
+            <v-row>
+                <v-col cols="6">
+                  <p class="text-h7 mt-5" style="columns: white">
+
                     Cat 1 Blink VIP: {{ticketPrices}}
                   </p>
                 </div>
                 <div v-else></div>
               </v-col>
+
+                      Cat 2: ${{ticketPrices.cat2_price}}
+                    </p>
+                </v-col>
                 <v-col cols="6">
-                  <v-select
-                  label="Quantity"
-                  :items="[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"
-                ></v-select>
+                  <!-- check if sold out -->
+                  <div v-if='ticketAvailability.cat2_avail==0'>
+                    <v-select
+                      v-model="cat2_quantity"
+                      label="Quantity"
+                      :items="[0]"
+                      disabled
+                    ></v-select>
+                    <p class="text-h8" style="columns: white; color: red;">
+                      Sold out.
+                    </p>
+                  </div>
+                  <!-- NOT sold out -->
+                  <div v-else>
+                    <v-select
+                      v-model="cat2_quantity"
+                      label="Quantity"
+                      :items="getQuantityList(ticketAvailability.cat2_avail)"
+                    ></v-select>
+                  </div>
                 </v-col>
               </v-row>
+            <!-- Cat 3 -->
+            <v-row>
+                <v-col cols="6">
+                  <p class="text-h7 mt-5" style="columns: white">
+                      Cat 3: ${{ticketPrices.cat3_price}}
+                    </p>
+                </v-col>
+                <v-col cols="6">
+                  <!-- check if sold out -->
+                  <div v-if='ticketAvailability.cat3_avail==0'>
+                    <v-select
+                      v-model="cat3_quantity"
+                      label="Quantity"
+                      :items="[0]"
+                      disabled
+                    ></v-select>
+                    <p class="text-h8" style="columns: white; color: red;">
+                      Sold out.
+                    </p>
+                  </div>
+                  <!-- NOT sold out -->
+                  <div v-else>
+                    <v-select
+                      v-model="cat3_quantity"
+                      label="Quantity"
+                      :items="getQuantityList(ticketAvailability.cat3_avail)"
+                    ></v-select>
+                  </div>
+                </v-col>
+              </v-row>
+              <!-- Cat 4 -->
+              <v-row>
+                <v-col cols="6">
+                  <p class="text-h7 mt-5" style="columns: white">
+                      Cat 3: ${{ticketPrices.cat4_price}}
+                    </p>
+                </v-col>
+                <v-col cols="6">
+                  <!-- check if sold out -->
+                  <div v-if='ticketAvailability.cat4_avail==0'>
+                    <v-select
+                      v-model="cat4_quantity"
+                      label="Quantity"
+                      :items="[0]"
+                      disabled
+                    ></v-select>
+                    <p class="text-h8" style="columns: white; color: red;">
+                      Sold out.
+                    </p>
+                  </div>
+                  <!-- NOT sold out -->
+                  <div v-else>
+                    <v-select
+                      v-model="cat4_quantity"
+                      label="Quantity"
+                      :items="getQuantityList(ticketAvailability.cat4_avail)"
+                    ></v-select>
+                  </div>
+                </v-col>
+              </v-row>
+            <!-- Cat 5 -->
+            <v-row>
+                <v-col cols="6">
+                  <p class="text-h7 mt-5" style="columns: white">
+                      Cat 3: ${{ticketPrices.cat5_price}}
+                    </p>
+                </v-col>
+                <v-col cols="6">
+                  <!-- check if sold out -->
+                  <div v-if='ticketAvailability.cat5_avail==0'>
+                    <v-select
+                      v-model="cat5_quantity"
+                      label="Quantity"
+                      :items="[0]"
+                      disabled
+                    ></v-select>
+                    <p class="text-h8" style="columns: white; color: red;">
+                      Sold out.
+                    </p>
+                  </div>
+                  <!-- NOT sold out -->
+                  <div v-else>
+                    <v-select
+                      v-model="cat5_quantity"
+                      label="Quantity"
+                      :items="getQuantityList(ticketAvailability.cat5_avail)"
+                    ></v-select>
+                  </div>
+                </v-col>
+              </v-row>
+          </div>
+
+          <!-- Victoria Theatre -->
+          <div v-else-if='hallDetails.data==2'>
+            <!-- Cat 1 -->
+            <v-row>
+
+                <v-col cols="6">
+                  <p class="text-h7 mt-5" style="columns: white">
+                      Zone A: ${{ticketPrices.cat1_price}}
+                    </p>
+                </v-col>
+                <v-col cols="6">
+                  <!-- check if sold out -->
+                  <div v-if='ticketAvailability.cat1_avail==0'>
+                    <v-select
+                      v-model="cat1_quantity"
+                      label="Quantity"
+                      :items="[0]"
+                      disabled
+                    ></v-select>
+                    <p class="text-h8" style="columns: white; color: red;">
+                      Sold out.
+                    </p>
+                  </div>
+                  <!-- NOT sold out -->
+                  <div v-else>
+                    <v-select
+                      v-model="cat1_quantity"
+                      label="Quantity"
+                      :items="getQuantityList(ticketAvailability.cat1_avail)"
+                    ></v-select>
+                  </div>
+                </v-col>
+              </v-row>
+            <!-- Cat 2 -->
+
+            <v-row>
+                <v-col cols="6">
+                  <p class="text-h7 mt-5" style="columns: white">
+                    Zone B: ${{ticketPrices.cat2_price}}
+                    </p>
+                </v-col>
+                <v-col cols="6">
+                  <!-- check if sold out -->
+                  <div v-if='ticketAvailability.cat2_avail==0'>
+                    <v-select
+                      v-model="cat2_quantity"
+                      label="Quantity"
+                      :items="[0]"
+                      disabled
+                    ></v-select>
+                    <p class="text-h8" style="columns: white; color: red;">
+                      Sold out.
+                    </p>
+                  </div>
+                  <!-- NOT sold out -->
+                  <div v-else>
+                    <v-select
+                      v-model="cat2_quantity"
+                      label="Quantity"
+                      :items="getQuantityList(ticketAvailability.cat2_avail)"
+                    ></v-select>
+                  </div>
+                </v-col>
+              </v-row>
+            <!-- Cat 3 -->
+            <v-row>
+                <v-col cols="6">
+                  <p class="text-h7 mt-5" style="columns: white">
+                    Zone C: ${{ticketPrices.cat3_price}}
+                    </p>
+                </v-col>
+                <v-col cols="6">
+                  <!-- check if sold out -->
+                  <div v-if='ticketAvailability.cat3_avail==0'>
+                    <v-select
+                      v-model="cat3_quantity"
+                      label="Quantity"
+                      :items="[0]"
+                      disabled
+                    ></v-select>
+                    <p class="text-h8" style="columns: white; color: red;">
+                      Sold out.
+                    </p>
+                  </div>
+                  <!-- NOT sold out -->
+                  <div v-else>
+                    <v-select
+                      v-model="cat3_quantity"
+                      label="Quantity"
+                      :items="getQuantityList(ticketAvailability.cat3_avail)"
+                    ></v-select>
+                  </div>
+                </v-col>
+              </v-row>
+            </div>
+            <div v-else></div>
+
+            <!-- Calculate total amt. -->
               <v-row class="mt-5">
                 <v-col>
                   <p class="text-h7 pt-1" style="columns: white">
-                    Total amt.: $xxx
+                   
+                    Total Price: <span style="font-weight: bold;">${{calculateTotalPrice(hallDetails.data)}}</span>
                   </p>
                 </v-col>
-                <v-col>
-                  <SubmitButton action="Proceed to Payment" />
-                </v-col>
+
+              <!-- Submit to Payment -->
+              <v-col>
+                <SubmitButton action="Proceed to Payment" />
+              </v-col>
             </v-row>
           </v-form>
         </v-sheet>
@@ -80,11 +391,6 @@ export default {
     await this.get_hall();
     await this.get_availability();
     await this.get_prices();
-
-    // find concert with id, if not exist then redirect to homepage
-  // this.targetConcert = this.concerts.find((c) => c.id == this.id)
-  // //find out if ticket sale is open
-  // this.isTicketSaleOpen=this.compareDateTime(this.targetConcert.date)
   },
   components: {
     SubmitButton,
@@ -96,17 +402,22 @@ export default {
   },
   data() {
       return {
-        hallDetails: null,
-        ticketAvailability: null,
-        ticketPrices: null,
-        concert_id: 1
-
+        hallDetails: "",
+        ticketAvailability: "",
+        ticketPrices: "",
+        //concert_id: 1, //hardcoded
+        cat1_quantity: 0,
+        cat2_quantity: 0,
+        cat3_quantity: 0,
+        cat4_quantity: 0,
+        cat5_quantity: 0,
+        select_seat_popup: false
       };
   },
   methods: {
     //get hall_details
     async get_hall() {
-      var concert_id = 1;
+      var concert_id = 1; // CHANGE THIS FOR HALL 2
       console.log("concert_id", concert_id);
       try{
         console.log("trying get_hall()");
@@ -130,7 +441,7 @@ export default {
     },
     //get availability by providing concert_id
     async get_availability() {
-      var concert_id = 1;
+      var concert_id = 1; // CHANGE THIS FOR HALL 2
       console.log("concert_id", concert_id);
       try{
         console.log("trying get_availability()");
@@ -155,7 +466,7 @@ export default {
     },
     //get prices by providing concert_id
     async get_prices() {
-      var concert_id = 1;
+      var concert_id = 1; // CHANGE THIS FOR HALL 2
       console.log("concert_id", concert_id);
       try{
         console.log("trying get_prices()");
@@ -177,6 +488,88 @@ export default {
       }
 
     },
+    //get recommendation
+    async get_recommendation() {
+      var concert_id = 1;
+      console.log("concert_id", concert_id);
+      try{
+        console.log("trying get_hall()");
+
+        const response = await axios.get(`http://127.0.0.1:5004/hall/${concert_id}`);
+        console.log("response", response);
+
+        if (response.data.length < 1) { //no data
+          console.log("totally not cryin");
+        }
+        else{
+          console.log("get_hall() works!");
+          this.hallDetails=response.data;
+        }
+      } catch (error) {
+        // Errors when calling the service; such as network error, 
+        // service offline, etc
+        console.log(error);
+      }
+
+    },
+    // generate dropdown list based on ticketAvailAmt
+    getQuantityList(ticketAvailAmt){
+      var itemList=[];
+      if (ticketAvailAmt==1){
+        itemList=[0, 1];
+        return itemList;
+      }
+      else if (ticketAvailAmt==2){
+        itemList=[0, 1, 2];
+        return itemList;
+      }
+      else if (ticketAvailAmt==3){
+        itemList=[0, 1, 2, 3];
+        return itemList;
+      }
+      else if (ticketAvailAmt==4){
+        itemList=[0, 1, 2, 3, 4];
+        return itemList;
+      }
+      else if (ticketAvailAmt==5){
+        itemList=[0, 1, 2, 3, 4, 5];
+        return itemList;
+      }
+      else if (ticketAvailAmt==6){
+        itemList=[0, 1, 2, 3, 4, 5, 6];
+        return itemList;
+      }
+      else if (ticketAvailAmt==7){
+        itemList=[0, 1, 2, 3, 4, 5, 6, 7];
+        return itemList;
+      }
+      else if (ticketAvailAmt==8){
+        itemList=[0, 1, 2, 3, 4, 5, 6, 7, 8];
+        return itemList;
+      }
+      else if (ticketAvailAmt==9){
+        itemList=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+        return itemList;
+      }
+      // ticketAvailAmt -> 10 and above
+      else {
+        itemList=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        return itemList;
+      }
+    },
+    // calculate Total Price of tickets chosen
+    calculateTotalPrice(hall_id){
+      var totalPrice=0;
+
+      if (hall_id==1){
+        totalPrice = (this.cat1_quantity*this.ticketPrices.cat1_price) + (this.cat2_quantity*this.ticketPrices.cat2_price) + (this.cat3_quantity*this.ticketPrices.cat3_price) + (this.cat4_quantity*this.ticketPrices.cat4_price) + (this.cat5_quantity*this.ticketPrices.cat5_price);
+        return totalPrice.toFixed(2);
+      }
+      else{
+        totalPrice = (this.cat1_quantity*this.ticketPrices.cat1_price) + (this.cat2_quantity*this.ticketPrices.cat2_price) + (this.cat3_quantity*this.ticketPrices.cat3_price);
+        return totalPrice.toFixed(2);
+      }
+    }
   
   },
 };
