@@ -2,12 +2,23 @@
   <v-container id="bg" fluid fill-height>
     <v-row align-self="center" class="h-screen">
       <v-col no-gutters cols="6">
-        <v-img
-          fluid
-          :src="require('../../src/assets/halls/seating_plan_2.jpg')"
-          class="img h-screen"
-        >
-        </v-img>
+        <div v-if='hallDetails.data==1'>
+          <v-img
+            fluid
+            :src="require('../../src/assets/halls/seating_plan_2.jpg')"
+            class="img h-screen"
+          >
+          </v-img>
+        </div>
+        <div v-else-if='hallDetails.data==2'>
+          <v-img
+            fluid
+            :src="require('../../src/assets/halls/f9f85ae0-fb2f-11eb-a641-4e23b81c2c33.jpg')"
+            class="img h-screen"
+          >
+          </v-img>
+        </div>
+        <div v-else></div>
       </v-col>
 
       <v-col cols="6" align-self="center" class="pa-5">
@@ -18,10 +29,11 @@
             </p>
           </v-container>
           <v-container>
-            <p class="text-h6 mb-5" style="columns: white">
+            <p class="text-h7 mb-5" style="columns: white">
               Recommended Categories: Cat 1 Blink VIP, Cat 2 Standing, Cat 3 Standing, Cat 4 Standing
             </p>
-            <p class="text-h7 mb-5" style="columns: white">
+            <v-divider :thickness="2" color="white"></v-divider>
+            <p class="text-h7 mb-5 pt-5" style="columns: white">
               You are only allowed to purchase a maximum of 10 tickets.
             </p>
           </v-container>
@@ -61,7 +73,7 @@
                   </div>
                 </v-col>
               </v-row>
-              
+
               <!-- SEATS POPUP -->
               <v-dialog
                 v-model="select_seat_popup"
@@ -336,7 +348,8 @@
               <v-row class="mt-5">
                 <v-col>
                   <p class="text-h7 pt-1" style="columns: white">
-                    Total amt.: ${{calculateTotalPrice(hallDetails.data)}}
+                   
+                    Total Price: <span style="font-weight: bold;">${{calculateTotalPrice(hallDetails.data)}}</span>
                   </p>
                 </v-col>
 
@@ -396,7 +409,7 @@ export default {
   methods: {
     //get hall_details
     async get_hall() {
-      var concert_id = 1;
+      var concert_id = 1; // CHANGE THIS FOR HALL 2
       console.log("concert_id", concert_id);
       try{
         console.log("trying get_hall()");
@@ -420,7 +433,7 @@ export default {
     },
     //get availability by providing concert_id
     async get_availability() {
-      var concert_id = 1;
+      var concert_id = 1; // CHANGE THIS FOR HALL 2
       console.log("concert_id", concert_id);
       try{
         console.log("trying get_availability()");
@@ -445,7 +458,7 @@ export default {
     },
     //get prices by providing concert_id
     async get_prices() {
-      var concert_id = 1;
+      var concert_id = 1; // CHANGE THIS FOR HALL 2
       console.log("concert_id", concert_id);
       try{
         console.log("trying get_prices()");
