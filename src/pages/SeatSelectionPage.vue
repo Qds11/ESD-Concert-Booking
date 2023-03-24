@@ -184,7 +184,7 @@
           </div>
 
           <!-- Victoria Theatre -->
-          <div v-else-if='hallDetails.data==3'>
+          <div v-else-if='hallDetails.data==2'>
             <!-- Cat 1 -->
             <v-row>
                 <v-col cols="6">
@@ -331,7 +331,7 @@ export default {
         hallDetails: "",
         ticketAvailability: "",
         ticketPrices: "",
-        concert_id: 1, //hardcoded
+        //concert_id: 1, //hardcoded
         cat1_quantity: 0,
         cat2_quantity: 0,
         cat3_quantity: 0,
@@ -417,44 +417,44 @@ export default {
     getQuantityList(ticketAvailAmt){
       var itemList=[];
       if (ticketAvailAmt==1){
-        itemList=[1];
+        itemList=[0, 1];
         return itemList;
       }
       else if (ticketAvailAmt==2){
-        itemList=[1, 2];
+        itemList=[0, 1, 2];
         return itemList;
       }
       else if (ticketAvailAmt==3){
-        itemList=[1, 2, 3];
+        itemList=[0, 1, 2, 3];
         return itemList;
       }
       else if (ticketAvailAmt==4){
-        itemList=[1, 2, 3, 4];
+        itemList=[0, 1, 2, 3, 4];
         return itemList;
       }
       else if (ticketAvailAmt==5){
-        itemList=[1, 2, 3, 4, 5];
+        itemList=[0, 1, 2, 3, 4, 5];
         return itemList;
       }
       else if (ticketAvailAmt==6){
-        itemList=[1, 2, 3, 4, 5, 6];
+        itemList=[0, 1, 2, 3, 4, 5, 6];
         return itemList;
       }
       else if (ticketAvailAmt==7){
-        itemList=[1, 2, 3, 4, 5, 6, 7];
+        itemList=[0, 1, 2, 3, 4, 5, 6, 7];
         return itemList;
       }
       else if (ticketAvailAmt==8){
-        itemList=[1, 2, 3, 4, 5, 6, 7, 8];
+        itemList=[0, 1, 2, 3, 4, 5, 6, 7, 8];
         return itemList;
       }
       else if (ticketAvailAmt==9){
-        itemList=[1, 2, 3, 4, 5, 6, 7, 8, 9];
+        itemList=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
         return itemList;
       }
       // ticketAvailAmt -> 10 and above
       else {
-        itemList=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        itemList=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
         return itemList;
       }
     },
