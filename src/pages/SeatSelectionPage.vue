@@ -4,7 +4,7 @@
       <v-col no-gutters cols="6">
         <v-img
           fluid
-          :src="require('../assets/halls/seating_plan_1.jpg')"
+          :src="require('../../src/assets/halls/seating_plan_2.jpg')"
           class="img h-screen"
         >
         </v-img>
@@ -31,9 +31,12 @@
                     color="secondary"
                     disabled
                 ></v-btn> -->
-                <p class="text-h7 mt-5" style="columns: white">
-                  Cat 1 Blink VIP: $398
-                </p>
+                <div v-if='concert_id==1'>
+                  <p class="text-h7 mt-5" style="columns: white">
+                    Cat 1 Blink VIP: {{ticketPrices["cat1_price"]}}
+                  </p>
+                </div>
+                <div v-else></div>
               </v-col>
                 <v-col cols="6">
                   <v-select
@@ -74,7 +77,10 @@ export default {
   name: "SeatSelectionPage",
   async created() {
     //this.id = this.$route.params.id
+    await this.get_hall();
     await this.get_availability();
+    await this.get_prices();
+
     // find concert with id, if not exist then redirect to homepage
   // this.targetConcert = this.concerts.find((c) => c.id == this.id)
   // //find out if ticket sale is open
@@ -90,39 +96,54 @@ export default {
   },
   data() {
       return {
-          isbn13: "",
-          "books": [],
-          message: "",
-          newTitle: "",
-          newISBN13: "",
-          newPrice: "",
-          newAvailability: "",
-          bookAdded: false,
-          addBookError: "",
-          orderedBook: "",
-          orderPlaced: false,
-          orderSuccessful: false,
-          //recommended: 'txt',
-          id: null,
-          targetConcert:null,
-          ticketAvail: null
+        hallDetails: null,
+        ticketAvailability: null,
+        ticketPrices: null,
+        concert_id: 1
+
       };
   },
   methods: {
+    //get hall_details
+    async get_hall() {
+      var concert_id = 1;
+      console.log("concert_id", concert_id);
+      try{
+        console.log("trying get_hall()");
+
+        const response = await axios.get(`http://127.0.0.1:5004/hall/${concert_id}`);
+        console.log("response", response);
+
+        if (response.data.length < 1) { //no data
+          console.log("totally not cryin");
+        }
+        else{
+          console.log("get_hall() works!");
+          this.hallDetails=response.data;
+        }
+      } catch (error) {
+        // Errors when calling the service; such as network error, 
+        // service offline, etc
+        console.log(error);
+      }
+
+    },
+    //get availability by providing concert_id
     async get_availability() {
       var concert_id = 1;
       console.log("concert_id", concert_id);
       try{
-        console.log("trying");
+        console.log("trying get_availability()");
 
         const response = await axios.get(`http://127.0.0.1:5004/avail/${concert_id}`);
         console.log("response", response);
 
         if (response.data.length < 1) { //no data
-          console.log("not cryin");
+          console.log("totally not cryin");
         }
         else{
-          console.log("i am sane");
+          console.log("get_availability() works!");
+          this.ticketAvailability=response.data;
 
         }
       } catch (error) {
@@ -131,7 +152,31 @@ export default {
         console.log(error);
       }
 
-  },
+    },
+    //get prices by providing concert_id
+    async get_prices() {
+      var concert_id = 1;
+      console.log("concert_id", concert_id);
+      try{
+        console.log("trying get_prices()");
+
+        const response = await axios.get(`http://127.0.0.1:5004/price/${concert_id}`);
+        console.log("response", response);
+
+        if (response.data.length < 1) { //no data
+          console.log("totally not cryin");
+        }
+        else{
+          console.log("get_prices() works!");
+          this.ticketPrices=response.data;
+        }
+      } catch (error) {
+        // Errors when calling the service; such as network error, 
+        // service offline, etc
+        console.log(error);
+      }
+
+    },
   
   },
 };
