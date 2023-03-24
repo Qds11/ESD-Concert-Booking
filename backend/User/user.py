@@ -126,6 +126,7 @@ def find_birthday_by_user_id(user_id):
     ), 404
 
 # get phone number with user id
+@app.route("/user/phoneNum/<string:user_id>")
 def get_phone_num(user_id):
     user = User.query.filter_by(user_id=user_id).first()
     if user:
