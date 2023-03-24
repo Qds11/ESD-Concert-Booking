@@ -108,6 +108,7 @@ export default {
                 .then((response) => response.json())
                 .then((details) => {
                   // This function shows a transaction success message to your buyer.
+                  this.paymentStatus = true
                   this.sendNotif(this.paymentStatus)
                   alert(
                     "Transaction completed by " + details.payer.name.given_name
