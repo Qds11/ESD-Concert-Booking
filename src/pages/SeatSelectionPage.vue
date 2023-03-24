@@ -56,10 +56,63 @@
                       v-model="cat1_quantity"
                       label="Quantity"
                       :items="getQuantityList(ticketAvailability.cat1_avail)"
+                      @update:modelValue="select_seat_popup = true"
                     ></v-select>
                   </div>
                 </v-col>
               </v-row>
+              
+              <!-- SEATS POPUP -->
+              <v-dialog
+                v-model="select_seat_popup"
+                width="auto"
+                persistent
+              >
+                <v-card>
+                  <v-card-text>
+                    <v-container>
+                      <v-row>
+                        <p class="text-h5 mb-5" style="columns: white">
+                          Are you ok with these seats?
+                        </p>
+                      </v-row>
+                      <v-row align-self="center">
+                        <v-col no-gutters cols="8">
+                          <v-img
+                            fluid
+                            :src="require('../../src/assets/seats/seats_B6_B7.png')"
+                            :width="600"
+                          >
+                          </v-img>
+                        </v-col>
+                        <v-col no-gutters cols="4">
+                          <p class="text-h6 mb-5" style="columns: white">
+                            Seats: B6, B7
+                          </p>
+                        </v-col>
+                      </v-row>
+                    </v-container>
+                  </v-card-text>
+                  <v-card-actions>
+                    <!-- <v-btn color="primary" block @click="dialog = false">Close Dialog</v-btn> -->
+                    <v-spacer></v-spacer>
+                    <v-btn
+                      color="deep-purple-accent-1"
+                      variant="text"
+                      @click="select_seat_popup = false"
+                    >
+                      Reselect
+                    </v-btn>
+                    <v-btn
+                      color="deep-purple-accent-1"
+                      variant="text"
+                      @click="select_seat_popup = false"
+                    >
+                      <span style="font-weight: bold;">Select these seats</span>
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
             <!-- Cat 2 -->
 
             <v-row>
@@ -337,6 +390,7 @@ export default {
         cat3_quantity: 0,
         cat4_quantity: 0,
         cat5_quantity: 0,
+        select_seat_popup: false
       };
   },
   methods: {
@@ -405,6 +459,30 @@ export default {
         else{
           console.log("get_prices() works!");
           this.ticketPrices=response.data;
+        }
+      } catch (error) {
+        // Errors when calling the service; such as network error, 
+        // service offline, etc
+        console.log(error);
+      }
+
+    },
+    //get recommendation
+    async get_recommendation() {
+      var concert_id = 1;
+      console.log("concert_id", concert_id);
+      try{
+        console.log("trying get_hall()");
+
+        const response = await axios.get(`http://127.0.0.1:5004/hall/${concert_id}`);
+        console.log("response", response);
+
+        if (response.data.length < 1) { //no data
+          console.log("totally not cryin");
+        }
+        else{
+          console.log("get_hall() works!");
+          this.hallDetails=response.data;
         }
       } catch (error) {
         // Errors when calling the service; such as network error, 
