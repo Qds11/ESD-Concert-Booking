@@ -1,52 +1,55 @@
 from flask import Flask, request, jsonify
+from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
+from datetime import datetime, date
 import requests
+from invokes import invoke_http
 
 app = Flask(__name__)
 
-TICKETING_MICROSERVICE_URL = "http://localhost:5004"
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://sql12606226:61vMwF9lhJ@sql12.freesqldatabase.com:3306/sql12606226'
+# for local db
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/seat_database'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# get available seats for a concert
-@app.route('/seats', methods=['GET'])
-def get_available_seats():
-    concert_id = request.args.get('concert_id')
-    response = requests.get(f"{TICKETING_MICROSERVICE_URL}/avail/{concert_id}")
-    if response.status_code == 200:
-        availability = response.json()
-        return jsonify(availability)
-    return jsonify({"error": "Unable to get availability"}), 500
+db = SQLAlchemy(app)
 
-# reserve seats for a concert
-@app.route('/reserve', methods=['POST'])
-def reserve_seats():
-    concert_id = request.json.get('concert_id')
-    seat_type = request.json.get('seat_type')
-    num_seats = request.json.get('num_seats')
+CORS(app)
 
-    # get the hall ID for the concert
-    hall_response = requests.get(f"{TICKETING_MICROSERVICE_URL}/hall/{concert_id}")
-    if hall_response.status_code != 200:
-        return jsonify({"error": "Unable to get hall information"}), 500
-    hall_id = hall_response.json().get('data')
+@app.route("/reserve-seats/<string:concert_id>/<int:num_seats>", methods=['POST'])
+def reserve_seats(concert_id, num_seats):
+    # Get available seats for the concert from the ticketing microservice
+    seat_results = invoke_http("http://127.0.0.1:5004/" + str(num_seats), method='GET')
 
-    # get the price for the seat type
-    price_response = requests.get(f"{TICKETING_MICROSERVICE_URL}/price/{concert_id}")
-    if price_response.status_code != 200:
-        return jsonify({"error": "Unable to get price information"}), 500
-    price = price_response.json().get(f"{seat_type}_price")
+    # Check if there are any available seats
+    if seat_results["code"] == 200 and len(seat_results["seats"]) >= num_seats:
+        # If there are available seats, select the first 'num_seats' seats
+        selected_seats = seat_results["seats"][:num_seats]
 
-    # reserve the seats
-    reservation_data = {
-        "hall_id": hall_id,
-        "concert_id": concert_id,
-        "seat_type": seat_type,
-        "num_seats": num_seats,
-        "price": price
-    }
-    response = requests.post("http://localhost:5005/reserve", json=reservation_data)
-    if response.status_code == 200:
-        reservation_id = response.json().get('reservation_id')
-        return jsonify({"reservation_id": reservation_id})
-    return jsonify({"error": "Unable to reserve seats"}), 500
+        # Reserve the selected seats
+        reservation_results = invoke_http("http://127.0.0.1:5004/reserve-seats/" + concert_id, method='POST', json={
+            "seats": selected_seats
+        })
+
+        # Check if the reservation was successful
+        if reservation_results["code"] == 200:
+            # If the reservation was successful, return the selected seats as a list
+            return jsonify({
+                "code": 200,
+                "seats": selected_seats
+            }), 200
+        else:
+            # If the reservation was not successful, return an error message
+            return jsonify({
+                "code": 500,
+                "message": "Seat reservation failed"
+            }), 500
+    else:
+        # If there are no available seats, return an error message
+        return jsonify({
+            "code": 404,
+            "message": "No available seats"
+        }), 404
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5006, debug=True)
