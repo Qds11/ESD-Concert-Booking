@@ -6,10 +6,6 @@ import requests
 from invokes import invoke_http
 app = Flask(__name__)
 
-# #app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://sql12606226:61vMwF9lhJ@sql12.freesqldatabase.com:3306/sql12606226'
-# # for local db
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/ticket_db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 CORS(app)
 
@@ -67,7 +63,7 @@ def find_recommendation(concert_id):
   
     
     hall_results = invoke_http("http://127.0.0.1:5004/hall/"+concert_id, method='GET')
-    print(hall_results)
+
    
   
 
@@ -77,11 +73,11 @@ def find_recommendation(concert_id):
         recommendation_list.append({'cat2':'Considering your comfort and concert experience, we recommend you this seating section nearest to the stage!'})
     elif results['cat1_avail']!=0 and results['cat1_avail']!=None and age<50:
         recommendation_list.append({'cat1':'We recommend this section as it is the nearest to the stage!'})
-    elif results['cat2_avail']!=0 and results['cat2_avail']!=None and  hall!=3:
+    elif results['cat2_avail']!=0 and results['cat2_avail']!=None and  hall_results['data']!=3:
         recommendation_list.append({'cat2':'We recommend this section as it is the nearest non-standing seats for your comfort!'})
-    elif results['cat2_avail']!=0 and  results['cat2_avail']!=None and  hall==3:
+    elif results['cat2_avail']!=0 and  results['cat2_avail']!=None and  hall_results['data']==3:
         recommendation_list.append({'cat2':'We recommend this section as it is the nearest to stage!'})
-    elif results['cat3_avail']!=0 and results['cat3_avail']!=None and  hall==3:
+    elif results['cat3_avail']!=0 and results['cat3_avail']!=None and  hall_results['data']==3:
         recommendation_list.append({'cat2':'This is the last section left! Grab it Fast!'})
     elif  results['cat3_avail']!=None:
         if results['cat3_avail']!=0:

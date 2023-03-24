@@ -33,7 +33,7 @@
                 ></v-btn> -->
                 <div v-if='concert_id==1'>
                   <p class="text-h7 mt-5" style="columns: white">
-                    Cat 1 Blink VIP: {{ticketPrices["cat1_price"]}}
+                    Cat 1 Blink VIP: {{ticketPrices}}
                   </p>
                 </div>
                 <div v-else></div>
