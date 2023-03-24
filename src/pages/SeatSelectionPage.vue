@@ -283,7 +283,7 @@
               <v-row class="mt-5">
                 <v-col>
                   <p class="text-h7 pt-1" style="columns: white">
-                    Total amt.: $xxx
+                    Total amt.: ${{calculateTotalPrice(hallDetails.data)}}
                   </p>
                 </v-col>
 
@@ -331,7 +331,7 @@ export default {
         hallDetails: "",
         ticketAvailability: "",
         ticketPrices: "",
-        concert_id: 1,
+        concert_id: 1, //hardcoded
         cat1_quantity: 0,
         cat2_quantity: 0,
         cat3_quantity: 0,
@@ -456,6 +456,19 @@ export default {
       else {
         itemList=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
         return itemList;
+      }
+    },
+    // calculate Total Price of tickets chosen
+    calculateTotalPrice(hall_id){
+      var totalPrice=0;
+
+      if (hall_id==1){
+        totalPrice = (this.cat1_quantity*this.ticketPrices.cat1_price) + (this.cat2_quantity*this.ticketPrices.cat2_price) + (this.cat3_quantity*this.ticketPrices.cat3_price) + (this.cat4_quantity*this.ticketPrices.cat4_price) + (this.cat5_quantity*this.ticketPrices.cat5_price);
+        return totalPrice.toFixed(2);
+      }
+      else{
+        totalPrice = (this.cat1_quantity*this.ticketPrices.cat1_price) + (this.cat2_quantity*this.ticketPrices.cat2_price) + (this.cat3_quantity*this.ticketPrices.cat3_price);
+        return totalPrice.toFixed(2);
       }
     }
   
