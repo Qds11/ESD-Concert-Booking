@@ -69,40 +69,40 @@ def find_recommendation(concert_id):
   
 
     # #here come the rules~~~
-    recommendation_list=[]
-    if results['cat2_avail']!=0 and results['cat2_avail']!=None and age>50:
-        recommendation_list.append({'cat2':'Considering your comfort and concert experience, we recommend you this seating section nearest to the stage!'})
-    elif results['cat1_avail']!=0 and results['cat1_avail']!=None and age<50:
-        recommendation_list.append({'cat1':'We recommend this section as it is the nearest to the stage!'})
-    elif results['cat2_avail']!=0 and results['cat2_avail']!=None and  hall_results['data']!=3:
-        recommendation_list.append({'cat2':'We recommend this section as it is the nearest non-standing seats for your comfort!'})
-    elif results['cat2_avail']!=0 and  results['cat2_avail']!=None and  hall_results['data']==3:
-        recommendation_list.append({'cat2':'We recommend this section as it is the nearest to stage!'})
-    elif results['cat3_avail']!=0 and results['cat3_avail']!=None and  hall_results['data']==3:
-        recommendation_list.append({'cat2':'This is the last section left! Grab it Fast!'})
-    elif  results['cat3_avail']!=None:
-        if results['cat3_avail']!=0:
-            recommendation_list.append({'cat3':'We recommend this section which is the next nearest non-standing seats!'})
-    elif results['cat4_avail']!=None:
-        if results['cat4_avail']!=0:
-            recommendation_list.append({'cat4':'We recommend this next best section as all the other sections are sold out.'})
-    elif results['cat5_avail']!=None:
-        if results['cat5_avail']!=0:
-            recommendation_list.append({'cat3':'This is the last section left! Grab it Fast!'})
-    else:
-        recommendation_list.append('All Sold Out!')
-        print(recommendation_list)
-    if len(recommendation_list)!=0:
+    if results['code']==200:
+        recommendation_list=[]
+        if results['cat2_avail']!=0 and results['cat2_avail']!=None and age>50:
+            recommendation_list.append({'cat2':'Considering your comfort and concert experience, we recommend you this seating section nearest to the stage!'})
+        elif results['cat1_avail']!=0 and results['cat1_avail']!=None and age<50:
+            recommendation_list.append({'cat1':'We recommend this section as it is the nearest to the stage!'})
+        elif results['cat2_avail']!=0 and results['cat2_avail']!=None and  hall_results['data']!=3:
+            recommendation_list.append({'cat2':'We recommend this section as it is the nearest non-standing seats for your comfort!'})
+        elif results['cat2_avail']!=0 and  results['cat2_avail']!=None and  hall_results['data']==3:
+            recommendation_list.append({'cat2':'We recommend this section as it is the nearest to stage!'})
+        elif results['cat3_avail']!=0 and results['cat3_avail']!=None and  hall_results['data']==3:
+            recommendation_list.append({'cat2':'This is the last section left! Grab it Fast!'})
+        elif  results['cat3_avail']!=None:
+            if results['cat3_avail']!=0:
+                recommendation_list.append({'cat3':'We recommend this section which is the next nearest non-standing seats!'})
+        elif results['cat4_avail']!=None:
+            if results['cat4_avail']!=0:
+                recommendation_list.append({'cat4':'We recommend this next best section as all the other sections are sold out.'})
+        elif results['cat5_avail']!=None:
+            if results['cat5_avail']!=0:
+                recommendation_list.append({'cat3':'This is the last section left! Grab it Fast!'})
+        else:
+            recommendation_list.append('All Sold Out!')
         return jsonify(
             {
                 "code": 200,
                 "recommendation": recommendation_list
             }
     ), 200
+    
     return jsonify(
             {
                 "code": 404,
-                "message": "User not found."
+                "message": "Recommendation not found."
             }
      ), 404
 
