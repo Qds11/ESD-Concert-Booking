@@ -6,7 +6,7 @@ app = Flask(__name__)
 cors = CORS(app)
 
 # need to change DB uri accordingly
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:8889/halldata'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/halldata'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -79,7 +79,7 @@ def get_availability(concert_id):
     return jsonify(
         {
             "code": 404,
-            "message": "There are concerts by that concert id."
+            "message": "There are no concerts by that concert id."
         }
     ), 404
 
@@ -111,7 +111,12 @@ def get_hall(concert_id):
     if ticket:
         return jsonify({
             "code": 200,
-           "data":ticket.json()['hall_id']
+            "data":ticket.json()['hall_id'],
+            "hall_plan":ticket.json()['hall_plan'],
+            "hall_name":ticket.json()['hall_name'],
+            "concert_id":ticket.json()['concert_id'],
+            "concert_date":ticket.json()['concert_date']
+
         })
 
     return jsonify(
