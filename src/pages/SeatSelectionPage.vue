@@ -30,7 +30,9 @@
           </v-container>
           <v-container>
             <p class="text-h7 mb-5" style="columns: white">
-              Recommended Categories: Cat 1 Blink VIP, Cat 2 Standing, Cat 3 Standing, Cat 4 Standing
+              Recommended Categories: 
+              <br>
+              {{showRecommendation(recommendations.recommendation)}}
             </p>
             <v-divider :thickness="2" color="white"></v-divider>
             <p class="text-h7 mb-5 pt-5" style="columns: white">
@@ -254,7 +256,7 @@
             <v-row>
                 <v-col cols="6">
                   <p class="text-h7 mt-5" style="columns: white">
-                      Zone A: ${{ticketPrices.cat1_price}}
+                    Cat 1 (Standing): ${{ticketPrices.cat1_price}}
                     </p>
                 </v-col>
                 <v-col cols="6">
@@ -285,7 +287,7 @@
             <v-row>
                 <v-col cols="6">
                   <p class="text-h7 mt-5" style="columns: white">
-                    Zone B: ${{ticketPrices.cat2_price}}
+                    Cat 2: ${{ticketPrices.cat2_price}}
                     </p>
                 </v-col>
                 <v-col cols="6">
@@ -315,7 +317,7 @@
             <v-row>
                 <v-col cols="6">
                   <p class="text-h7 mt-5" style="columns: white">
-                    Zone C: ${{ticketPrices.cat3_price}}
+                    Cat 3: ${{ticketPrices.cat3_price}}
                     </p>
                 </v-col>
                 <v-col cols="6">
@@ -383,6 +385,7 @@ export default {
     await this.get_hall();
     await this.get_availability();
     await this.get_prices();
+    await this.get_recommendation();
   },
   components: {
     SubmitButton,
@@ -397,6 +400,7 @@ export default {
         hallDetails: "",
         ticketAvailability: "",
         ticketPrices: "",
+        recommendations: "",
         //concert_id: 1, //hardcoded
         cat1_quantity: 0,
         cat2_quantity: 0,
@@ -482,20 +486,20 @@ export default {
     },
     //get recommendation
     async get_recommendation() {
-      var concert_id = 1;
+      var concert_id = 2;
       console.log("concert_id", concert_id);
       try{
-        console.log("trying get_hall()");
+        console.log("trying get_recommendation()");
 
-        const response = await axios.get(`http://127.0.0.1:5004/hall/${concert_id}`);
+        const response = await axios.get(`http://127.0.0.1:5003/recommendations/${concert_id}`);
         console.log("response", response);
 
         if (response.data.length < 1) { //no data
           console.log("totally not cryin");
         }
         else{
-          console.log("get_hall() works!");
-          this.hallDetails=response.data;
+          console.log("get_recommendation() works!");
+          this.recommendations=response.data;
         }
       } catch (error) {
         // Errors when calling the service; such as network error, 
@@ -561,10 +565,51 @@ export default {
         totalPrice = (this.cat1_quantity*this.ticketPrices.cat1_price) + (this.cat2_quantity*this.ticketPrices.cat2_price) + (this.cat3_quantity*this.ticketPrices.cat3_price);
         return totalPrice.toFixed(2);
       }
+    },
+    // display recomm
+    showRecommendation(recommendations){
+      // console.log("recommendations", recommendations);
+      var recommMsg="";
+      var catName="";
+      var recomm;
+
+      for (recomm in recommendations){
+        // console.log("recomm", recomm);
+        // console.log("recommendations[recomm]", recommendations[recomm]);
+        for (const [key, value] of Object.entries(recommendations[recomm])) {
+          // console.log(`${key}: ${value}`);
+          
+          // Match key with cat name
+          if (key=="cat1"){
+            catName="Cat 1 (Standing)";
+          }
+          else if (key=="cat2"){
+            catName="Cat 2";
+          }
+          else if (key=="cat3"){
+            catName="Cat 3";
+          }
+          else if (key=="cat4"){
+            catName="Cat 4";
+          }
+          else if (key=="cat5"){
+            catName="Cat 5";
+          }
+          else{
+            catName="Cat Unknown";
+          }
+          recommMsg+=catName + " - " + value + "\n";
+          console.log("recommMsg", recommMsg);
+        }
+      }
+      return recommMsg;
+
     }
+      
+      
+  }
   
-  },
-};
+}
 </script>
 
 <style>
