@@ -13,17 +13,18 @@ CORS(app)
 
 
 
-current_user_id='1'
 
 # hello siyu i think this one is the duplicate code - ur secxiest friend clara
 
 #api endpoint for concert ms to call, will call user ms and return the result from user to concert
-@app.route("/user/<string:user_id>")
+@app.route("/recommendations/user/<string:user_id>")
 def find_genre_by_calling_user(user_id):
     results = invoke_http("http://127.0.0.1:5000/genre/"+ user_id, method='GET')
     print(results)
     if results['code']==200:
+        global current_user_id
         current_user_id=user_id
+        print(current_user_id)
         return jsonify(
         {
             "code": 200,
@@ -41,7 +42,7 @@ def find_genre_by_calling_user(user_id):
 #part2 talking to ticketing to retrieve seating availability and recommend, retrieve user birthdate and recommend
 
 #find recommendation with concert id
-@app.route("/recommendations/<string:concert_id>")
+@app.route("/recommendations/concert/<string:concert_id>")
 def find_recommendation(concert_id):
     results = invoke_http("http://127.0.0.1:5000/user/birthday/"+current_user_id, method='GET')
     birthdate=results['message']
@@ -68,40 +69,40 @@ def find_recommendation(concert_id):
   
 
     # #here come the rules~~~
-    recommendation_list=[]
-    if results['cat2_avail']!=0 and results['cat2_avail']!=None and age>50:
-        recommendation_list.append({'cat2':'Considering your comfort and concert experience, we recommend you this seating section nearest to the stage!'})
-    elif results['cat1_avail']!=0 and results['cat1_avail']!=None and age<50:
-        recommendation_list.append({'cat1':'We recommend this section as it is the nearest to the stage!'})
-    elif results['cat2_avail']!=0 and results['cat2_avail']!=None and  hall_results['data']!=3:
-        recommendation_list.append({'cat2':'We recommend this section as it is the nearest non-standing seats for your comfort!'})
-    elif results['cat2_avail']!=0 and  results['cat2_avail']!=None and  hall_results['data']==3:
-        recommendation_list.append({'cat2':'We recommend this section as it is the nearest to stage!'})
-    elif results['cat3_avail']!=0 and results['cat3_avail']!=None and  hall_results['data']==3:
-        recommendation_list.append({'cat2':'This is the last section left! Grab it Fast!'})
-    elif  results['cat3_avail']!=None:
-        if results['cat3_avail']!=0:
-            recommendation_list.append({'cat3':'We recommend this section which is the next nearest non-standing seats!'})
-    elif results['cat4_avail']!=None:
-        if results['cat4_avail']!=0:
-            recommendation_list.append({'cat4':'We recommend this next best section as all the other sections are sold out.'})
-    elif results['cat5_avail']!=None:
-        if results['cat5_avail']!=0:
-            recommendation_list.append({'cat3':'This is the last section left! Grab it Fast!'})
-    else:
-        recommendation_list.append('All Sold Out!')
-        print(recommendation_list)
-    if len(recommendation_list)!=0:
+    if results['code']==200:
+        recommendation_list=[]
+        if results['cat2_avail']!=0 and results['cat2_avail']!=None and age>50:
+            recommendation_list.append({'cat2':'Considering your comfort and concert experience, we recommend you this seating section nearest to the stage!'})
+        elif results['cat1_avail']!=0 and results['cat1_avail']!=None and age<50:
+            recommendation_list.append({'cat1':'We recommend this section as it is the nearest to the stage!'})
+        elif results['cat2_avail']!=0 and results['cat2_avail']!=None and  hall_results['data']!=3:
+            recommendation_list.append({'cat2':'We recommend this section as it is the nearest non-standing seats for your comfort!'})
+        elif results['cat2_avail']!=0 and  results['cat2_avail']!=None and  hall_results['data']==3:
+            recommendation_list.append({'cat2':'We recommend this section as it is the nearest to stage!'})
+        elif results['cat3_avail']!=0 and results['cat3_avail']!=None and  hall_results['data']==3:
+            recommendation_list.append({'cat2':'This is the last section left! Grab it Fast!'})
+        elif  results['cat3_avail']!=None:
+            if results['cat3_avail']!=0:
+                recommendation_list.append({'cat3':'We recommend this section which is the next nearest non-standing seats!'})
+        elif results['cat4_avail']!=None:
+            if results['cat4_avail']!=0:
+                recommendation_list.append({'cat4':'We recommend this next best section as all the other sections are sold out.'})
+        elif results['cat5_avail']!=None:
+            if results['cat5_avail']!=0:
+                recommendation_list.append({'cat3':'This is the last section left! Grab it Fast!'})
+        else:
+            recommendation_list.append('All Sold Out!')
         return jsonify(
             {
                 "code": 200,
                 "recommendation": recommendation_list
             }
     ), 200
+    
     return jsonify(
             {
                 "code": 404,
-                "message": "User not found."
+                "message": "Recommendation not found."
             }
      ), 404
 

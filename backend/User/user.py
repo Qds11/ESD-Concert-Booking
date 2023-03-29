@@ -41,11 +41,6 @@ class User(db.Model):
 
 cors = CORS(app, resources={r'/*': {'origins': '*'}})
 
-# hello world
-@app.route('/', methods=['GET'])
-def greetings():
-    return ("Hello World")
-
 # get all users
 @app.route('/user', methods=['GET'])
 def get_all():
