@@ -13,7 +13,6 @@ CORS(app)
 
 
 
-current_user_id='1'
 
 # hello siyu i think this one is the duplicate code - ur secxiest friend clara
 
@@ -23,7 +22,9 @@ def find_genre_by_calling_user(user_id):
     results = invoke_http("http://127.0.0.1:5000/genre/"+ user_id, method='GET')
     print(results)
     if results['code']==200:
+        global current_user_id
         current_user_id=user_id
+        print(current_user_id)
         return jsonify(
         {
             "code": 200,
