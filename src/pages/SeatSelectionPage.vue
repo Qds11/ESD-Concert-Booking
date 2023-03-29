@@ -36,7 +36,7 @@
             </p>
             <v-divider :thickness="2" color="white"></v-divider>
             <p class="text-h7 mb-5 pt-5" style="columns: white">
-              You are only allowed to purchase a maximum of 10 tickets.
+              You are allowed to purchase a maximum of 10 tickets.
             </p>
           </v-container>
 
@@ -347,17 +347,21 @@
             <div v-else></div>
 
             <!-- Calculate total amt. -->
+            <div v-if='quantityExceeded==true'>
+              <p class="text-h7 mb-5 pt-5" style="columns: white; color: red;">
+                Ticket quantity cannot exceed 10. Please choose again.
+              </p>
+            </div>
               <v-row class="mt-5">
                 <v-col>
                   <p class="text-h7 pt-1" style="columns: white">
-                   
                     Total Price: <span style="font-weight: bold;">${{calculateTotalPrice(hallDetails.data)}}</span>
                   </p>
                 </v-col>
 
               <!-- Submit to Payment -->
               <v-col>
-                <SubmitButton action="Proceed to Payment" />
+                <SubmitButton action="Proceed to Payment" @click="proceed_to_payment()"/>
               </v-col>
             </v-row>
           </v-form>
@@ -407,6 +411,7 @@ export default {
         cat3_quantity: 0,
         cat4_quantity: 0,
         cat5_quantity: 0,
+        quantityExceeded: false,
         select_seat_popup: false
       };
   },
@@ -604,6 +609,18 @@ export default {
       }
       return recommMsg;
 
+    },
+    // check for tix qty exceeded, pass data to payment
+    proceed_to_payment() {
+      var tix_quantity = this.cat1_quantity + this.cat2_quantity + this.cat3_quantity + this.cat4_quantity + this.cat5_quantity;
+      if (tix_quantity > 10) {
+        this.quantityExceeded = true;
+        //show error message
+      }
+      else{
+        this.quantityExceeded = false;
+        // proceed to payment pg
+      }
     }
       
       
