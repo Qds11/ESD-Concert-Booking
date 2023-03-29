@@ -41,7 +41,7 @@ def find_genre_by_calling_user(user_id):
 #part2 talking to ticketing to retrieve seating availability and recommend, retrieve user birthdate and recommend
 
 #find recommendation with concert id
-@app.route("/recommendations/<string:concert_id>")
+@app.route("/recommendations/concert/<string:concert_id>")
 def find_recommendation(concert_id):
     results = invoke_http("http://127.0.0.1:5000/user/birthday/"+current_user_id, method='GET')
     birthdate=results['message']
