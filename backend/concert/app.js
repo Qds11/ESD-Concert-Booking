@@ -14,8 +14,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 //get all concerts
 app.get("/", async (req, res) => {
   const concerts = await getAllConcertData();
-  // const userId = req.query.userid;
-   const userId='3'
+  const userId = req.query.userid;
+   //const userId='3'
    console.log(userId)
   if (userId) {
     const recommended = await axios.get(

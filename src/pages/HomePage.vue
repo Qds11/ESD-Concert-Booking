@@ -44,7 +44,7 @@
     name: "HomePage",
     async mounted() {
 
-      // this.userid = JSON.parse(localStorage.getItem('userid'))
+      this.userid = JSON.parse(localStorage.getItem('username'))
       // this.username = JSON.parse(localStorage.getItem('username'))
 
       await this.getAllConcertData(this.userid);
