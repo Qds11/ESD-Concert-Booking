@@ -10,15 +10,16 @@ use queue_database;
 -- USE sql12606226;
 
 CREATE TABLE IF NOT EXISTS queue (
-  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
   concert_id INT NOT NULL,
   status ENUM('waiting', 'serving') NOT NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (user_id, concert_id)
 );
 
-INSERT INTO queue (concert_id,status) VALUES (1,'serving');
-INSERT INTO queue (concert_id,status) VALUES (1,'serving');
-INSERT INTO queue (concert_id,status) VALUES (1,'serving');
-INSERT INTO queue (concert_id,status) VALUES (1,'serving');
-INSERT INTO queue (concert_id,status) VALUES (2,'serving');
-INSERT INTO queue (concert_id,status) VALUES (2,'serving');
+-- INSERT INTO queue (concert_id,status) VALUES (1,'serving');
+-- INSERT INTO queue (concert_id,status) VALUES (1,'serving');
+-- INSERT INTO queue (concert_id,status) VALUES (1,'serving');
+-- INSERT INTO queue (concert_id,status) VALUES (1,'serving');
+-- INSERT INTO queue (concert_id,status) VALUES (2,'serving');
+-- INSERT INTO queue (concert_id,status) VALUES (2,'serving');
