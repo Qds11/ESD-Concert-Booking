@@ -127,6 +127,7 @@ def get_phone_num(user_id):
     user = User.query.filter_by(user_id=user_id).first()
     if user:
         return jsonify({
+            "code": 202,
             "phone_num": user.json()['contact']
         }
     ), 200
@@ -134,7 +135,6 @@ def get_phone_num(user_id):
         "code" : 404,
         "message": "User not found"
     }), 404
-
 
 
 if __name__ == '__main__':

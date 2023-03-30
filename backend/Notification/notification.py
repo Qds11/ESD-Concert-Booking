@@ -45,8 +45,9 @@ def testing():
 @app.route('/sendQueueNotification/<string:user_id>', methods=['GET'])
 def send_notif_queue(user_id):
 
-    phone_num = invoke_http(user_URL + user_id,method='GET')
-    code = phone_num["code"]
+    result = invoke_http(user_URL + user_id,method='GET')
+    code = result["code"]
+    phone_num = result["phone_num"]
 
     # Your Account SID from twilio.com/console
     account_sid = "ACb73a42a689c04ad6bf175a645cfa9282"
@@ -54,20 +55,22 @@ def send_notif_queue(user_id):
     auth_token = "72769e6ae2bb619d91fd600733634fbb"
 
     client = Client(account_sid, auth_token)
-
-    message = client.messages.create(
-        to="+65" + {phone_num},
-        from_="+15178269570",
-        body=
-        "You are currently 3 places away from the Seat Selection Page! \n Do take note that you will have 10 mins to select your seats after entering!"
-    )
     if code not in range(200,300):
 
-        message = json.dumps(phone_num)
+        message = json.dumps(result)
+
         amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="queue.error_notif", 
             body=message, properties=pika.BasicProperties(delivery_mode = 2))
         
         return jsonify({"code": 404, "message": "message not sent"}), 404
+
+    message = client.messages.create(
+        to="+65" + { phone_num } ,
+        from_="+15178269570",
+        body=
+        "You are currently 3 places away from the Seat Selection Page! \n Do take note that you will have 10 mins to select your seats after entering!"
+    )
+   
     
     return jsonify({"code": 200, "message": message.sid})
 
@@ -76,10 +79,11 @@ def send_notif_queue(user_id):
 @app.route('/sendPaymentNotification/<string:user_id>', methods=['GET'])
 def send_payment_queue(user_id):
 
-    phone_num = invoke_http("http://127.0.0.1:5000/user/phoneNum/" + user_id,
+    result = invoke_http("http://127.0.0.1:5000/user/phoneNum/" + user_id,
                             method='GET')
 
-    code = phone_num["code"]
+    code = result['code']
+    phone_num = result['phone_num']
 
     # Your Account SID from twilio.com/console
     account_sid = "ACb73a42a689c04ad6bf175a645cfa9282"
@@ -107,5 +111,5 @@ def send_payment_queue(user_id):
 
 
 if __name__ == '__main__':
-    print("This is flask " + os.path.basename(__file__) + " for placing an order...")
+    print("This is flask " + os.path.basename(__file__) + " for sending a notification...")
     app.run(debug=True, port=5100)
