@@ -352,6 +352,11 @@
                 Ticket quantity cannot exceed 10. Please choose again.
               </p>
             </div>
+            <div v-if='quantityZero==true'>
+              <p class="text-h7 mb-5 pt-5" style="columns: white; color: red;">
+                Please select a ticket.
+              </p>
+            </div>
               <v-row class="mt-5">
                 <v-col>
                   <p class="text-h7 pt-1" style="columns: white">
@@ -412,6 +417,7 @@ export default {
         cat4_quantity: 0,
         cat5_quantity: 0,
         quantityExceeded: false,
+        quantityZero: false,
         select_seat_popup: false
       };
   },
@@ -496,7 +502,7 @@ export default {
       try{
         console.log("trying get_recommendation()");
 
-        const response = await axios.get(`http://127.0.0.1:5003/recommendations/${concert_id}`);
+        const response = await axios.get(`http://127.0.0.1:5003/recommendations/concert/${concert_id}`);
         console.log("response", response);
 
         if (response.data.length < 1) { //no data
@@ -617,8 +623,15 @@ export default {
         this.quantityExceeded = true;
         //show error message
       }
+      // check for tix qty = 0
+      else if (tix_quantity == 0) {
+        this.quantityZero = true;
+        //show error message
+      }
       else{
         this.quantityExceeded = false;
+        this.quantityZero = false;
+
         // proceed to payment pg
       }
     }
