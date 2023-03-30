@@ -69,6 +69,7 @@ def get_username_with_email(email):
         user_id = user.user_id
         username = user.username
         return jsonify({
+            "code":200,
             "username": username,
             "userId": user_id
         })
