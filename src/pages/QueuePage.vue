@@ -43,19 +43,52 @@
   </script>
   
   <script>
-  
+  import axios from "axios";
+
   export default {
-    name: "LoginPage",
-  
+    name: "QueuePage",
+    async created() {
+      //this.id = this.$route.params.id
+      await this.add_to_queue();
+      // await this.get_availability();
+      // await this.get_prices();
+      // await this.get_recommendation();
+    },
     components: {
     },
-    methods: {},
     data() {
       return {
-        username: "",
-        password: ""
+        // username: "",
+        // password: ""
       };
     },
+    methods: {
+      //post add_to_queue: call this once to queue user regardless whether they actually need to queue
+      async add_to_queue() {
+        var concert_id = 1; // CHANGE THIS FOR HALL 2
+        console.log("concert_id", concert_id);
+        try{
+          console.log("trying add_to_queue()");
+
+          const response = await axios.post(`http://127.0.0.1:5009/queue`, {concert_id:1});
+          console.log("response", response);
+
+          if (response.data.length < 1) { //no data
+            console.log("totally not cryin");
+          }
+          else{
+            console.log("add_to_queue() works!");
+            // this.hallDetails=response.data;
+          }
+        } catch (error) {
+          // Errors when calling the service; such as network error, 
+          // service offline, etc
+          console.log(error);
+        }
+
+      },
+    },
+    
   };
   </script>
   
