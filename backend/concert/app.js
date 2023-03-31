@@ -6,6 +6,7 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import axios from 'axios';
 
+
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
@@ -14,16 +15,18 @@ app.use(bodyParser.urlencoded({ extended: true }));
 //get all concerts
 app.get("/", async (req, res) => {
   const concerts = await getAllConcertData();
-  // const userId = req.query.userid;
-   const userId='3'
+  const userId = req.query.userid;
+   //const userId='3'
    console.log(userId)
   if (userId) {
-    const recommended = await axios.get(`http://127.0.0.1:5005/reco/${userId}`);
+    const recommended = await axios.get(
+      `http://127.0.0.1:5003/recommendations/user/${userId}`
+    );
     return res.json({ concerts: concerts, recommended: recommended.data });
   }
   return res.json({concerts:concerts,recommended:null})
  });
- 
+
 
  //get concert by id
 app.get("/concert/:id", async (req, res) => {

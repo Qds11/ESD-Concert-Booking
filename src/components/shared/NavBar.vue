@@ -13,8 +13,8 @@
       </router-link>
 
     </v-tab>
-    <v-tab value="three" class="mr-3" v-else>
-      {{ username }}
+    <v-tab value="three" class="mr-3" v-else @click="signOut">
+      Sign Out
     </v-tab>
   </v-tabs>
 </template>
@@ -23,24 +23,31 @@
 
 export default {
   name: 'NavBar',
-  mounted(){
+  mounted() {
+    localStorage.setItem("username", 3);
+   // localStorage.removeItem('username');
     if(localStorage.getItem('username')){
       this.username = JSON.parse(localStorage.getItem('username'))
+      this.isLoggedIn=true
     }
 
   },
-  props: {
-    isLoggedIn: {
-      type: Boolean,
-      default: false
-    },
+
     data() {
       return {
         isLoggedIn: false,
-        username: 'test'
+        username: null
+      }
+  },
+  methods: {
+    signOut() {
+      localStorage.removeItem('username');
+      this.isLoggedIn = false
+      this.username=null
+      this.$router.push('/');
       }
     }
-  }
+
 
 }
 </script>

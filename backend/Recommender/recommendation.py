@@ -4,17 +4,15 @@ from flask_cors import CORS
 from datetime import datetime, date
 import requests
 from invokes import invoke_http
-app = Flask(__name__)
+from os import environ
 
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 CORS(app)
 
 
-
-
-
-
-# hello siyu i think this one is the duplicate code - ur secxiest friend clara
 
 #api endpoint for concert ms to call, will call user ms and return the result from user to concert
 @app.route("/recommendations/user/<string:user_id>")
