@@ -16,9 +16,12 @@
             </v-container>
             <v-container>
               <p class="text-h3 mb-2" style="columns: white">
-                2000+
+                {{queue_position.queue_position-1}}
               </p>
-              <p class="text-h7 mb-5" style="columns: white">
+              <p v-if='(queue_position.queue_position-1)==1' class="text-h7 mb-5" style="columns: white">
+                person ahead of you
+              </p>
+              <p v-else class="text-h7 mb-5" style="columns: white">
                 people ahead of you
               </p>
               <v-progress-linear
@@ -43,19 +46,75 @@
   </script>
   
   <script>
-  
+  import axios from "axios";
+
   export default {
-    name: "LoginPage",
-  
+    name: "QueuePage",
+    async created() {
+      //this.id = this.$route.params.id
+      await this.add_to_queue();
+      await this.get_queue_position();
+      // await this.get_prices();
+      // await this.get_recommendation();
+    },
     components: {
     },
-    methods: {},
     data() {
       return {
-        username: "",
-        password: ""
+        queue_position: 0,
       };
     },
+    methods: {
+      //post add_to_queue: call this once to queue user regardless whether they actually need to queue
+      async add_to_queue() {
+        var concert_id = 1; // CHANGE THIS FOR HALL 2
+        console.log("concert_id", concert_id);
+        try{
+          console.log("trying add_to_queue()");
+
+          const response = await axios.post(`http://127.0.0.1:5009/queue`, {concert_id:1});
+          console.log("response", response);
+
+          if (response.data.length < 1) { //no data
+            console.log("totally not cryin");
+          }
+          else{
+            console.log("add_to_queue() works!");
+            // this.hallDetails=response.data;
+          }
+        } catch (error) {
+          // Errors when calling the service; such as network error, 
+          // service offline, etc
+          console.log(error);
+        }
+      },
+      // get queue position: freqeuently call this to updated queue position
+      async get_queue_position() {
+        var concert_id = 1; // CHANGE THIS FOR HALL 2
+        console.log("concert_id", concert_id);
+        var queue_id = 10; // QUEUE ID
+
+        try{
+          console.log("trying get_queue_position()");
+
+          const response = await axios.get(`http://127.0.0.1:5009/waiting-queue/${queue_id}`);
+          console.log("response", response);
+
+          if (response.data.length < 1) { //no data
+            console.log("totally not cryin");
+          }
+          else{
+            console.log("get_queue_position() works!");
+            this.queue_position=response.data;
+          }
+        } catch (error) {
+          // Errors when calling the service; such as network error, 
+          // service offline, etc
+          console.log(error);
+        }
+      },
+    },
+    
   };
   </script>
   
