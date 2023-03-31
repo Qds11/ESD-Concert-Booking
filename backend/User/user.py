@@ -43,11 +43,6 @@ class User(db.Model):
 
 cors = CORS(app, resources={r'/*': {'origins': '*'}})
 
-# hello world
-@app.route('/', methods=['GET'])
-def greetings():
-    return ("Hello World")
-
 # get all users
 @app.route('/user', methods=['GET'])
 def get_all():
@@ -76,6 +71,7 @@ def get_username_with_email(email):
         user_id = user.user_id
         username = user.username
         return jsonify({
+            "code":200,
             "username": username,
             "userId": user_id
         })
@@ -133,6 +129,7 @@ def get_phone_num(user_id):
     user = User.query.filter_by(user_id=user_id).first()
     if user:
         return jsonify({
+            "code": 202,
             "phone_num": user.json()['contact']
         }
     ), 200
@@ -140,7 +137,6 @@ def get_phone_num(user_id):
         "code" : 404,
         "message": "User not found"
     }), 404
-
 
 
 if __name__ == '__main__':
