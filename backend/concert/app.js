@@ -6,6 +6,7 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import axios from 'axios';
 
+
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
