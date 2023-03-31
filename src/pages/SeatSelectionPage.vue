@@ -385,11 +385,12 @@ import axios from "axios";
 export default {
   name: "SeatSelectionPage",
   async created() {
-    //this.id = this.$route.params.id
+    this.concert_id = this.$route.params.concertid
     await this.get_hall();
     await this.get_availability();
     await this.get_prices();
     await this.get_recommendation();
+
   },
   components: {
     SubmitButton,
@@ -405,7 +406,7 @@ export default {
         ticketAvailability: "",
         ticketPrices: "",
         recommendations: "",
-        //concert_id: 1, //hardcoded
+        concert_id: null, //hardcoded
         cat1_quantity: 0,
         cat2_quantity: 0,
         cat3_quantity: 0,
@@ -613,6 +614,11 @@ export default {
     // check for tix qty exceeded, pass data to payment
     proceed_to_payment() {
       var tix_quantity = this.cat1_quantity + this.cat2_quantity + this.cat3_quantity + this.cat4_quantity + this.cat5_quantity;
+      localStorage.setItem('chosen_cat1', JSON.stringify(this.cat1_quantity))
+      localStorage.setItem('chosen_cat2', JSON.stringify(this.cat2_quantity))
+      localStorage.setItem('chosen_cat3', JSON.stringify(this.cat3_quantity))
+      localStorage.setItem('chosen_cat4', JSON.stringify(this.cat4_quantity))
+      localStorage.setItem('chosen_cat5', JSON.stringify(this.cat5_quantity))
       if (tix_quantity > 10) {
         this.quantityExceeded = true;
         //show error message

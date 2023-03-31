@@ -1,6 +1,6 @@
-// import db from "./db.js";
+import db from "./db.js";
 // import moment from "moment";
-const db = process.env.dbURL || 'default value';
+// const db = process.env.dbURL || 'default value';
 
 export async function getAllConcertData() {
   const [rows] = await db.query("select * from concert");

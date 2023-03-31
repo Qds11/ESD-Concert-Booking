@@ -42,7 +42,7 @@ const routes = [
     component: QueuePage,
   },
   {
-    path: "/seatSelectionPage",
+    path: "/seatSelectionPage/:concertid",
     name: "SeatSelectionPage",
     component: SeatSelectionPage,
   },

@@ -7,8 +7,8 @@ app = Flask(__name__)
 cors = CORS(app)
 
 # need to change DB uri accordingly
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:8889/halldata'
+# app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:8889/halldata'
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/halldata'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -81,6 +81,10 @@ def get_availability(concert_id):
             "message": "There are no concerts by that concert id."
         }
     ), 404
+
+
+
+
 
 # get prices by providing concert id 
 @app.route('/price/<string:concert_id>', methods=['GET'])
