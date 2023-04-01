@@ -399,7 +399,11 @@ export default {
   name: "SeatSelectionPage",
   async created() {
     this.concert_id = this.$route.params.concertid
+
     await this.get_concert();
+
+    console.log(this.concert_id)
+
     await this.get_hall();
     await this.get_availability();
     await this.get_prices();
@@ -470,7 +474,12 @@ export default {
       },
     //get hall_details
     async get_hall() {
+
       console.log("this.concert_id", this.concert_id);
+
+      var concert_id = this.concert_id; // CHANGE THIS FOR HALL 2
+      console.log("concert_id", concert_id);
+
       try{
         console.log("trying get_hall()");
 
@@ -493,7 +502,12 @@ export default {
     },
     //get availability by providing concert_id
     async get_availability() {
+
       console.log("this.concert_id", this.concert_id);
+
+      var concert_id = this.concert_id; // CHANGE THIS FOR HALL 2
+      console.log("concert_id", concert_id);
+
       try{
         console.log("trying get_availability()");
 
@@ -517,7 +531,12 @@ export default {
     },
     //get prices by providing concert_id
     async get_prices() {
+
       console.log("this.concert_id", this.concert_id);
+
+      var concert_id = this.concert_id; // CHANGE THIS FOR HALL 2
+      console.log("concert_id", concert_id);
+
       try{
         console.log("trying get_prices()");
 
@@ -540,7 +559,12 @@ export default {
     },
     //get recommendation
     async get_recommendation() {
+
       console.log("this.concert_id", this.concert_id);
+
+      var concert_id = this.concert_id;
+      console.log("concert_id", concert_id);
+
       try{
         console.log("trying get_recommendation()");
 
