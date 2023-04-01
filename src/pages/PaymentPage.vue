@@ -26,10 +26,10 @@
                   Blackpink concert (Kpop)
                 </p>
                 <p class="text-h5 mb-5" style="columns: white">
-                  Number of tickets:
+                  Number of tickets: {{ ticket_quantity }}
                 </p>
                 <p class="text-h5 mb-5" style="columns: white">
-                  <!-- Total Price of Tickets: ${{ totalPrice }} -->
+                  Total Price of Tickets: ${{ totalPrice }}
                 </p>
               </v-container>
               <v-container>
@@ -75,7 +75,12 @@ export default {
   name: "PaymentPage",
   data() {
     return {
-      paymentStatus: false,
+      paymentStatus: true,
+      concert_id:null,
+      totalPrice: 0,
+      ticket_quantity: 0
+
+
     };
   },
   methods: {
@@ -125,8 +130,14 @@ export default {
         console.error("failed to load the PayPal JS SDK script", error);
       });
 
+      this.concert_id = this.$route.params.concertid
+      this.totalPrice=this.$route.params.total_price
+      this.ticket_quantity=this.$route.params.ticket_quantity
+
       
       localStorage.setItem('paymentStatus', JSON.stringify(this.paymentStatus))
+      console.log(this.paymentStatus)
+      localStorage.setItem('concert_id', JSON.stringify(this.concert_id))
   },
   // mounted() {
   //   // Add PayPal script to the document

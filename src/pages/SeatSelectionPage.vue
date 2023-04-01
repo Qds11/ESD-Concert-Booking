@@ -374,7 +374,12 @@
 
               <!-- Submit to Payment -->
               <v-col>
-                <SubmitButton action="Proceed to Payment" @click="proceed_to_payment()"/>
+                
+                <router-link :to="{ path: '/PaymentPage/' + totalPrice + '/'+tix_quantity+'/'+concert_id }" class="link-style">
+                  <SubmitButton action="Proceed to Payment" @click="proceed_to_payment()"/>
+             
+            </router-link>
+                
               </v-col>
             </v-row>
           </v-form>
@@ -399,7 +404,11 @@ export default {
   name: "SeatSelectionPage",
   async created() {
     this.concert_id = this.$route.params.concertid
+
     await this.get_concert();
+
+    console.log(this.concert_id)
+
     await this.get_hall();
     await this.get_availability();
     await this.get_prices();
@@ -421,7 +430,7 @@ export default {
         ticketAvailability: "",
         ticketPrices: "",
         recommendations: "",
-        //concert_id: null, //hardcoded
+        concert_id: null, //hardcoded
         cat1_quantity: 0,
         cat2_quantity: 0,
         cat3_quantity: 0,
@@ -430,7 +439,8 @@ export default {
         quantityExceeded: false,
         quantityZero: false,
         select_seat_popup: false,
-        totalPrice: 0
+        totalPrice: 0,
+        tix_quantity:0
       };
   },
   methods: {
@@ -470,7 +480,12 @@ export default {
       },
     //get hall_details
     async get_hall() {
+
       console.log("this.concert_id", this.concert_id);
+
+      var concert_id = this.concert_id; // CHANGE THIS FOR HALL 2
+      console.log("concert_id", concert_id);
+
       try{
         console.log("trying get_hall()");
 
@@ -493,7 +508,12 @@ export default {
     },
     //get availability by providing concert_id
     async get_availability() {
+
       console.log("this.concert_id", this.concert_id);
+
+      var concert_id = this.concert_id; // CHANGE THIS FOR HALL 2
+      console.log("concert_id", concert_id);
+
       try{
         console.log("trying get_availability()");
 
@@ -517,7 +537,12 @@ export default {
     },
     //get prices by providing concert_id
     async get_prices() {
+
       console.log("this.concert_id", this.concert_id);
+
+      var concert_id = this.concert_id; // CHANGE THIS FOR HALL 2
+      console.log("concert_id", concert_id);
+
       try{
         console.log("trying get_prices()");
 
@@ -540,7 +565,12 @@ export default {
     },
     //get recommendation
     async get_recommendation() {
+
       console.log("this.concert_id", this.concert_id);
+
+      var concert_id = this.concert_id;
+      console.log("concert_id", concert_id);
+
       try{
         console.log("trying get_recommendation()");
 
@@ -663,13 +693,17 @@ export default {
     // check for tix qty exceeded, pass data to payment
     proceed_to_payment() {
       var tix_quantity = this.cat1_quantity + this.cat2_quantity + this.cat3_quantity + this.cat4_quantity + this.cat5_quantity;
+      this.tix_quantity=tix_quantity
+
       localStorage.setItem('chosen_cat1', JSON.stringify(this.cat1_quantity))
       localStorage.setItem('chosen_cat2', JSON.stringify(this.cat2_quantity))
       localStorage.setItem('chosen_cat3', JSON.stringify(this.cat3_quantity))
       localStorage.setItem('chosen_cat4', JSON.stringify(this.cat4_quantity))
       localStorage.setItem('chosen_cat5', JSON.stringify(this.cat5_quantity))
+  
       if (tix_quantity > 10) {
         this.quantityExceeded = true;
+        return 
         //show error message
       }
       // check for tix qty = 0
