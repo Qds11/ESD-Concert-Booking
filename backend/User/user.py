@@ -1,11 +1,13 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
+from os import environ
 
 app = Flask(__name__)
 cors = CORS(app)
+# app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
 
-# need to change DB uri accordingly
+# # need to change DB uri accordingly
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:8889/users'
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/users'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -41,11 +43,6 @@ class User(db.Model):
 
 cors = CORS(app, resources={r'/*': {'origins': '*'}})
 
-# hello world
-@app.route('/', methods=['GET'])
-def greetings():
-    return ("Hello World")
-
 # get all users
 @app.route('/user', methods=['GET'])
 def get_all():
@@ -74,6 +71,7 @@ def get_username_with_email(email):
         user_id = user.user_id
         username = user.username
         return jsonify({
+            "code":200,
             "username": username,
             "userId": user_id
         })
@@ -126,10 +124,12 @@ def find_birthday_by_user_id(user_id):
     ), 404
 
 # get phone number with user id
+@app.route("/user/phoneNum/<string:user_id>")
 def get_phone_num(user_id):
     user = User.query.filter_by(user_id=user_id).first()
     if user:
         return jsonify({
+            "code": 202,
             "phone_num": user.json()['contact']
         }
     ), 200
@@ -137,7 +137,6 @@ def get_phone_num(user_id):
         "code" : 404,
         "message": "User not found"
     }), 404
-
 
 
 if __name__ == '__main__':

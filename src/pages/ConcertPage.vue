@@ -25,9 +25,12 @@
     Ticket Sales Open on {{ getDateTime(targetConcert.ticket_sale_date_time) }}
     </div>
     <div v-else>
-    <v-btn>
-        Buy Tickets
-    </v-btn>
+
+        <router-link :to="{ path: '/seatSelectionPage/' + id }" class="link-style">
+              <v-btn color="orange-lighten-2" variant="text"> Buy Tickets </v-btn>
+            </router-link>
+    
+
     </div>
 </div>
 

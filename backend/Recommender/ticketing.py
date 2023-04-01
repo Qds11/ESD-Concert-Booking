@@ -1,12 +1,15 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
+from os import environ
 
 app = Flask(__name__)
 cors = CORS(app)
 
 # need to change DB uri accordingly
+# app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:8889/halldata'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/halldata'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -56,10 +59,6 @@ class Ticket(db.Model):
 
 cors = CORS(app, resources={r'/*': {'origins': '*'}})
 
-# hello world
-@app.route('/', methods=['GET'])
-def greetings():
-    return ("Hello World")
 
 # get availability by providing concert_id
 @app.route('/avail/<string:concert_id>', methods=['GET'])
@@ -79,9 +78,13 @@ def get_availability(concert_id):
     return jsonify(
         {
             "code": 404,
-            "message": "There are concerts by that concert id."
+            "message": "There are no concerts by that concert id."
         }
     ), 404
+
+
+
+
 
 # get prices by providing concert id 
 @app.route('/price/<string:concert_id>', methods=['GET'])
@@ -111,7 +114,12 @@ def get_hall(concert_id):
     if ticket:
         return jsonify({
             "code": 200,
-           "data":ticket.json()['hall_id']
+            "data":ticket.json()['hall_id'],
+            "hall_plan":ticket.json()['hall_plan'],
+            "hall_name":ticket.json()['hall_name'],
+            "concert_id":ticket.json()['concert_id'],
+            "concert_date":ticket.json()['concert_date']
+
         })
 
     return jsonify(
