@@ -37,7 +37,7 @@ const routes = [
     component: BookingStatus,
   },
   {
-    path: "/queuePage",
+    path: "/queuePage/:concertid",
     name: "QueuePage",
     component: QueuePage,
   },
