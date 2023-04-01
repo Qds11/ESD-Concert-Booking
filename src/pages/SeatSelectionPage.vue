@@ -10,6 +10,20 @@
           {{ hallDetails.hall_name}}
 
         </p>
+        <div class="timer">
+            {{min}}:{{sec}}
+        </div>
+        <div class="text-center mb-1">
+            <v-btn-toggle v-if="!active" dark>
+                <v-btn v-on:click="seconds()"><v-icon>mdi-play</v-icon></v-btn>
+                <v-btn disabled><v-icon>mdi-stop</v-icon></v-btn>
+            </v-btn-toggle>
+            <v-btn-toggle v-model="toggle_none" v-else dark>
+                <v-btn v-on:click="pause" v-if="!paused"><v-icon>mdi-pause</v-icon></v-btn>
+                <v-btn v-on:click="seconds()" v-else><v-icon>mdi-pause</v-icon></v-btn>
+                <v-btn v-on:click="end"><v-icon>mdi-stop</v-icon></v-btn>
+            </v-btn-toggle>
+        </div>
         <div v-if='hallDetails.data==1'>
           <v-img
             fluid
@@ -360,10 +374,12 @@
                 Ticket quantity cannot exceed 10. Please choose again.
               </p>
             </div>
-            <div v-if='quantityZero==true'>
+            <div v-else-if='quantityZero==true'>
               <p class="text-h7 mb-5 pt-5" style="columns: white; color: red;">
                 Please select a ticket.
               </p>
+            </div>
+            <div v-else>
             </div>
               <v-row class="mt-5">
                 <v-col>
@@ -374,12 +390,7 @@
 
               <!-- Submit to Payment -->
               <v-col>
-                
-                <router-link :to="{ path: '/PaymentPage/' + totalPrice + '/'+tix_quantity+'/'+concert_id }" class="link-style">
-                  <SubmitButton action="Proceed to Payment" @click="proceed_to_payment()"/>
-             
-            </router-link>
-                
+                <SubmitButton action="Proceed to Payment" @click="proceed_to_payment()"/>
               </v-col>
             </v-row>
           </v-form>
@@ -404,11 +415,7 @@ export default {
   name: "SeatSelectionPage",
   async created() {
     this.concert_id = this.$route.params.concertid
-
     await this.get_concert();
-
-    console.log(this.concert_id)
-
     await this.get_hall();
     await this.get_availability();
     await this.get_prices();
@@ -430,7 +437,7 @@ export default {
         ticketAvailability: "",
         ticketPrices: "",
         recommendations: "",
-        concert_id: null, //hardcoded
+        //concert_id: null, //hardcoded
         cat1_quantity: 0,
         cat2_quantity: 0,
         cat3_quantity: 0,
@@ -439,8 +446,7 @@ export default {
         quantityExceeded: false,
         quantityZero: false,
         select_seat_popup: false,
-        totalPrice: 0,
-        tix_quantity:0
+        totalPrice: 0
       };
   },
   methods: {
@@ -480,12 +486,7 @@ export default {
       },
     //get hall_details
     async get_hall() {
-
       console.log("this.concert_id", this.concert_id);
-
-      var concert_id = this.concert_id; // CHANGE THIS FOR HALL 2
-      console.log("concert_id", concert_id);
-
       try{
         console.log("trying get_hall()");
 
@@ -508,12 +509,7 @@ export default {
     },
     //get availability by providing concert_id
     async get_availability() {
-
       console.log("this.concert_id", this.concert_id);
-
-      var concert_id = this.concert_id; // CHANGE THIS FOR HALL 2
-      console.log("concert_id", concert_id);
-
       try{
         console.log("trying get_availability()");
 
@@ -537,12 +533,7 @@ export default {
     },
     //get prices by providing concert_id
     async get_prices() {
-
       console.log("this.concert_id", this.concert_id);
-
-      var concert_id = this.concert_id; // CHANGE THIS FOR HALL 2
-      console.log("concert_id", concert_id);
-
       try{
         console.log("trying get_prices()");
 
@@ -565,12 +556,7 @@ export default {
     },
     //get recommendation
     async get_recommendation() {
-
       console.log("this.concert_id", this.concert_id);
-
-      var concert_id = this.concert_id;
-      console.log("concert_id", concert_id);
-
       try{
         console.log("trying get_recommendation()");
 
@@ -693,27 +679,30 @@ export default {
     // check for tix qty exceeded, pass data to payment
     proceed_to_payment() {
       var tix_quantity = this.cat1_quantity + this.cat2_quantity + this.cat3_quantity + this.cat4_quantity + this.cat5_quantity;
-      this.tix_quantity=tix_quantity
 
-      localStorage.setItem('chosen_cat1', JSON.stringify(this.cat1_quantity))
-      localStorage.setItem('chosen_cat2', JSON.stringify(this.cat2_quantity))
-      localStorage.setItem('chosen_cat3', JSON.stringify(this.cat3_quantity))
-      localStorage.setItem('chosen_cat4', JSON.stringify(this.cat4_quantity))
-      localStorage.setItem('chosen_cat5', JSON.stringify(this.cat5_quantity))
-  
       if (tix_quantity > 10) {
         this.quantityExceeded = true;
-        return 
-        //show error message
+        //ui shows error message
       }
       // check for tix qty = 0
       else if (tix_quantity == 0) {
         this.quantityZero = true;
-        //show error message
+        //ui shows error message
       }
       else{
         this.quantityExceeded = false;
         this.quantityZero = false;
+
+        localStorage.setItem('chosen_cat1', JSON.stringify(this.cat1_quantity))
+        localStorage.setItem('chosen_cat2', JSON.stringify(this.cat2_quantity))
+        localStorage.setItem('chosen_cat3', JSON.stringify(this.cat3_quantity))
+        localStorage.setItem('chosen_cat4', JSON.stringify(this.cat4_quantity))
+        localStorage.setItem('chosen_cat5', JSON.stringify(this.cat5_quantity))
+
+        localStorage.setItem('tix_quantity', JSON.stringify(tix_quantity))
+        localStorage.setItem('totalPrice', JSON.stringify(this.totalPrice))
+
+        console.log("can proceed to payment pg now")
 
         // proceed to payment pg
       }
@@ -735,4 +724,12 @@ export default {
 html {
   background-color: black;
 }
+
+.timer {
+      color: white;
+      font-size: 2rem;
+      font-weight: bolder;
+      text-align: center;
+      margin: 15px 0;
+    }
 </style>
