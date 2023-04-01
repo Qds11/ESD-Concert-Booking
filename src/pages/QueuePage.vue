@@ -15,7 +15,10 @@
               </p>
             </v-container>
             <v-container>
-              <p class="text-h3 mb-2" style="columns: white">
+              <p v-if='(queue_position.queue_position)==0' class="text-h3 mb-2" style="columns: white">
+                {{queue_position.queue_position}}
+              </p>
+              <p v-else class="text-h3 mb-2" style="columns: white">
                 {{queue_position.queue_position-1}}
               </p>
               <p v-if='(queue_position.queue_position-1)==1' class="text-h7 mb-5" style="columns: white">
@@ -54,8 +57,6 @@
       //this.id = this.$route.params.id
       await this.add_to_queue();
       await this.get_queue_position();
-      // await this.get_prices();
-      // await this.get_recommendation();
       // const intervalId = 
       // window.setInterval(function(){
       //   // call your function here
@@ -81,7 +82,7 @@
         try{
           console.log("trying add_to_queue()");
 
-          const response = await axios.post(`http://127.0.0.1:5009/queue`, {concert_id:1});
+          const response = await axios.post(`http://127.0.0.1:5009/queue`, {concert_id:1, user_id:1});
           console.log("response", response);
 
           if (response.data.length < 1) { //no data
@@ -99,13 +100,15 @@
       // get queue position: freqeuently call this to updated queue position
       async get_queue_position() {
         var concert_id = 1; // CHANGE THIS FOR HALL 2
+        var user_id = 1; // CHANGE THIS FOR HALL 2
+
         console.log("concert_id", concert_id);
-        var queue_id = 10; // QUEUE ID
+        //var queue_id = 10; // QUEUE ID
 
         try{
           console.log("trying get_queue_position()");
 
-          const response = await axios.get(`http://127.0.0.1:5009/waiting-queue/${queue_id}`);
+          const response = await axios.get(`http://127.0.0.1:5009/waiting-queue/${user_id}/${concert_id}`);
           console.log("response", response);
 
           if (response.data.length < 1) { //no data
