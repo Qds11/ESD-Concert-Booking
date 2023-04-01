@@ -24,15 +24,15 @@
               <v-container>
                 <p class="text-h5 mb-5" style="columns: white"> 
                   Concert Name:
-                   {{ this.concert_id = JSON.parse(localStorage.getItem('concert_id')) }}
+                   {{ concertDetails.concert_name }}
                 </p>
                 <p class="text-h5 mb-5" style="columns: white">
                   Number of tickets: 
-                  {{ this.tix_quantity = JSON.parse(localStorage.getItem('tix_quantity')) }}
+                  {{ this.tix_quantity }}
                 </p>
                 <p class="text-h5 mb-5" style="columns: white">
                   Total Price: 
-                  {{ this.totalPrice = JSON.parse(localStorage.getItem('totalPrice')) }}
+                  ${{ this.totalPrice }}
                 </p>
               </v-container>
               <v-container>
@@ -75,9 +75,9 @@ export default {
   name: "PaymentPage",
   async created() {
     this.concert_id = this.$route.params.concertid;
+    this.tix_quantity = JSON.parse(localStorage.getItem('tix_quantity'))
+    this.totalPrice = JSON.parse(localStorage.getItem('totalPrice')) 
     await this.get_concert();
-    // await this.get_prices();
-    // await this.get_hall();
   },
   data() {
     return {
@@ -90,26 +90,6 @@ export default {
     };
   },
   methods: {
-    // Get concert details
-    async get_concert() {
-      try {
-        console.log("Getting concert details...");
-        const response = await axios.get(
-          `http://127.0.0.1:5005/concert/${this.concert_id}`
-        );
-        console.log("Concert details:", response);
-
-        if (response.data.length < 1) {
-          console.log("No concert details found.");
-        } else {
-          console.log("Concert details fetched successfully!");
-          this.concertDetails = response.data[0];
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    },
-
     // Send notification if payment is successful
     async sendNotif(paymentStatus) {
       if (paymentStatus) {
