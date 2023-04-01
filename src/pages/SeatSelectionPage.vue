@@ -2,6 +2,14 @@
   <v-container id="bg" fluid fill-height>
     <v-row align-self="center" class="h-screen">
       <v-col no-gutters cols="6">
+        <p class="text-h5 my-6" style="columns: white; color: white;">
+          <b>{{concertDetails.concert_name}}</b>
+          <br>
+          {{ getDateTime(concertDetails.date_time) }}
+          <br>
+          {{ hallDetails.hall_name}}
+
+        </p>
         <div v-if='hallDetails.data==1'>
           <v-img
             fluid
@@ -391,6 +399,7 @@ export default {
   name: "SeatSelectionPage",
   async created() {
     this.concert_id = this.$route.params.concertid
+    await this.get_concert();
     await this.get_hall();
     await this.get_availability();
     await this.get_prices();
@@ -407,6 +416,7 @@ export default {
   },
   data() {
       return {
+        concertDetails: "",
         hallDetails: "",
         ticketAvailability: "",
         ticketPrices: "",
@@ -424,6 +434,40 @@ export default {
       };
   },
   methods: {
+    getDateTime(datetime) {
+            const date = new Date(datetime);
+            const day = date.getDate().toString().padStart(2, '0'); // get the day of the month (1-31) and pad with leading zeros if necessary
+            const month = (date.getMonth() + 1).toString().padStart(2, '0'); // get the month (0-11) and add 1 to get the correct month number, then pad with leading zeros if necessary
+            const year = date.getFullYear().toString(); // get the year (4 digits)
+            const hours = date.getHours().toString().padStart(2, '0'); // get the hours (0-23) and pad with leading zeros if necessary
+            const minutes = date.getMinutes().toString().padStart(2, '0'); // get the minutes (0-59) and pad with leading zeros if necessary
+            const formattedDate = `${day}/${month}/${year}, ${hours}:${minutes}`;
+            return formattedDate;
+        },
+    //get concert
+    async get_concert() {
+        //console.log("this.concert_id", this.concert_id);
+        try{
+          console.log("trying get_concert()");
+
+          const response = await axios.get(`http://127.0.0.1:5005/concert/${this.concert_id}`);
+          console.log("response", response);
+
+          if (response.data.length < 1) { //no data
+            console.log("totally not cryin");
+          }
+          else{
+            console.log("get_concert() works!");
+            this.concertDetails=response.data[0];
+
+          }
+        } catch (error) {
+          // Errors when calling the service; such as network error, 
+          // service offline, etc
+          console.log(error);
+        }
+
+      },
     //get hall_details
     async get_hall() {
       console.log("this.concert_id", this.concert_id);
