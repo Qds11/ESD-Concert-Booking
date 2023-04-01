@@ -374,9 +374,10 @@
 
               <!-- Submit to Payment -->
               <v-col>
-                <router-link :to="{ path: '/seatSelectionPage/' + id }" class="link-style">
-            
-              <SubmitButton action="Proceed to Payment" @click="proceed_to_payment()"/>
+                
+                <router-link :to="{ path: '/PaymentPage/' + totalPrice + '/'+tix_quantity+'/'+concert_id }" class="link-style">
+                  <SubmitButton action="Proceed to Payment" @click="proceed_to_payment()"/>
+             
             </router-link>
                 
               </v-col>
@@ -429,7 +430,7 @@ export default {
         ticketAvailability: "",
         ticketPrices: "",
         recommendations: "",
-        //concert_id: null, //hardcoded
+        concert_id: null, //hardcoded
         cat1_quantity: 0,
         cat2_quantity: 0,
         cat3_quantity: 0,
@@ -438,7 +439,8 @@ export default {
         quantityExceeded: false,
         quantityZero: false,
         select_seat_popup: false,
-        totalPrice: 0
+        totalPrice: 0,
+        tix_quantity:0
       };
   },
   methods: {
@@ -691,14 +693,17 @@ export default {
     // check for tix qty exceeded, pass data to payment
     proceed_to_payment() {
       var tix_quantity = this.cat1_quantity + this.cat2_quantity + this.cat3_quantity + this.cat4_quantity + this.cat5_quantity;
+      this.tix_quantity=tix_quantity
+
       localStorage.setItem('chosen_cat1', JSON.stringify(this.cat1_quantity))
       localStorage.setItem('chosen_cat2', JSON.stringify(this.cat2_quantity))
       localStorage.setItem('chosen_cat3', JSON.stringify(this.cat3_quantity))
       localStorage.setItem('chosen_cat4', JSON.stringify(this.cat4_quantity))
       localStorage.setItem('chosen_cat5', JSON.stringify(this.cat5_quantity))
-      localStorage.setItem('concert_id',JSON.stringify(this.concert_id))
+  
       if (tix_quantity > 10) {
         this.quantityExceeded = true;
+        return 
         //show error message
       }
       // check for tix qty = 0
