@@ -8,7 +8,7 @@
                 TicketPro
               </p>
               <p class="text-h4 mb-5" style="columns: white">
-                You are now in the queue for (insert concert).
+                You are now in the queue for <b>{{ concertDetails.concert_name }}</b>.
               </p>
               <p class="text-h5 mb-5" style="columns: white">
                 When it is your turn, you will have 10 minutes to book tickets.
@@ -54,9 +54,13 @@
   export default {
     name: "QueuePage",
     async created() {
+      this.concert_id = this.$route.params.concertid
       //this.id = this.$route.params.id
       await this.add_to_queue();
       await this.get_queue_position();
+      await this.get_concert();
+      
+
       // const intervalId = 
       // window.setInterval(function(){
       //   // call your function here
@@ -67,22 +71,29 @@
       //clearInterval(intervalId);
 
     },
+    async mounted(){
+      //this.user_id = JSON.parse(localStorage.getItem('user_id'));
+      //console.log("user_id", this.user_id);
+
+    },
     components: {
     },
     data() {
       return {
         queue_position: 0,
+        concertDetails:"",
+        //userid: null,
+
       };
     },
     methods: {
       //post add_to_queue: call this once to queue user regardless whether they actually need to queue
       async add_to_queue() {
-        var concert_id = 1; // CHANGE THIS FOR HALL 2
-        console.log("concert_id", concert_id);
+        var user_id=1;
         try{
           console.log("trying add_to_queue()");
 
-          const response = await axios.post(`http://127.0.0.1:5009/queue`, {concert_id:1, user_id:1});
+          const response = await axios.post(`http://127.0.0.1:5009/queue`, {concert_id:this.concert_id, user_id:user_id});
           console.log("response", response);
 
           if (response.data.length < 1) { //no data
@@ -99,16 +110,13 @@
       },
       // get queue position: freqeuently call this to updated queue position
       async get_queue_position() {
-        var concert_id = 1; // CHANGE THIS FOR HALL 2
-        var user_id = 1; // CHANGE THIS FOR HALL 2
-
-        console.log("concert_id", concert_id);
         //var queue_id = 10; // QUEUE ID
+        var user_id=1;
 
         try{
           console.log("trying get_queue_position()");
 
-          const response = await axios.get(`http://127.0.0.1:5009/waiting-queue/${user_id}/${concert_id}`);
+          const response = await axios.get(`http://127.0.0.1:5009/waiting-queue/${user_id}/${this.concert_id}`);
           console.log("response", response);
 
           if (response.data.length < 1) { //no data
@@ -124,6 +132,31 @@
           console.log(error);
         }
       },
+      //get concert
+      async get_concert() {
+        //console.log("this.concert_id", this.concert_id);
+        try{
+          console.log("trying get_concert()");
+
+          const response = await axios.get(`http://127.0.0.1:5005/concert/${this.concert_id}`);
+          console.log("response", response);
+
+          if (response.data.length < 1) { //no data
+            console.log("totally not cryin");
+          }
+          else{
+            console.log("get_concert() works!");
+            this.concertDetails=response.data[0];
+
+          }
+        } catch (error) {
+          // Errors when calling the service; such as network error, 
+          // service offline, etc
+          console.log(error);
+        }
+
+      },
+      
     },
 
   };
