@@ -132,10 +132,15 @@ def get_hall(concert_id):
 
 @app.route("/ticket/update/<string:concert_id>", methods=['PUT'])
 def update_tickets(concert_id):
-    data=request.get_json()
+  
     ticket = Ticket.query.filter_by(concert_id=concert_id).first()
+    
+    data = request.get_json()
+    print(data)
+    print(ticket)
     if ticket:
         data = request.get_json()
+        print(data)
         if data['chosen_cat1']:
             ticket.cat1_avail = ticket.cat1_avail-data['chosen_cat1']
         if data['chosen_cat2']:
