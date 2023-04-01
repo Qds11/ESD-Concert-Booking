@@ -416,6 +416,7 @@ export default {
   name: "SeatSelectionPage",
   async created() {
     this.concert_id = this.$route.params.concertid
+    localStorage.setItem('concert_id', JSON.stringify(this.concert_id))
     await this.get_concert();
     await this.get_hall();
     await this.get_availability();
@@ -438,7 +439,7 @@ export default {
         ticketAvailability: "",
         ticketPrices: "",
         recommendations: "",
-        //concert_id: null, //hardcoded
+        concert_id: null, //hardcoded
         cat1_quantity: 0,
         cat2_quantity: 0,
         cat3_quantity: 0,
@@ -487,7 +488,7 @@ export default {
       },
     //get hall_details
     async get_hall() {
-      console.log("this.concert_id", this.concert_id);
+      // console.log("this.concert_id", this.concert_id);
       try{
         console.log("trying get_hall()");
 
@@ -510,7 +511,7 @@ export default {
     },
     //get availability by providing concert_id
     async get_availability() {
-      console.log("this.concert_id", this.concert_id);
+      // console.log("this.concert_id", this.concert_id);
       try{
         console.log("trying get_availability()");
 
@@ -534,7 +535,7 @@ export default {
     },
     //get prices by providing concert_id
     async get_prices() {
-      console.log("this.concert_id", this.concert_id);
+      // console.log("this.concert_id", this.concert_id);
       try{
         console.log("trying get_prices()");
 
@@ -557,7 +558,7 @@ export default {
     },
     //get recommendation
     async get_recommendation() {
-      console.log("this.concert_id", this.concert_id);
+      // console.log("this.concert_id", this.concert_id);
       try{
         console.log("trying get_recommendation()");
 
@@ -701,8 +702,9 @@ export default {
         localStorage.setItem('chosen_cat5', JSON.stringify(this.cat5_quantity))
 
         localStorage.setItem('tix_quantity', JSON.stringify(tix_quantity))
-        localStorage.setItem('totalPrice', JSON.stringify(this.totalPrice))
 
+        localStorage.setItem('totalPrice', JSON.stringify(this.totalPrice))
+        console.log(this.concert_id)
         console.log("can proceed to payment pg now")
 
 

@@ -22,7 +22,7 @@
   </template>
   
   <script>
-
+  import axios from "axios";
   export default {
 
     name: "SuccessPage",
@@ -32,34 +32,26 @@
     };
   },
   methods:{
-    async updateTicket(concert_id){
-    var data = {
+    async updateTicket(concert_id) {
+      console.log(concert_id)
+      var data = {
           chosen_cat1:JSON.parse(localStorage.getItem('chosen_cat1')),
           chosen_cat2:JSON.parse(localStorage.getItem('chosen_cat2')),
           chosen_cat3:JSON.parse(localStorage.getItem('chosen_cat3')),
           chosen_cat4:JSON.parse(localStorage.getItem('chosen_cat4')),
           chosen_cat5:JSON.parse(localStorage.getItem('chosen_cat5')),
         }
-        try {
-    const response = await fetch(`/ticket/update/${concert_id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
-    if (response.ok) {
-      const responseData = await response.json();
-      console.log(responseData.status);
-      // Do something with the response data
-    } else {
-      console.error(`Error: ${response.status} ${response.statusText}`);
-    }
-  } catch (error) {
-    console.error(`Error: ${error}`);
-  }
-      
-  }
+        console.log(data)
+      axios.put(`http://127.0.0.1:5004/ticket/update/${concert_id}`, data)
+        .then(response => {
+          console.log(response.data);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+
+    },
+    
   }
 ,
     mounted(){
@@ -67,6 +59,7 @@
       console.log(this.isSuccessful)
       if(this.isSuccessful==true){
         var concert_id=JSON.parse(localStorage.getItem('concert_id'))
+
         this.updateTicket(concert_id)
       }
       
