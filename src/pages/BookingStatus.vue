@@ -31,7 +31,8 @@
       isSuccessful: null, // Set this to true or false based on whether the booking was successful,
     };
   },
-  async updateTicket(concert_id){
+  methods:{
+    async updateTicket(concert_id){
     var data = {
           chosen_cat1:JSON.parse(localStorage.getItem('chosen_cat1')),
           chosen_cat2:JSON.parse(localStorage.getItem('chosen_cat2')),
@@ -58,7 +59,9 @@
     console.error(`Error: ${error}`);
   }
       
-  },
+  }
+  }
+,
     mounted(){
       this.isSuccessful=JSON.parse(localStorage.getItem('paymentStatus'))
       console.log(this.isSuccessful)
