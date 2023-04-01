@@ -14,7 +14,7 @@
           <v-img
             fluid
             :src="require('../../src/assets/halls/seating_plan_2.jpg')"
-            class="img h-screen"
+            class="img"
           >
           </v-img>
         </div>
@@ -22,7 +22,7 @@
           <v-img
             fluid
             :src="require('../../src/assets/halls/f9f85ae0-fb2f-11eb-a641-4e23b81c2c33.jpg')"
-            class="img h-screen"
+            class="img"
           >
           </v-img>
         </div>
