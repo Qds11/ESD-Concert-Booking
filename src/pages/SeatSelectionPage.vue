@@ -390,7 +390,7 @@
 
               <!-- Submit to Payment -->
               <v-col>
-                <SubmitButton action="Proceed to Payment" @click="proceed_to_payment()"/>
+                  <SubmitButton action="Proceed to Payment" @click="proceed_to_payment()"/>
               </v-col>
             </v-row>
           </v-form>
@@ -704,7 +704,9 @@ export default {
 
         console.log("can proceed to payment pg now")
 
+
         // proceed to payment pg
+        window.location='/PaymentPage/' + this.concert_id;
       }
     }
       

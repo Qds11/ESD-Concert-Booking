@@ -47,7 +47,7 @@ const routes = [
     component: SeatSelectionPage,
   },
   {
-    path: "/PaymentPage/:total_price/:ticket_quantity/:concertid",
+    path: "/PaymentPage/:concertid",
     name: "PaymentPage",
     component: PaymentPage,
   }
