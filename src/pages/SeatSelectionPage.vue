@@ -99,7 +99,7 @@
               </v-row>
 
               <!-- SEATS POPUP -->
-              <v-dialog
+              <!-- <v-dialog
                 v-model="select_seat_popup"
                 width="auto"
                 persistent
@@ -130,8 +130,8 @@
                     </v-container>
                   </v-card-text>
                   <v-card-actions>
-                    <!-- <v-btn color="primary" block @click="dialog = false">Close Dialog</v-btn> -->
-                    <v-spacer></v-spacer>
+                    <v-btn color="primary" block @click="dialog = false">Close Dialog</v-btn> -->
+                    <!-- <v-spacer></v-spacer>
                     <v-btn
                       color="deep-purple-accent-1"
                       variant="text"
@@ -148,7 +148,8 @@
                     </v-btn>
                   </v-card-actions>
                 </v-card>
-              </v-dialog>
+              </v-dialog> -->
+
             <!-- Cat 2 -->
 
             <v-row>
@@ -445,7 +446,7 @@ export default {
         cat5_quantity: 0,
         quantityExceeded: false,
         quantityZero: false,
-        select_seat_popup: false,
+        //select_seat_popup: false,
         totalPrice: 0
       };
   },
