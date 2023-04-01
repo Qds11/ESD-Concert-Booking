@@ -32,7 +32,7 @@
           >
           </v-img>
         </div>
-        <div v-else-if='hallDetails.data==2'>
+        <div v-else-if='hallDetails.data==3'>
           <v-img
             fluid
             :src="require('../../src/assets/halls/f9f85ae0-fb2f-11eb-a641-4e23b81c2c33.jpg')"
@@ -273,7 +273,7 @@
           </div>
 
           <!-- Victoria Theatre -->
-          <div v-else-if='hallDetails.data==2'>
+          <div v-else-if='hallDetails.data==3'>
             <!-- Cat 1 -->
             <v-row>
                 <v-col cols="6">
