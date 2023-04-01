@@ -130,6 +130,37 @@ def get_hall(concert_id):
     ), 404
 
 
+@app.route("/ticket/update/<string:concert_id>", methods=['PUT'])
+def update_tickets(concert_id):
+    data=request.get_json()
+    ticket = Ticket.query.filter_by(concert_id=concert_id).first()
+    if ticket:
+        data = request.get_json()
+        if data['chosen_cat1']:
+            ticket.cat1_avail = ticket.cat1_avail-data['chosen_cat1']
+        if data['chosen_cat2']:
+            ticket.cat2_avail = ticket.cat2_avail-data['chosen_cat2']
+        if data['chosen_cat3']:
+            ticket.cat3_avail = ticket.cat3_avail-data['chosen_cat3']
+        if data['chosen_cat4']:
+            ticket.cat4_avail = ticket.cat4_avail-data['chosen_cat4']
+        if data['chosen_cat5']:
+            ticket.cat5_avail = ticket.cat5_avail-data['chosen_cat5']
+        db.session.commit()
+        return jsonify(
+            {
+                "code": 200,
+                "data": ticket.json()
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "message": "Concert not found."
+        }
+    ), 404
+
+
 
 
 if __name__ == "__main__":
