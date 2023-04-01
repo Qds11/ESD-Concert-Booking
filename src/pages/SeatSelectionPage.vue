@@ -411,7 +411,7 @@ export default {
         ticketAvailability: "",
         ticketPrices: "",
         recommendations: "",
-        concert_id: null, //hardcoded
+        //concert_id: null, //hardcoded
         cat1_quantity: 0,
         cat2_quantity: 0,
         cat3_quantity: 0,
@@ -425,12 +425,11 @@ export default {
   methods: {
     //get hall_details
     async get_hall() {
-      var concert_id = 2; // CHANGE THIS FOR HALL 2
-      console.log("concert_id", concert_id);
+      console.log("this.concert_id", this.concert_id);
       try{
         console.log("trying get_hall()");
 
-        const response = await axios.get(`http://127.0.0.1:5004/hall/${concert_id}`);
+        const response = await axios.get(`http://127.0.0.1:5004/hall/${this.concert_id}`);
         console.log("response", response);
 
         if (response.data.length < 1) { //no data
@@ -449,12 +448,11 @@ export default {
     },
     //get availability by providing concert_id
     async get_availability() {
-      var concert_id = 2; // CHANGE THIS FOR HALL 2
-      console.log("concert_id", concert_id);
+      console.log("this.concert_id", this.concert_id);
       try{
         console.log("trying get_availability()");
 
-        const response = await axios.get(`http://127.0.0.1:5004/avail/${concert_id}`);
+        const response = await axios.get(`http://127.0.0.1:5004/avail/${this.concert_id}`);
         console.log("response", response);
 
         if (response.data.length < 1) { //no data
@@ -474,12 +472,11 @@ export default {
     },
     //get prices by providing concert_id
     async get_prices() {
-      var concert_id = 2; // CHANGE THIS FOR HALL 2
-      console.log("concert_id", concert_id);
+      console.log("this.concert_id", this.concert_id);
       try{
         console.log("trying get_prices()");
 
-        const response = await axios.get(`http://127.0.0.1:5004/price/${concert_id}`);
+        const response = await axios.get(`http://127.0.0.1:5004/price/${this.concert_id}`);
         console.log("response", response);
 
         if (response.data.length < 1) { //no data
@@ -498,12 +495,11 @@ export default {
     },
     //get recommendation
     async get_recommendation() {
-      var concert_id = 2;
-      console.log("concert_id", concert_id);
+      console.log("this.concert_id", this.concert_id);
       try{
         console.log("trying get_recommendation()");
 
-        const response = await axios.get(`http://127.0.0.1:5003/recommendations/concert/${concert_id}`);
+        const response = await axios.get(`http://127.0.0.1:5003/recommendations/concert/${this.concert_id}`);
         console.log("response", response);
 
         if (response.data.length < 1) { //no data
