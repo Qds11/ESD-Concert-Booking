@@ -55,6 +55,7 @@
     name: "QueuePage",
     async created() {
       this.concert_id = this.$route.params.concertid
+      this.user_id = this.$route.params.userid
       //this.id = this.$route.params.id
       await this.add_to_queue();
       await this.get_queue_position();
@@ -71,29 +72,22 @@
       //clearInterval(intervalId);
 
     },
-    async mounted(){
-      //this.user_id = JSON.parse(localStorage.getItem('user_id'));
-      //console.log("user_id", this.user_id);
-
-    },
     components: {
     },
     data() {
       return {
         queue_position: 0,
         concertDetails:"",
-        //userid: null,
 
       };
     },
     methods: {
       //post add_to_queue: call this once to queue user regardless whether they actually need to queue
       async add_to_queue() {
-        var user_id=1;
         try{
           console.log("trying add_to_queue()");
 
-          const response = await axios.post(`http://127.0.0.1:5009/queue`, {concert_id:this.concert_id, user_id:user_id});
+          const response = await axios.post(`http://127.0.0.1:5009/queue`, {concert_id:this.concert_id, user_id:this.user_id});
           console.log("response", response);
 
           if (response.data.length < 1) { //no data
@@ -111,12 +105,11 @@
       // get queue position: freqeuently call this to updated queue position
       async get_queue_position() {
         //var queue_id = 10; // QUEUE ID
-        var user_id=1;
 
         try{
           console.log("trying get_queue_position()");
 
-          const response = await axios.get(`http://127.0.0.1:5009/waiting-queue/${user_id}/${this.concert_id}`);
+          const response = await axios.get(`http://127.0.0.1:5009/waiting-queue/${this.user_id}/${this.concert_id}`);
           console.log("response", response);
 
           if (response.data.length < 1) { //no data
