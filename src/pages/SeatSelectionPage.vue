@@ -419,7 +419,8 @@ export default {
         cat5_quantity: 0,
         quantityExceeded: false,
         quantityZero: false,
-        select_seat_popup: false
+        select_seat_popup: false,
+        totalPrice: 0
       };
   },
   methods: {
@@ -563,15 +564,17 @@ export default {
     },
     // calculate Total Price of tickets chosen
     calculateTotalPrice(hall_id){
-      var totalPrice=0;
-
       if (hall_id==1){
-        totalPrice = (this.cat1_quantity*this.ticketPrices.cat1_price) + (this.cat2_quantity*this.ticketPrices.cat2_price) + (this.cat3_quantity*this.ticketPrices.cat3_price) + (this.cat4_quantity*this.ticketPrices.cat4_price) + (this.cat5_quantity*this.ticketPrices.cat5_price);
-        return totalPrice.toFixed(2);
+        this.totalPrice = (this.cat1_quantity*this.ticketPrices.cat1_price) + (this.cat2_quantity*this.ticketPrices.cat2_price) + (this.cat3_quantity*this.ticketPrices.cat3_price) + (this.cat4_quantity*this.ticketPrices.cat4_price) + (this.cat5_quantity*this.ticketPrices.cat5_price);
+        this.totalPrice = this.totalPrice.toFixed(2);
+        
+        return this.totalPrice
       }
       else{
-        totalPrice = (this.cat1_quantity*this.ticketPrices.cat1_price) + (this.cat2_quantity*this.ticketPrices.cat2_price) + (this.cat3_quantity*this.ticketPrices.cat3_price);
-        return totalPrice.toFixed(2);
+        this.totalPrice = (this.cat1_quantity*this.ticketPrices.cat1_price) + (this.cat2_quantity*this.ticketPrices.cat2_price) + (this.cat3_quantity*this.ticketPrices.cat3_price);
+        this.totalPrice = this.totalPrice.toFixed(2);
+
+        return this.totalPrice
       }
     },
     // display recomm
