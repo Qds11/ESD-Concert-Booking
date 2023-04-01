@@ -29,7 +29,7 @@
                 color="deep-purple-accent-1"
                 height="12"
                 rounded
-                model-value="40"
+                model-value="80"
                 striped
               ></v-progress-linear>
             </v-container>
@@ -56,6 +56,15 @@
       await this.get_queue_position();
       // await this.get_prices();
       // await this.get_recommendation();
+      // const intervalId = 
+      // window.setInterval(function(){
+      //   // call your function here
+      //   this.get_queue_position()
+      // }, 60000); // -> can change time interval
+
+      // stop calling
+      //clearInterval(intervalId);
+
     },
     components: {
     },
@@ -80,7 +89,6 @@
           }
           else{
             console.log("add_to_queue() works!");
-            // this.hallDetails=response.data;
           }
         } catch (error) {
           // Errors when calling the service; such as network error, 
@@ -114,7 +122,7 @@
         }
       },
     },
-    
+
   };
   </script>
   
