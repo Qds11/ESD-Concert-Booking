@@ -374,7 +374,11 @@
 
               <!-- Submit to Payment -->
               <v-col>
-                <SubmitButton action="Proceed to Payment" @click="proceed_to_payment()"/>
+                <router-link :to="{ path: '/seatSelectionPage/' + id }" class="link-style">
+            
+              <SubmitButton action="Proceed to Payment" @click="proceed_to_payment()"/>
+            </router-link>
+                
               </v-col>
             </v-row>
           </v-form>
@@ -692,6 +696,7 @@ export default {
       localStorage.setItem('chosen_cat3', JSON.stringify(this.cat3_quantity))
       localStorage.setItem('chosen_cat4', JSON.stringify(this.cat4_quantity))
       localStorage.setItem('chosen_cat5', JSON.stringify(this.cat5_quantity))
+      localStorage.setItem('concert_id',JSON.stringify(this.concert_id))
       if (tix_quantity > 10) {
         this.quantityExceeded = true;
         //show error message

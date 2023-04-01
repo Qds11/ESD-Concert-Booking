@@ -47,7 +47,7 @@ const routes = [
     component: SeatSelectionPage,
   },
   {
-    path: "/PaymentPage/:total/:tixqty",
+    path: "/PaymentPage/:total/:ticket_quantity",
     name: "PaymentPage",
     component: PaymentPage,
   }

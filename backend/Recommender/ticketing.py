@@ -128,6 +128,34 @@ def get_hall(concert_id):
             "message": "There are no concerts by that concert id."
         }
     ), 404
+    
+@app.route("/book/<string:concert_id>", methods=['PUT'])
+def update_tickets(concert_id):
+    ticket = Ticket.query.filter_by(concert_id=concert_id).first()
+    if :
+        data = request.get_json()
+        if data['title']:
+            book.title = data['title']
+        if data['price']:
+            book.price = data['price']
+        if data['availability']:
+            book.availability = data['availability'] 
+        db.session.commit()
+        return jsonify(
+            {
+                "code": 200,
+                "data": book.json()
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "data": {
+                "isbn13": isbn13
+            },
+            "message": "Book not found."
+        }
+    ), 404
 
 
 
