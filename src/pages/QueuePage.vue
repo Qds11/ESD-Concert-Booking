@@ -11,7 +11,7 @@
                 You are now in the queue for <b>{{ concertDetails.concert_name }}</b>.
               </p>
               <p class="text-h5 mb-5" style="columns: white">
-                When it is your turn, you will have 10 minutes to book tickets.
+                When it is your turn, you will have 10 minutes to book tickets and make payment.
               </p>
             </v-container>
             <v-container>
@@ -55,8 +55,9 @@
     name: "QueuePage",
     async created() {
       this.concert_id = this.$route.params.concertid
-      this.user_id = this.$route.params.userid
-      //this.id = this.$route.params.id
+      this.userid = JSON.parse(localStorage.getItem('userid'))
+      //console.log("this.userid",this.userid);
+
       await this.add_to_queue();
       await this.get_queue_position();
       await this.get_concert();
@@ -87,7 +88,7 @@
         try{
           console.log("trying add_to_queue()");
 
-          const response = await axios.post(`http://127.0.0.1:5009/queue`, {concert_id:this.concert_id, user_id:this.user_id});
+          const response = await axios.post(`http://127.0.0.1:5009/queue`, {concert_id:this.concert_id, user_id:this.userid});
           console.log("response", response);
 
           if (response.data.length < 1) { //no data
@@ -109,7 +110,7 @@
         try{
           console.log("trying get_queue_position()");
 
-          const response = await axios.get(`http://127.0.0.1:5009/waiting-queue/${this.user_id}/${this.concert_id}`);
+          const response = await axios.get(`http://127.0.0.1:5009/waiting-queue/${this.userid}/${this.concert_id}`);
           console.log("response", response);
 
           if (response.data.length < 1) { //no data
