@@ -24,11 +24,14 @@
 export default {
   name: 'NavBar',
   mounted() {
+
+    // localStorage.setItem("username", 3);
+
    // localStorage.removeItem('username');
-    if(localStorage.getItem('username')){
-      this.username = JSON.parse(localStorage.getItem('username'))
-      this.isLoggedIn=true
-    }
+    // if(localStorage.getItem('username')){
+    //   this.username = JSON.parse(localStorage.getItem('username'))
+    //   this.isLoggedIn=true
+    // }
 
   },
 
