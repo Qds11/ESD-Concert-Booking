@@ -13,17 +13,7 @@
         <div class="timer">
             {{min}}:{{sec}}
         </div>
-        <div class="text-center mb-1">
-            <v-btn-toggle v-if="!active" dark>
-                <v-btn v-on:click="seconds()"><v-icon>mdi-play</v-icon></v-btn>
-                <v-btn disabled><v-icon>mdi-stop</v-icon></v-btn>
-            </v-btn-toggle>
-            <v-btn-toggle v-model="toggle_none" v-else dark>
-                <v-btn v-on:click="pause" v-if="!paused"><v-icon>mdi-pause</v-icon></v-btn>
-                <v-btn v-on:click="seconds()" v-else><v-icon>mdi-pause</v-icon></v-btn>
-                <v-btn v-on:click="end"><v-icon>mdi-stop</v-icon></v-btn>
-            </v-btn-toggle>
-        </div>
+
         <div v-if='hallDetails.data==1'>
           <v-img
             fluid
@@ -417,6 +407,7 @@ export default {
   async created() {
     this.concert_id = this.$route.params.concertid
     localStorage.setItem('concert_id', JSON.stringify(this.concert_id))
+    //this.seconds(); // start timer immediately
     await this.get_concert();
     await this.get_hall();
     await this.get_availability();
@@ -428,9 +419,12 @@ export default {
     SubmitButton,
   },
   computed: {
-      // hasBooks: function () {
-      //     return this.books.length > 0;
-      // }
+      min() {
+        return String(Math.floor(this.timeSec/60)).padStart(2, '0');
+      },
+      sec() {
+        return String(this.timeSec%60).padStart(2, '0');
+      },
   },
   data() {
       return {
@@ -439,7 +433,6 @@ export default {
         ticketAvailability: "",
         ticketPrices: "",
         recommendations: "",
-        concert_id: null, //hardcoded
         cat1_quantity: 0,
         cat2_quantity: 0,
         cat3_quantity: 0,
@@ -448,10 +441,40 @@ export default {
         quantityExceeded: false,
         quantityZero: false,
         //select_seat_popup: false,
-        totalPrice: 0
+        totalPrice: 0,
+        timeSec: 600, // timer duration
       };
   },
   methods: {
+    seconds() {
+      // if (!this.active) {
+      //     this.focusStart = firebase.firestore.Timestamp.fromDate(new Date());
+      // }
+      //this.active = true;
+      //this.paused = false;
+      //this.focusDuration = null;
+      //this.toggle_none = null;
+      this.timeSec--;
+      
+      var time = this;
+      if (this.timer != null) {
+          clearInterval(this.timer);
+          this.timer = null;
+      }
+      this.timer = setInterval(function () {
+          if (time.timeSec == 0) { 
+            // if time is up
+              time.end();
+          } else {
+              time.timeSec--;
+          }
+      }, 1000);
+    },
+    end(){
+      clearInterval(this.timer);
+      this.timer = null;
+      this.timeSec = 600;
+    },
     getDateTime(datetime) {
             const date = new Date(datetime);
             const day = date.getDate().toString().padStart(2, '0'); // get the day of the month (1-31) and pad with leading zeros if necessary
