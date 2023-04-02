@@ -195,34 +195,27 @@
           }
         });
       },
-            onApprove(data,actions) {
-              console.log(data)
-              // This function captures the funds from the transaction.
-             
-              return actions.order.capture({
-          commit: true
-        })
-                // .then((response) => response.json())
-                .then((details) => {
+      onApprove(data,actions) {
+             console.log(data)
+             // This function captures the funds from the transaction.
+            
+             return actions.order.capture({
+         commit: true
+       })
+               // .then((response) => response.json())
+               .then((details) => {
+                 // This function shows a transaction success message to your buyer.
+                 this.paymentStatus = true
+                 // this.sendNotif(this.paymentStatus)
+                 alert(
+                   "Transaction completed by " + details.payer.name.given_name
+                 );
 
-                  // This function shows a transaction success message to your buyer.
-                  this.paymentStatus = true
-                  // this.sendNotif(this.paymentStatus)
 
-                  // Show a transaction success message to the buyer
-                  this.paymentStatus = true;
-                  console.log(this.paymentStatus);
+               });
+           },
+         })
 
-                  this.sendNotif(this.paymentStatus);
-
-                  alert(
-                    "Transaction completed by " + details.payer.name.given_name
-                  );
- 
- 
-                });
-            },
-          })
           .render("#paypal-button-container")
           .catch((error) => {
             console.error("failed to render the PayPal Buttons", error);
