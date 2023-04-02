@@ -408,7 +408,8 @@ export default {
     this.concert_id = this.$route.params.concertid
     this.userid = JSON.parse(localStorage.getItem('userid'))
     localStorage.setItem('concert_id', JSON.stringify(this.concert_id))
-    //this.seconds(); // start timer immediately
+    
+    this.seconds(); // start timer immediately
     await this.get_concert();
     await this.get_hall();
     await this.get_availability();
@@ -443,18 +444,11 @@ export default {
         quantityZero: false,
         //select_seat_popup: false,
         totalPrice: 0,
-        timeSec: 5, // timer duration
+        timeSec: 600, // timer duration
       };
   },
   methods: {
     seconds() {
-      // if (!this.active) {
-      //     this.focusStart = firebase.firestore.Timestamp.fromDate(new Date());
-      // }
-      //this.active = true;
-      //this.paused = false;
-      //this.focusDuration = null;
-      //this.toggle_none = null;
       this.timeSec--;
       
       var time = this;
@@ -475,8 +469,8 @@ export default {
     async end(){
       clearInterval(this.timer);
       this.timer = null;
-      this.timeSec = 600;
-      //await this.delete_from_queue();
+      this.timeSec = 0;
+      await this.delete_from_queue();
     },
     //DELETE delete_from_queue: seat selection UI call this if user exceed 10mins
     async delete_from_queue() {
@@ -491,6 +485,7 @@ export default {
         }
         else{
           console.log("delete_from_queue() works!");
+          window.location='/concert/' + this.concert_id; // go to concert pg when time exceeds
         }
       } catch (error) {
         // Errors when calling the service; such as network error, 
@@ -748,8 +743,10 @@ export default {
         localStorage.setItem('chosen_cat5', JSON.stringify(this.cat5_quantity))
 
         localStorage.setItem('tix_quantity', JSON.stringify(tix_quantity))
-
         localStorage.setItem('totalPrice', JSON.stringify(this.totalPrice))
+
+        localStorage.setItem('timeSec', JSON.stringify(this.timeSec))
+
         console.log(this.concert_id)
         console.log("can proceed to payment pg now")
 

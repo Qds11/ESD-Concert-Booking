@@ -29,7 +29,7 @@ No concert found
     </div>
     <div v-else>
 
-        <router-link :to="{ path: '/seatSelectionPage/' + id }" class="link-style" v-if="targetConcert.status.includes('available')">
+        <router-link :to="{ path: '/queuePage/' + id }" class="link-style" v-if="targetConcert.status.includes('available')">
               <v-btn color="orange-lighten-2" variant="text"> Buy Tickets </v-btn>
         </router-link>
 
