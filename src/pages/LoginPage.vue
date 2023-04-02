@@ -83,7 +83,7 @@ const errorMsg = ref({
         
         // welcome and redirect
         alert("Welcome " + res.data.username + " !")
-        window.location.href = "/"
+        window.location.href = "/concert"
        
       })
       .catch((error) => {
