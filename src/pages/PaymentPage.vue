@@ -5,7 +5,7 @@
         <v-container>
           <div :style="{ paddingLeft: '55%' }">
             <h1 :style="{ fontSize: '40px', color: 'white' }">
-              Ticket Details
+              Checkout
             </h1>
           </div>
         </v-container>
