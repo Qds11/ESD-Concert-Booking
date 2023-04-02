@@ -32,7 +32,7 @@ const routes = [
     component: ConcertPage,
   },
   {
-    path: "/BookingStatus/:paymentStatus/",
+    path: "/BookingStatus/:paymentStatus",
     name: "BookingStatus",
     component: BookingStatus,
   },
