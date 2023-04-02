@@ -17,12 +17,12 @@ const routes = [
     component: TestComponent,
   },
   {
-    path: "/",
+    path: "/concert",
     name: "HomePage",
     component: HomePage,
   },
   {
-    path: "/login",
+    path: "/",
     name: "LoginPage",
     component: LoginPage,
   },
@@ -37,17 +37,17 @@ const routes = [
     component: BookingStatus,
   },
   {
-    path: "/queuePage",
+    path: "/queuePage/:concertid/",
     name: "QueuePage",
     component: QueuePage,
   },
   {
-    path: "/seatSelectionPage",
+    path: "/seatSelectionPage/:concertid",
     name: "SeatSelectionPage",
     component: SeatSelectionPage,
   },
   {
-    path: "/PaymentPage",
+    path: "/PaymentPage/:concertid",
     name: "PaymentPage",
     component: PaymentPage,
   }

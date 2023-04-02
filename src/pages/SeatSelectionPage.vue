@@ -2,19 +2,31 @@
   <v-container id="bg" fluid fill-height>
     <v-row align-self="center" class="h-screen">
       <v-col no-gutters cols="6">
+        <p class="text-h5 my-6" style="columns: white; color: white;">
+          <b>{{concertDetails.concert_name}}</b>
+          <br>
+          {{ getDateTime(concertDetails.date_time) }}
+          <br>
+          {{ hallDetails.hall_name}}
+
+        </p>
+        <div class="timer">
+            {{min}}:{{sec}}
+        </div>
+
         <div v-if='hallDetails.data==1'>
           <v-img
             fluid
             :src="require('../../src/assets/halls/seating_plan_2.jpg')"
-            class="img h-screen"
+            class="img"
           >
           </v-img>
         </div>
-        <div v-else-if='hallDetails.data==2'>
+        <div v-else-if='hallDetails.data==3'>
           <v-img
             fluid
             :src="require('../../src/assets/halls/f9f85ae0-fb2f-11eb-a641-4e23b81c2c33.jpg')"
-            class="img h-screen"
+            class="img"
           >
           </v-img>
         </div>
@@ -77,7 +89,7 @@
               </v-row>
 
               <!-- SEATS POPUP -->
-              <v-dialog
+              <!-- <v-dialog
                 v-model="select_seat_popup"
                 width="auto"
                 persistent
@@ -108,8 +120,8 @@
                     </v-container>
                   </v-card-text>
                   <v-card-actions>
-                    <!-- <v-btn color="primary" block @click="dialog = false">Close Dialog</v-btn> -->
-                    <v-spacer></v-spacer>
+                    <v-btn color="primary" block @click="dialog = false">Close Dialog</v-btn> -->
+                    <!-- <v-spacer></v-spacer>
                     <v-btn
                       color="deep-purple-accent-1"
                       variant="text"
@@ -126,7 +138,8 @@
                     </v-btn>
                   </v-card-actions>
                 </v-card>
-              </v-dialog>
+              </v-dialog> -->
+
             <!-- Cat 2 -->
 
             <v-row>
@@ -251,7 +264,7 @@
           </div>
 
           <!-- Victoria Theatre -->
-          <div v-else-if='hallDetails.data==2'>
+          <div v-else-if='hallDetails.data==3'>
             <!-- Cat 1 -->
             <v-row>
                 <v-col cols="6">
@@ -352,6 +365,13 @@
                 Ticket quantity cannot exceed 10. Please choose again.
               </p>
             </div>
+            <div v-else-if='quantityZero==true'>
+              <p class="text-h7 mb-5 pt-5" style="columns: white; color: red;">
+                Please select a ticket.
+              </p>
+            </div>
+            <div v-else>
+            </div>
               <v-row class="mt-5">
                 <v-col>
                   <p class="text-h7 pt-1" style="columns: white">
@@ -361,7 +381,7 @@
 
               <!-- Submit to Payment -->
               <v-col>
-                <SubmitButton action="Proceed to Payment" @click="proceed_to_payment()"/>
+                  <SubmitButton action="Proceed to Payment" @click="proceed_to_payment()"/>
               </v-col>
             </v-row>
           </v-form>
@@ -385,45 +405,139 @@ import axios from "axios";
 export default {
   name: "SeatSelectionPage",
   async created() {
-    //this.id = this.$route.params.id
+    this.concert_id = this.$route.params.concertid
+    this.userid = JSON.parse(localStorage.getItem('userid'))
+    localStorage.setItem('concert_id', JSON.stringify(this.concert_id))
+
+    this.timeSec = JSON.parse(localStorage.getItem('timeSec'))
+
+    this.seconds(); // start timer immediately
+    await this.get_concert();
     await this.get_hall();
     await this.get_availability();
     await this.get_prices();
     await this.get_recommendation();
+
   },
   components: {
     SubmitButton,
   },
   computed: {
-      // hasBooks: function () {
-      //     return this.books.length > 0;
-      // }
+      min() {
+        return String(Math.floor(this.timeSec/60)).padStart(2, '0');
+      },
+      sec() {
+        return String(this.timeSec%60).padStart(2, '0');
+      },
   },
   data() {
       return {
+        concertDetails: "",
         hallDetails: "",
         ticketAvailability: "",
         ticketPrices: "",
         recommendations: "",
-        //concert_id: 1, //hardcoded
         cat1_quantity: 0,
         cat2_quantity: 0,
         cat3_quantity: 0,
         cat4_quantity: 0,
         cat5_quantity: 0,
         quantityExceeded: false,
-        select_seat_popup: false
+        quantityZero: false,
+        //select_seat_popup: false,
+        totalPrice: 0,
+        timeSec: 600, // timer duration
       };
   },
   methods: {
+    seconds() {
+      this.timeSec--;
+      
+      var time = this;
+      if (this.timer != null) {
+          clearInterval(this.timer);
+          this.timer = null;
+      }
+      this.timer = setInterval(function () {
+          if (time.timeSec == 0) { 
+            // if time is up
+              time.end();
+          } else {
+              time.timeSec--;
+              // store new time every sec
+              localStorage.setItem('timeSec', JSON.stringify(time.timeSec));
+          }
+      }, 1000);
+    },
+    //if user exceeded 10mins
+    async end(){
+      clearInterval(this.timer);
+      this.timer = null;
+      this.timeSec = 0;
+      await this.delete_from_queue();
+    },
+    //DELETE delete_from_queue: seat selection UI call this if user exceed 10mins
+    async delete_from_queue() {
+      try{
+        console.log("trying delete_from_queue()");
+
+        const response = await axios.delete(`http://127.0.0.1:5009/delete-from-queue/${this.userid}/${this.concert_id}`);
+        console.log("response", response);
+
+        if (response.data.length < 1) { //no data
+          console.log("totally not cryin");
+        }
+        else{
+          console.log("delete_from_queue() works!");
+          window.location='/concert/' + this.concert_id; // go to concert pg when time exceeds
+        }
+      } catch (error) {
+        // Errors when calling the service; such as network error, 
+        // service offline, etc
+        console.log(error);
+      }
+    },
+    getDateTime(datetime) {
+      const date = new Date(datetime);
+      const day = date.getDate().toString().padStart(2, '0'); // get the day of the month (1-31) and pad with leading zeros if necessary
+      const month = (date.getMonth() + 1).toString().padStart(2, '0'); // get the month (0-11) and add 1 to get the correct month number, then pad with leading zeros if necessary
+      const year = date.getFullYear().toString(); // get the year (4 digits)
+      const hours = date.getHours().toString().padStart(2, '0'); // get the hours (0-23) and pad with leading zeros if necessary
+      const minutes = date.getMinutes().toString().padStart(2, '0'); // get the minutes (0-59) and pad with leading zeros if necessary
+      const formattedDate = `${day}/${month}/${year}, ${hours}:${minutes}`;
+      return formattedDate;
+    },
+    //get concert
+    async get_concert() {
+        //console.log("this.concert_id", this.concert_id);
+        try{
+          console.log("trying get_concert()");
+
+          const response = await axios.get(`http://127.0.0.1:5005/concert/${this.concert_id}`);
+          console.log("response", response);
+
+          if (response.data.length < 1) { //no data
+            console.log("totally not cryin");
+          }
+          else{
+            console.log("get_concert() works!");
+            this.concertDetails=response.data[0];
+
+          }
+        } catch (error) {
+          // Errors when calling the service; such as network error, 
+          // service offline, etc
+          console.log(error);
+        }
+
+      },
     //get hall_details
     async get_hall() {
-      var concert_id = 2; // CHANGE THIS FOR HALL 2
-      console.log("concert_id", concert_id);
+      // console.log("this.concert_id", this.concert_id);
       try{
         console.log("trying get_hall()");
 
-        const response = await axios.get(`http://127.0.0.1:5004/hall/${concert_id}`);
+        const response = await axios.get(`http://127.0.0.1:5004/hall/${this.concert_id}`);
         console.log("response", response);
 
         if (response.data.length < 1) { //no data
@@ -442,12 +556,11 @@ export default {
     },
     //get availability by providing concert_id
     async get_availability() {
-      var concert_id = 2; // CHANGE THIS FOR HALL 2
-      console.log("concert_id", concert_id);
+      // console.log("this.concert_id", this.concert_id);
       try{
         console.log("trying get_availability()");
 
-        const response = await axios.get(`http://127.0.0.1:5004/avail/${concert_id}`);
+        const response = await axios.get(`http://127.0.0.1:5004/avail/${this.concert_id}`);
         console.log("response", response);
 
         if (response.data.length < 1) { //no data
@@ -467,12 +580,11 @@ export default {
     },
     //get prices by providing concert_id
     async get_prices() {
-      var concert_id = 2; // CHANGE THIS FOR HALL 2
-      console.log("concert_id", concert_id);
+      // console.log("this.concert_id", this.concert_id);
       try{
         console.log("trying get_prices()");
 
-        const response = await axios.get(`http://127.0.0.1:5004/price/${concert_id}`);
+        const response = await axios.get(`http://127.0.0.1:5004/price/${this.concert_id}`);
         console.log("response", response);
 
         if (response.data.length < 1) { //no data
@@ -491,12 +603,11 @@ export default {
     },
     //get recommendation
     async get_recommendation() {
-      var concert_id = 2;
-      console.log("concert_id", concert_id);
+      // console.log("this.concert_id", this.concert_id);
       try{
         console.log("trying get_recommendation()");
 
-        const response = await axios.get(`http://127.0.0.1:5003/recommendations/${concert_id}`);
+        const response = await axios.get(`http://127.0.0.1:5003/recommendations/concert/${this.concert_id}`);
         console.log("response", response);
 
         if (response.data.length < 1) { //no data
@@ -560,15 +671,17 @@ export default {
     },
     // calculate Total Price of tickets chosen
     calculateTotalPrice(hall_id){
-      var totalPrice=0;
-
       if (hall_id==1){
-        totalPrice = (this.cat1_quantity*this.ticketPrices.cat1_price) + (this.cat2_quantity*this.ticketPrices.cat2_price) + (this.cat3_quantity*this.ticketPrices.cat3_price) + (this.cat4_quantity*this.ticketPrices.cat4_price) + (this.cat5_quantity*this.ticketPrices.cat5_price);
-        return totalPrice.toFixed(2);
+        this.totalPrice = (this.cat1_quantity*this.ticketPrices.cat1_price) + (this.cat2_quantity*this.ticketPrices.cat2_price) + (this.cat3_quantity*this.ticketPrices.cat3_price) + (this.cat4_quantity*this.ticketPrices.cat4_price) + (this.cat5_quantity*this.ticketPrices.cat5_price);
+        this.totalPrice = this.totalPrice.toFixed(2);
+        
+        return this.totalPrice
       }
       else{
-        totalPrice = (this.cat1_quantity*this.ticketPrices.cat1_price) + (this.cat2_quantity*this.ticketPrices.cat2_price) + (this.cat3_quantity*this.ticketPrices.cat3_price);
-        return totalPrice.toFixed(2);
+        this.totalPrice = (this.cat1_quantity*this.ticketPrices.cat1_price) + (this.cat2_quantity*this.ticketPrices.cat2_price) + (this.cat3_quantity*this.ticketPrices.cat3_price);
+        this.totalPrice = this.totalPrice.toFixed(2);
+
+        return this.totalPrice
       }
     },
     // display recomm
@@ -613,13 +726,37 @@ export default {
     // check for tix qty exceeded, pass data to payment
     proceed_to_payment() {
       var tix_quantity = this.cat1_quantity + this.cat2_quantity + this.cat3_quantity + this.cat4_quantity + this.cat5_quantity;
+
       if (tix_quantity > 10) {
         this.quantityExceeded = true;
-        //show error message
+        //ui shows error message
+      }
+      // check for tix qty = 0
+      else if (tix_quantity == 0) {
+        this.quantityZero = true;
+        //ui shows error message
       }
       else{
         this.quantityExceeded = false;
+        this.quantityZero = false;
+
+        localStorage.setItem('chosen_cat1', JSON.stringify(this.cat1_quantity))
+        localStorage.setItem('chosen_cat2', JSON.stringify(this.cat2_quantity))
+        localStorage.setItem('chosen_cat3', JSON.stringify(this.cat3_quantity))
+        localStorage.setItem('chosen_cat4', JSON.stringify(this.cat4_quantity))
+        localStorage.setItem('chosen_cat5', JSON.stringify(this.cat5_quantity))
+
+        localStorage.setItem('tix_quantity', JSON.stringify(tix_quantity))
+        localStorage.setItem('totalPrice', JSON.stringify(this.totalPrice))
+
+        localStorage.setItem('timeSec', JSON.stringify(this.timeSec))
+
+        console.log(this.concert_id)
+        console.log("can proceed to payment pg now")
+
+
         // proceed to payment pg
+        window.location='/PaymentPage/' + this.concert_id;
       }
     }
       
@@ -639,4 +776,12 @@ export default {
 html {
   background-color: black;
 }
+
+.timer {
+      color: white;
+      font-size: 2rem;
+      font-weight: bolder;
+      text-align: center;
+      margin: 15px 0;
+    }
 </style>

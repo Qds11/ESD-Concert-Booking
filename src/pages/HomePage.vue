@@ -4,11 +4,11 @@
   <h1 class="title">Concerts Available</h1>
   <!-- <v-img :src="require('../assets/concerts/concert1.jpg')"></v-img> -->
   <v-container>
-    <v-row align="start" no-gutters style="height: 150px">
-      <v-col v-for="concert in concerts" :key="concert.id">
+    <v-row align="start" no-gutters style="height: 150px" class="my-7">
+      <v-col cols="12" sm="3" md="4" v-for="concert in concerts" :key="concert.id">
         <v-card class="mx-auto" max-width="344">
           <v-img :src="require('../assets/concerts/' + concert.image_path)"></v-img>
-            <v-chip color="deep-purple-accent-4" class="mt-2" text-color="white"  v-if="recommended == concert.genre">Recommended for you!</v-chip>
+            <v-chip color="deep-purple-accent-4" class="mt-2" text-color="white"  v-if=" recommended !==null && recommended == concert.genre">Recommended for you!</v-chip>
 
 
           <v-card-title class="word-break">
@@ -30,6 +30,7 @@
           </v-card-actions>
         </v-card>
       </v-col>
+       <!-- <v-col v-if="concerts.length % 3 !== 0" :cols="(3 - (concerts.length % 3))"></v-col> -->
     </v-row>
   </v-container>
 </template>

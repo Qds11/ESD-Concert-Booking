@@ -22,7 +22,7 @@
   </template>
   
   <script>
-
+  import axios from "axios";
   export default {
 
     name: "SuccessPage",
@@ -31,8 +31,39 @@
       isSuccessful: null, // Set this to true or false based on whether the booking was successful,
     };
   },
+  methods:{
+    async updateTicket(concert_id) {
+      console.log(concert_id)
+      var data = {
+          chosen_cat1:JSON.parse(localStorage.getItem('chosen_cat1')),
+          chosen_cat2:JSON.parse(localStorage.getItem('chosen_cat2')),
+          chosen_cat3:JSON.parse(localStorage.getItem('chosen_cat3')),
+          chosen_cat4:JSON.parse(localStorage.getItem('chosen_cat4')),
+          chosen_cat5:JSON.parse(localStorage.getItem('chosen_cat5')),
+        }
+        console.log(data)
+      axios.put(`http://127.0.0.1:5004/ticket/update/${concert_id}`, data)
+        .then(response => {
+          console.log(response.data);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+
+    },
+    
+  }
+,
     mounted(){
       this.isSuccessful=JSON.parse(localStorage.getItem('paymentStatus'))
+      console.log(this.isSuccessful)
+      if(this.isSuccessful==true){
+        var concert_id=JSON.parse(localStorage.getItem('concert_id'))
+
+        this.updateTicket(concert_id)
+      }
+      
+        
 
 
     }

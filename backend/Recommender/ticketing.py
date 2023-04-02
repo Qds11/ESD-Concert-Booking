@@ -1,11 +1,13 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
+from os import environ
 
 app = Flask(__name__)
 cors = CORS(app)
 
 # need to change DB uri accordingly
+# app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:8889/halldata'
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/halldata'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -80,6 +82,10 @@ def get_availability(concert_id):
         }
     ), 404
 
+
+
+
+
 # get prices by providing concert id 
 @app.route('/price/<string:concert_id>', methods=['GET'])
 def get_prices(concert_id):
@@ -120,6 +126,64 @@ def get_hall(concert_id):
         {
             "code": 404,
             "message": "There are no concerts by that concert id."
+        }
+    ), 404
+    
+#get hall_id
+@app.route('/concert/status/<string:concert_id>', methods=['GET'])
+def get_status(concert_id):
+    ticket = Ticket.query.filter_by(concert_id=concert_id).first()
+    if ticket:
+        if (ticket.json()['cat1_avail']==0) and (ticket.json()['cat2_avail']==0) and (ticket.json()['cat3_avail']==0) and (ticket.json()['cat4_avail']==0) and (ticket.json()['cat5_avail']==0):
+            status='Concert sold out'
+        else:
+            status='Concert available'
+        return jsonify({
+            "code": 200,
+            'status':status
+
+        })
+
+    return jsonify(
+        {
+            "code": 404,
+            "message": "There are no concerts by that concert id."
+        }
+    ), 404
+
+
+@app.route("/ticket/update/<string:concert_id>", methods=['PUT'])
+def update_tickets(concert_id):
+  
+    ticket = Ticket.query.filter_by(concert_id=concert_id).first()
+    
+    data = request.get_json()
+    print(data)
+    print(ticket)
+    if ticket:
+        data = request.get_json()
+        print(data)
+        if data['chosen_cat1']:
+            ticket.cat1_avail = ticket.cat1_avail-data['chosen_cat1']
+        if data['chosen_cat2']:
+            ticket.cat2_avail = ticket.cat2_avail-data['chosen_cat2']
+        if data['chosen_cat3']:
+            ticket.cat3_avail = ticket.cat3_avail-data['chosen_cat3']
+        if data['chosen_cat4']:
+            ticket.cat4_avail = ticket.cat4_avail-data['chosen_cat4']
+        if data['chosen_cat5']:
+            ticket.cat5_avail = ticket.cat5_avail-data['chosen_cat5']
+        db.session.commit()
+        return jsonify(
+            {
+                "code": 200,
+                "data": ticket.json()
+            }
+        )
+    return jsonify(
+        {
+            "code": 404,
+            "message": "Concert not found."
         }
     ), 404
 
