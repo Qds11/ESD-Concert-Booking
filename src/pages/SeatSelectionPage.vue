@@ -477,6 +477,7 @@ export default {
       try{
         console.log("trying delete_from_queue()");
 
+        
         const response = await axios.delete(`http://127.0.0.1:5009/delete-from-queue/${this.userid}/${this.concert_id}`);
         console.log("response", response);
 

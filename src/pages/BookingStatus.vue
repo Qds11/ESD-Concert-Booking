@@ -28,7 +28,7 @@
     name: "SuccessPage",
     data() {
     return {
-      isSuccessful: null, // Set this to true or false based on whether the booking was successful,
+      isSuccessful: true, // Set this to true or false based on whether the booking was successful,
     };
   },
   methods:{
