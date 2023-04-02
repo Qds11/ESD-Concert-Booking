@@ -28,7 +28,7 @@
     name: "SuccessPage",
     data() {
     return {
-      isSuccessful: true, // Set this to true or false based on whether the booking was successful,
+      isSuccessful: false, // Set this to true or false based on whether the booking was successful,
     };
   },
   methods:{
@@ -54,8 +54,9 @@
     
   }
 ,
-    mounted(){
-      this.isSuccessful=JSON.parse(localStorage.getItem('paymentStatus'))
+    created(){
+      this.isSuccessful = this.$route.params.paymentStatus
+      console.log(this.isSuccessful)
       console.log(this.isSuccessful)
       if(this.isSuccessful==true){
         var concert_id=JSON.parse(localStorage.getItem('concert_id'))

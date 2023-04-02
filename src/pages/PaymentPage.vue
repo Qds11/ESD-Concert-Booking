@@ -186,7 +186,7 @@
         return actions.order.create({
           purchase_units: [{
             amount: {
-              value: '0.01'
+              value: '20000'
             }
           }],
           application_context: {
@@ -210,11 +210,26 @@
                  alert(
                    "Transaction completed by " + details.payer.name.given_name
                  );
+                 
+                 window.location.href='/BookingStatus/true'
 
 
                });
            },
+           onCancel: function() {
+        // Payment cancelled
+        alert('Payment cancelled');
+        // Replace with your cancel URL
+        window.location.href='/BookingStatus/false'
+      },
+      onError: function(err) {
+        // Payment failed
+        console.log(err);
+        alert('Payment failed');
+        window.location.href = '/BookingStatus/false'; // Replace with your error URL
+      }
          })
+
 
           .render("#paypal-button-container")
           .catch((error) => {
