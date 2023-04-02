@@ -130,12 +130,12 @@ def get_phone_num(user_id):
     if user:
         return jsonify({
             "code": 202,
-            "phone_num": user.json()['contact']
+            "data": user.json()['contact']
         }
     ), 200
     return jsonify({
         "code" : 404,
-        "message": "User not found"
+        "data": "User not found"
     }), 404
 
 

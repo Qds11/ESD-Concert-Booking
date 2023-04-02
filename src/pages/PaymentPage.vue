@@ -5,7 +5,7 @@
         <v-container>
           <div :style="{ paddingLeft: '55%' }">
             <h1 :style="{ fontSize: '40px', color: 'white' }">
-              Ticket Details
+              Checkout
             </h1>
           </div>
         </v-container>
@@ -81,6 +81,21 @@
  
  export default {
   name: "PaymentPage",
+
+  async created() {
+    this.concert_id = this.$route.params.concertid;
+    this.userid = JSON.parse(localStorage.getItem('userid'));
+
+    this.tix_quantity = JSON.parse(localStorage.getItem('tix_quantity'));
+    this.totalPrice = JSON.parse(localStorage.getItem('totalPrice'));
+    this.timeSec = JSON.parse(localStorage.getItem('timeSec'));
+
+    await this.get_concert();
+
+    this.timeSec = JSON.parse(localStorage.getItem('timeSec'));
+    this.seconds(); // start timer immediately, continue from seat selection pg
+  },
+
   data() {
     return {
       paymentStatus: null,
@@ -94,6 +109,56 @@
     };
   },
   methods: {
+
+    seconds() {
+      this.timeSec--;
+      
+      var time = this;
+      if (this.timer != null) {
+          clearInterval(this.timer);
+          this.timer = null;
+      }
+      this.timer = setInterval(function () {
+          if (time.timeSec == 0) { 
+            // if time is up
+              time.end();
+          } else {
+              time.timeSec--;
+              // store new time every sec
+              localStorage.setItem('timeSec', JSON.stringify(time.timeSec));
+          }
+      }, 1000);
+    },
+    //if user exceeded 10mins
+    async end(){
+      clearInterval(this.timer);
+      this.timer = null;
+      this.timeSec = 0;
+      await this.delete_from_queue();
+    },
+    //DELETE delete_from_queue: seat selection UI call this if user exceed 10mins
+    async delete_from_queue() {
+      try{
+        console.log("trying delete_from_queue()");
+
+        const response = await axios.delete(`http://127.0.0.1:5009/delete-from-queue/${this.userid}/${this.concert_id}`);
+        console.log("response", response);
+
+        if (response.data.length < 1) { //no data
+          console.log("totally not cryin");
+        }
+        else{
+          console.log("delete_from_queue() works!");
+          window.location='/concert/' + this.concert_id; // go to concert pg when time exceeds
+        }
+      } catch (error) {
+        // Errors when calling the service; such as network error, 
+        // service offline, etc
+        console.log(error);
+      }
+    },
+    // Send notification if payment is successful
+
     async sendNotif(paymentStatus) {
       if (paymentStatus) {
         const path = `http://127.0.0.1:5100/testing`;

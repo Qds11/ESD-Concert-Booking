@@ -23,3 +23,11 @@ CREATE TABLE IF NOT EXISTS queue (
 -- INSERT INTO queue (concert_id,status) VALUES (1,'serving');
 -- INSERT INTO queue (concert_id,status) VALUES (2,'serving');
 -- INSERT INTO queue (concert_id,status) VALUES (2,'serving');
+CREATE TRIGGER delete_serving_rows
+BEFORE UPDATE ON queue
+FOR EACH ROW
+BEGIN
+    IF NEW.status = 'serving' AND TIMESTAMPDIFF(MINUTE, NEW.created_at, NOW()) >= 11 THEN
+        DELETE FROM queue WHERE user_id = NEW.user_id AND concert_id = NEW.concert_id;
+    END IF;
+END;

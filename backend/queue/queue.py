@@ -7,7 +7,7 @@ app = Flask(__name__)
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://sql12606226:61vMwF9lhJ@sql12.freesqldatabase.com:3306/sql12606226'
 # for local db
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:8889/queue_database'
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/queue_database'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/queue_database'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -66,7 +66,8 @@ def delete_from_queue(user_id,concert_id):
     serving_count = Queue.query.filter_by(status='serving',concert_id=user.concert_id).count()
     if serving_count < 4:
         earliest_waiting = Queue.query.filter_by(status='waiting',concert_id=user.concert_id).order_by(Queue.created_at.asc()).first()
-        earliest_waiting.status = 'serving'
+        if earliest_waiting:
+            earliest_waiting.status = 'serving'
     db.session.commit()
 
     return jsonify({'message': 'user with user_id ' + str(user_id) + ' have been deleted and queue status updated'})

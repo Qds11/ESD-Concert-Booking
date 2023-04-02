@@ -1,7 +1,15 @@
 import express from "express";
-import {RECOMMENDATION_MICROSERVICE_URL} from './config.js'
+import {
+  RECOMMENDATION_MICROSERVICE_URL,
+  TICKETING_MICROSERVICE_URL,
+} from "./config.js";
 //import function from models.js
-import { getConcertById, getAllConcertData, getConcertByGenre } from "./model.js";
+import {
+  getConcertById,
+  getAllConcertData,
+  getConcertByGenre,
+  updateConcertStatus,
+} from "./model.js";
 import bodyParser from "body-parser";
 import cors from "cors";
 import axios from 'axios';
@@ -27,10 +35,28 @@ app.get("/", async (req, res) => {
  });
 
 
- //get concert by id
+ //get concert by id and checks status
 app.get("/concert/:id", async (req, res) => {
   const id = req.params.id;
-  const concert = await getConcertById(id);
+  const result = await getConcertById(id);
+  const concert = result.data;
+  if (concert[0].status && concert[0].status === "closed") {
+    res.json(concert);
+    return;
+  }
+  if (concert[0].status && concert[0].status.includes("available")) {
+    try {
+      const {
+        data: { status },
+      } = await axios.get(`${TICKETING_MICROSERVICE_URL}/${id.toString()}`);
+      if (status.includes("sold out")) {
+        await updateConcertStatus(id, status);
+        concert[0].status = status;
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
   res.json(concert);
 });
 
@@ -65,5 +91,5 @@ app.get("/concert/:genre", async (req, res) => {
 
 //PORT
 app.listen(5005, () => {
-  console.log("Server is running on port 5003");
+  console.log("Server is running on port 5005");
 });

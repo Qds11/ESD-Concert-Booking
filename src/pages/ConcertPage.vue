@@ -1,7 +1,10 @@
 <template>
 
 <!-- <v-img :src="require('../assets/concerts/concert1.jpg')"></v-img> -->
- <v-container
+<h1 v-if="typeof targetConcert==='string'">
+No concert found
+</h1>
+ <v-container v-else
     >
 <div :class="['text-h2', 'pa-2']">{{ targetConcert.concert_name }}</div>
     <v-img
@@ -11,10 +14,10 @@
     class="align-center"
     ></v-img>
 
-<div :class="['text-h5', 'pa-2']">
+        <div :class="['text-h5', 'pa-2']">
 
-       {{ targetConcert.description }}
-</div>
+            {{ targetConcert.description }}
+        </div>
 
 
     <div :class="['text-h6', 'pa-2']">Date: {{ getDateTime(targetConcert.date_time) }}</div>
@@ -26,10 +29,11 @@
     </div>
     <div v-else>
 
-        <router-link :to="{ path: '/seatSelectionPage/' + id }" class="link-style">
+        <router-link :to="{ path: '/queuePage/' + id }" class="link-style" v-if="targetConcert.status.includes('available')">
               <v-btn color="orange-lighten-2" variant="text"> Buy Tickets </v-btn>
-            </router-link>
+        </router-link>
 
+        <v-btn color="orange-lighten-2" variant="text" v-else-if="targetConcert.status.includes('sold out')" disabled> Ticket Sold Out </v-btn>
 
     </div>
 </div>
@@ -84,8 +88,11 @@ export default {
         async getConcertById() {
             try {
                 const response = await axios.get(`${API_BASE_URL_NODEJS}/concert/${this.id}`);
-                if (response.data.length < 1) {
-                this.$router.replace(this.$route.query.redirect || '/');
+
+                if (typeof response.data === 'string') {
+                    this.targetConcert = response.data
+                    console.log(this.targetConcert)
+                     return
                }
                 this.targetConcert = response.data[0]
                 this.isTicketSaleOpen = this.compareDateTime(this.targetConcert.ticket_sale_date_time)
