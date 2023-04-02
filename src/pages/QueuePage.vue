@@ -59,10 +59,9 @@
       //console.log("this.userid",this.userid);
 
       await this.add_to_queue();
-      await this.get_queue_position();
       await this.get_concert();
+      await this.get_queue_position();
       
-
       // const intervalId = 
       // window.setInterval(function(){
       //   // call your function here
@@ -119,6 +118,9 @@
           else{
             console.log("get_queue_position() works!");
             this.queue_position=response.data;
+            if((this.queue_position.queue_position)==0){
+              window.location='/seatSelectionPage/' + this.concert_id;
+            }
           }
         } catch (error) {
           // Errors when calling the service; such as network error, 

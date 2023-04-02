@@ -13,17 +13,7 @@
         <div class="timer">
             {{min}}:{{sec}}
         </div>
-        <div class="text-center mb-1">
-            <v-btn-toggle v-if="!active" dark>
-                <v-btn v-on:click="seconds()"><v-icon>mdi-play</v-icon></v-btn>
-                <v-btn disabled><v-icon>mdi-stop</v-icon></v-btn>
-            </v-btn-toggle>
-            <v-btn-toggle v-model="toggle_none" v-else dark>
-                <v-btn v-on:click="pause" v-if="!paused"><v-icon>mdi-pause</v-icon></v-btn>
-                <v-btn v-on:click="seconds()" v-else><v-icon>mdi-pause</v-icon></v-btn>
-                <v-btn v-on:click="end"><v-icon>mdi-stop</v-icon></v-btn>
-            </v-btn-toggle>
-        </div>
+
         <div v-if='hallDetails.data==1'>
           <v-img
             fluid
@@ -99,7 +89,7 @@
               </v-row>
 
               <!-- SEATS POPUP -->
-              <v-dialog
+              <!-- <v-dialog
                 v-model="select_seat_popup"
                 width="auto"
                 persistent
@@ -130,8 +120,8 @@
                     </v-container>
                   </v-card-text>
                   <v-card-actions>
-                    <!-- <v-btn color="primary" block @click="dialog = false">Close Dialog</v-btn> -->
-                    <v-spacer></v-spacer>
+                    <v-btn color="primary" block @click="dialog = false">Close Dialog</v-btn> -->
+                    <!-- <v-spacer></v-spacer>
                     <v-btn
                       color="deep-purple-accent-1"
                       variant="text"
@@ -148,7 +138,8 @@
                     </v-btn>
                   </v-card-actions>
                 </v-card>
-              </v-dialog>
+              </v-dialog> -->
+
             <!-- Cat 2 -->
 
             <v-row>
@@ -415,7 +406,9 @@ export default {
   name: "SeatSelectionPage",
   async created() {
     this.concert_id = this.$route.params.concertid
+    this.userid = JSON.parse(localStorage.getItem('userid'))
     localStorage.setItem('concert_id', JSON.stringify(this.concert_id))
+    //this.seconds(); // start timer immediately
     await this.get_concert();
     await this.get_hall();
     await this.get_availability();
@@ -427,9 +420,12 @@ export default {
     SubmitButton,
   },
   computed: {
-      // hasBooks: function () {
-      //     return this.books.length > 0;
-      // }
+      min() {
+        return String(Math.floor(this.timeSec/60)).padStart(2, '0');
+      },
+      sec() {
+        return String(this.timeSec%60).padStart(2, '0');
+      },
   },
   data() {
       return {
@@ -438,7 +434,6 @@ export default {
         ticketAvailability: "",
         ticketPrices: "",
         recommendations: "",
-        concert_id: null, //hardcoded
         cat1_quantity: 0,
         cat2_quantity: 0,
         cat3_quantity: 0,
@@ -446,21 +441,73 @@ export default {
         cat5_quantity: 0,
         quantityExceeded: false,
         quantityZero: false,
-        select_seat_popup: false,
-        totalPrice: 0
+        //select_seat_popup: false,
+        totalPrice: 0,
+        timeSec: 5, // timer duration
       };
   },
   methods: {
+    seconds() {
+      // if (!this.active) {
+      //     this.focusStart = firebase.firestore.Timestamp.fromDate(new Date());
+      // }
+      //this.active = true;
+      //this.paused = false;
+      //this.focusDuration = null;
+      //this.toggle_none = null;
+      this.timeSec--;
+      
+      var time = this;
+      if (this.timer != null) {
+          clearInterval(this.timer);
+          this.timer = null;
+      }
+      this.timer = setInterval(function () {
+          if (time.timeSec == 0) { 
+            // if time is up
+              time.end();
+          } else {
+              time.timeSec--;
+          }
+      }, 1000);
+    },
+    //if user exceeded 10mins
+    async end(){
+      clearInterval(this.timer);
+      this.timer = null;
+      this.timeSec = 600;
+      //await this.delete_from_queue();
+    },
+    //DELETE delete_from_queue: seat selection UI call this if user exceed 10mins
+    async delete_from_queue() {
+      try{
+        console.log("trying delete_from_queue()");
+
+        const response = await axios.delete(`http://127.0.0.1:5009/delete-from-queue/${this.userid}/${this.concert_id}`);
+        console.log("response", response);
+
+        if (response.data.length < 1) { //no data
+          console.log("totally not cryin");
+        }
+        else{
+          console.log("delete_from_queue() works!");
+        }
+      } catch (error) {
+        // Errors when calling the service; such as network error, 
+        // service offline, etc
+        console.log(error);
+      }
+    },
     getDateTime(datetime) {
-            const date = new Date(datetime);
-            const day = date.getDate().toString().padStart(2, '0'); // get the day of the month (1-31) and pad with leading zeros if necessary
-            const month = (date.getMonth() + 1).toString().padStart(2, '0'); // get the month (0-11) and add 1 to get the correct month number, then pad with leading zeros if necessary
-            const year = date.getFullYear().toString(); // get the year (4 digits)
-            const hours = date.getHours().toString().padStart(2, '0'); // get the hours (0-23) and pad with leading zeros if necessary
-            const minutes = date.getMinutes().toString().padStart(2, '0'); // get the minutes (0-59) and pad with leading zeros if necessary
-            const formattedDate = `${day}/${month}/${year}, ${hours}:${minutes}`;
-            return formattedDate;
-        },
+      const date = new Date(datetime);
+      const day = date.getDate().toString().padStart(2, '0'); // get the day of the month (1-31) and pad with leading zeros if necessary
+      const month = (date.getMonth() + 1).toString().padStart(2, '0'); // get the month (0-11) and add 1 to get the correct month number, then pad with leading zeros if necessary
+      const year = date.getFullYear().toString(); // get the year (4 digits)
+      const hours = date.getHours().toString().padStart(2, '0'); // get the hours (0-23) and pad with leading zeros if necessary
+      const minutes = date.getMinutes().toString().padStart(2, '0'); // get the minutes (0-59) and pad with leading zeros if necessary
+      const formattedDate = `${day}/${month}/${year}, ${hours}:${minutes}`;
+      return formattedDate;
+    },
     //get concert
     async get_concert() {
         //console.log("this.concert_id", this.concert_id);
