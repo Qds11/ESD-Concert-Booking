@@ -34,7 +34,7 @@
             </router-link>
 
             <v-btn color="orange-lighten-2" variant="text" v-else-if="targetConcert.status.includes('sold out')" disabled> Ticket Sold Out </v-btn>
-
+                <b v-else>Past Concert</b>
         </div>
     </div>
 
