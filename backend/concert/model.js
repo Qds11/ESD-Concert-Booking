@@ -23,16 +23,6 @@ export async function getConcertById(id) {
   }
 }
 
-// export async function getConcertByGenre(genre) {
-//     try {
-//         const [rows] = await db.query(`select * from concert where genre = ?`, [
-//           genre,
-//         ]);
-//         return rows
-//     } catch (err) {
-//         return (err)
-//     }
-// }
 
 export async function updateConcertStatus(id, status) {
   try {
