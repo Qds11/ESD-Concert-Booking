@@ -406,6 +406,7 @@ export default {
   name: "SeatSelectionPage",
   async created() {
     this.concert_id = this.$route.params.concertid
+    this.userid = JSON.parse(localStorage.getItem('userid'))
     localStorage.setItem('concert_id', JSON.stringify(this.concert_id))
     //this.seconds(); // start timer immediately
     await this.get_concert();
@@ -442,7 +443,7 @@ export default {
         quantityZero: false,
         //select_seat_popup: false,
         totalPrice: 0,
-        timeSec: 600, // timer duration
+        timeSec: 5, // timer duration
       };
   },
   methods: {
@@ -470,21 +471,43 @@ export default {
           }
       }, 1000);
     },
-    end(){
+    //if user exceeded 10mins
+    async end(){
       clearInterval(this.timer);
       this.timer = null;
       this.timeSec = 600;
+      //await this.delete_from_queue();
+    },
+    //DELETE delete_from_queue: seat selection UI call this if user exceed 10mins
+    async delete_from_queue() {
+      try{
+        console.log("trying delete_from_queue()");
+
+        const response = await axios.delete(`http://127.0.0.1:5009/delete-from-queue/${this.userid}/${this.concert_id}`);
+        console.log("response", response);
+
+        if (response.data.length < 1) { //no data
+          console.log("totally not cryin");
+        }
+        else{
+          console.log("delete_from_queue() works!");
+        }
+      } catch (error) {
+        // Errors when calling the service; such as network error, 
+        // service offline, etc
+        console.log(error);
+      }
     },
     getDateTime(datetime) {
-            const date = new Date(datetime);
-            const day = date.getDate().toString().padStart(2, '0'); // get the day of the month (1-31) and pad with leading zeros if necessary
-            const month = (date.getMonth() + 1).toString().padStart(2, '0'); // get the month (0-11) and add 1 to get the correct month number, then pad with leading zeros if necessary
-            const year = date.getFullYear().toString(); // get the year (4 digits)
-            const hours = date.getHours().toString().padStart(2, '0'); // get the hours (0-23) and pad with leading zeros if necessary
-            const minutes = date.getMinutes().toString().padStart(2, '0'); // get the minutes (0-59) and pad with leading zeros if necessary
-            const formattedDate = `${day}/${month}/${year}, ${hours}:${minutes}`;
-            return formattedDate;
-        },
+      const date = new Date(datetime);
+      const day = date.getDate().toString().padStart(2, '0'); // get the day of the month (1-31) and pad with leading zeros if necessary
+      const month = (date.getMonth() + 1).toString().padStart(2, '0'); // get the month (0-11) and add 1 to get the correct month number, then pad with leading zeros if necessary
+      const year = date.getFullYear().toString(); // get the year (4 digits)
+      const hours = date.getHours().toString().padStart(2, '0'); // get the hours (0-23) and pad with leading zeros if necessary
+      const minutes = date.getMinutes().toString().padStart(2, '0'); // get the minutes (0-59) and pad with leading zeros if necessary
+      const formattedDate = `${day}/${month}/${year}, ${hours}:${minutes}`;
+      return formattedDate;
+    },
     //get concert
     async get_concert() {
         //console.log("this.concert_id", this.concert_id);
