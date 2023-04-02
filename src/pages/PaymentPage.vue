@@ -207,24 +207,55 @@ export default {
         console.log(paypal.data);
         paypal
           .Buttons({
-            onApprove: (data) => {
-              console.log(data);
-              // Capture the funds from the transaction
-              return fetch("/my-server/capture-paypal-order", {
-                method: "POST",
-              })
-                .then((response) => response.json())
-                .then((details) => {
-                  // Show a transaction success message to the buyer
-                  this.paymentStatus = true;
-                  this.sendNotif(this.paymentStatus);
-                  alert(
-                    "Transaction completed by " +
-                      details.payer.name.given_name
-                  );
-                });
-            },
-          })
+            createOrder: function(data, actions) {
+        return actions.order.create({
+          purchase_units: [{
+            amount: {
+              value: '20000'
+            }
+          }],
+          application_context: {
+            return_url: "https://localhost:8080/PaymentPage/"+this.concert_id, // sets the return URL to the current page
+           
+          }
+        });
+      },
+      onApprove(data,actions) {
+             console.log(data)
+             // This function captures the funds from the transaction.
+            
+             return actions.order.capture({
+         commit: true
+       })
+               // .then((response) => response.json())
+               .then((details) => {
+                 // This function shows a transaction success message to your buyer.
+                 this.paymentStatus = true
+                 // this.sendNotif(this.paymentStatus)
+                 alert(
+                   "Transaction completed by " + details.payer.name.given_name
+                 );
+                 
+                 window.location.href='/BookingStatus/true'
+
+
+               });
+           },
+           onCancel: function() {
+        // Payment cancelled
+        alert('Payment cancelled');
+        // Replace with your cancel URL
+        window.location.href='/BookingStatus/false'
+      },
+      onError: function(err) {
+        // Payment failed
+        console.log(err);
+        alert('Payment failed');
+        window.location.href = '/BookingStatus/false'; // Replace with your error URL
+      }
+         })
+
+
           .render("#paypal-button-container")
           .catch((error) => {
             console.error("Failed to render the PayPal buttons", error);
