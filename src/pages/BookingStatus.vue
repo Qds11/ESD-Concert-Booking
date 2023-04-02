@@ -11,7 +11,7 @@
           <p class="text-center">{{ isSuccessful ? 'Your booking was successful.' : 'Sorry, we were unable to process your booking at this time. Please try again later.' }}</p>
         </v-card-text>
           <v-card-actions>
-            <v-btn color="primary" to="/">Back to Home</v-btn>
+            <v-btn color="primary" to="/concert">Back to Home</v-btn>
           </v-card-actions>
         </v-card>
       </v-flex>
