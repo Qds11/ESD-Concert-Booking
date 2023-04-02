@@ -7,7 +7,6 @@ import {
 import {
   getConcertById,
   getAllConcertData,
-  getConcertByGenre,
   updateConcertStatus,
 } from "./model.js";
 import bodyParser from "body-parser";
