@@ -128,6 +128,28 @@ def get_hall(concert_id):
             "message": "There are no concerts by that concert id."
         }
     ), 404
+    
+#get hall_id
+@app.route('/concert/status/<string:concert_id>', methods=['GET'])
+def get_status(concert_id):
+    ticket = Ticket.query.filter_by(concert_id=concert_id).first()
+    if ticket:
+        if (ticket.json()['cat1_avail']==0) and (ticket.json()['cat2_avail']==0) and (ticket.json()['cat3_avail']==0) and (ticket.json()['cat4_avail']==0) and (ticket.json()['cat5_avail']==0):
+            status='Concert sold out'
+        else:
+            status='Concert available'
+        return jsonify({
+            "code": 200,
+            'status':status
+
+        })
+
+    return jsonify(
+        {
+            "code": 404,
+            "message": "There are no concerts by that concert id."
+        }
+    ), 404
 
 
 @app.route("/ticket/update/<string:concert_id>", methods=['PUT'])

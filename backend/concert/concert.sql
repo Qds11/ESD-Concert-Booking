@@ -38,10 +38,11 @@ ticket_sale_date_time DATETIME,
 description TEXT,
 image_path TEXT,
 genre TEXT,
+status TEXT,
 PRIMARY KEY(concert_id)
 );
 
-INSERT INTO concert (date_time, artist, concert_name, price, hall_id, ticket_sale_date_time,description,image_path,genre) VALUES
-('2023-06-23T19:30:00','txt','TXT Sweet Mirage Tour 2023' ,168.00,1,'2023-03-20T14:30:00','Hottest 4th Gen Kpop Group Finally in Singapore!','concert1.jpg','K-POP'),
-('2023-10-15T19:00:00','Mr Cho','Cho Sweet Strings' ,50.00,1,'2023-05-20T14:30:00','Listen to the beautiful violin melodies by the classic Mr Cho','concert2.jpg','Classical'),
-('2023-09-29T19:00:00','Lil Pip','Pip Install FTW' ,90.00,2,'2023-07-20T14:30:00','Come listen to aggressive rap about python at its finest.','concert3.jpg','Rap');
+INSERT INTO concert (date_time, artist, concert_name, price, hall_id, ticket_sale_date_time,description,image_path,genre,status) VALUES
+('2023-06-23T19:30:00','txt','TXT Sweet Mirage Tour 2023' ,168.00,1,'2023-03-20T14:30:00','Hottest 4th Gen Kpop Group Finally in Singapore!','concert1.jpg','K-POP','open'),
+('2023-10-15T19:00:00','Mr Cho','Cho Sweet Strings' ,50.00,1,'2023-05-20T14:30:00','Listen to the beautiful violin melodies by the classic Mr Cho','concert2.jpg','Classical','open'),
+('2023-09-29T19:00:00','Lil Pip','Pip Install FTW' ,90.00,2,'2023-07-20T14:30:00','Come listen to aggressive rap about python at its finest.','concert3.jpg','Rap','open');

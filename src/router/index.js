@@ -17,12 +17,12 @@ const routes = [
     component: TestComponent,
   },
   {
-    path: "/",
+    path: "/concert",
     name: "HomePage",
     component: HomePage,
   },
   {
-    path: "/login",
+    path: "/",
     name: "LoginPage",
     component: LoginPage,
   },

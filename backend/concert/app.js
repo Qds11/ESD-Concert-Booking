@@ -16,11 +16,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.get("/", async (req, res) => {
   const concerts = await getAllConcertData();
   const userId = req.query.userid;
-  //  const userId='3'
    console.log(userId)
   if (userId) {
     const recommended = await axios.get(
-      `http://127.0.0.1:5003/recommendations/user/${userId}`
+      `${RECOMMENDATION_MICROSERVICE_URL}/${userId}`
     );
     return res.json({ concerts: concerts, recommended: recommended.data });
   }
@@ -43,28 +42,26 @@ app.get("/concert/:genre", async (req, res) => {
 });
 
 
-app.get("/reco/:id", async (req, res) => {
-  try {
-    const userId = req.params.id;
-   // console.log(userId)
-    //const userId=1
-    //  const url = "http://127.0.0.1:5003/user/1";
-    //  const url = "http://localhost:5003/user/1";
-    const url = `${RECOMMENDATION_MICROSERVICE_URL}/${userId}`;
-    const response = await axios.get(url);
-    const genre = response.data.message
-    const concert = await getConcertByGenre(genre);
+// app.get("/reco/:id", async (req, res) => {
+//   try {
+//     const userId = req.params.id;
+//    // console.log(userId)
+//     //const userId=1
+//     const url = `${RECOMMENDATION_MICROSERVICE_URL}/${userId}`;
+//     const response = await axios.get(url);
+//     const genre = response.data.message
+//     const concert = await getConcertByGenre(genre);
 
-    // Send the response back to the frontend
-    console.log(concert)
-    res.send(concert)
-    console.log(response.data);
-    // res.send(response.data);
-  } catch (error) {
-    console.error(error);
-    res.sendStatus(500);
-  }
-});
+//     // Send the response back to the frontend
+//     console.log(concert)
+//     res.send(concert)
+//     console.log(response.data);
+//     // res.send(response.data);
+//   } catch (error) {
+//     console.error(error);
+//     res.sendStatus(500);
+//   }
+// });
 
 //PORT
 app.listen(5005, () => {

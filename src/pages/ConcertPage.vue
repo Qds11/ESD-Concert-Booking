@@ -29,7 +29,7 @@
         <router-link :to="{ path: '/seatSelectionPage/' + id }" class="link-style">
               <v-btn color="orange-lighten-2" variant="text"> Buy Tickets </v-btn>
             </router-link>
-    
+
 
     </div>
 </div>
@@ -47,10 +47,6 @@ export default {
   async created() {
       this.id = this.$route.params.id
       await this.getConcertById();
-      //find concert with id, if not exist then redirect to homepage
-    // this.targetConcert = this.concerts.find((c) => c.id == this.id)
-    // //find out if ticket sale is open
-    // this.isTicketSaleOpen=this.compareDateTime(this.targetConcert.date)
 
   },
   data() {
@@ -58,7 +54,7 @@ export default {
         recommended: 'txt',
         id: null,
         isTicketSaleOpen:false,
-         targetConcert:null,
+        targetConcert:null,
     };
     },
     computed: {
@@ -78,20 +74,21 @@ export default {
         compareDateTime(date) {
             const currentDate = new Date(); //current date and time
             const myDate = new Date(date); //date and time to compare
+            console.log(myDate)
             if (myDate.getTime() < currentDate.getTime()) {
                 return true;
             } else {
-             return false
+               return false
             }
         },
         async getConcertById() {
             try {
                 const response = await axios.get(`${API_BASE_URL_NODEJS}/concert/${this.id}`);
-                // console.log("RESPONSE");
                 if (response.data.length < 1) {
                 this.$router.replace(this.$route.query.redirect || '/');
                }
-               this.targetConcert=response.data[0]
+                this.targetConcert = response.data[0]
+                this.isTicketSaleOpen = this.compareDateTime(this.targetConcert.ticket_sale_date_time)
 
             } catch (err) {
                 console.log(err)
