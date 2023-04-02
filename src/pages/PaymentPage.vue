@@ -156,12 +156,15 @@
         // service offline, etc
         console.log(error);
       }
-    },
-    // Send notification if payment is successful
+    },    // Send notification if payment is successful
+
+    // Send notification if payment is successful, check paymentStatus value in data
 
     async sendNotif(paymentStatus) {
       if (paymentStatus) {
-        const path = `http://127.0.0.1:5100/testing`;
+        
+        const path = `http://127.0.0.1:5100/sendPaymentNotification/${this.userid}`;
+        
         axios
           .get(path)
           .then((res) => {
@@ -201,9 +204,17 @@
         })
                 // .then((response) => response.json())
                 .then((details) => {
+
                   // This function shows a transaction success message to your buyer.
                   this.paymentStatus = true
                   // this.sendNotif(this.paymentStatus)
+
+                  // Show a transaction success message to the buyer
+                  this.paymentStatus = true;
+                  console.log(this.paymentStatus);
+
+                  this.sendNotif(this.paymentStatus);
+
                   alert(
                     "Transaction completed by " + details.payer.name.given_name
                   );
