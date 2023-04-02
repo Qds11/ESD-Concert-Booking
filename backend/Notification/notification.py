@@ -20,7 +20,7 @@ CORS(app)
 # Set environment variables for your credentials
 # Read more at http://twil.io/secure
 
-user_URL = "http://127.0.0.1:5000/user/phoneNum//"
+user_URL = "http://127.0.0.1:5000/user/phoneNum/"
 
 
 # get phone num frm user id and find the user phone number
@@ -28,14 +28,14 @@ user_URL = "http://127.0.0.1:5000/user/phoneNum//"
 def send_notif_queue(user_id):
 
     result = invoke_http(user_URL + user_id, method='GET')
-    code = result["code"]
-    phone_num = result["phone_num"]
+    code = result['code']
+    phone_num = result['data']
 
     # Your Account SID from twilio.com/console
     account_sid = "ACb73a42a689c04ad6bf175a645cfa9282"
     # Your Auth Token from twilio.com/console
     auth_token = "72769e6ae2bb619d91fd600733634fbb"
-    code = 500
+    # code = 500
 
     client = Client(account_sid, auth_token)
     if code not in range(200, 300):
@@ -68,7 +68,7 @@ def send_payment_queue(user_id):
                          method='GET')
 
     code = result['code']
-    phone_num = result['phone_num']
+    phone_num = result['data']
 
     # Your Account SID from twilio.com/console
     account_sid = "ACb73a42a689c04ad6bf175a645cfa9282"
@@ -91,9 +91,8 @@ def send_payment_queue(user_id):
         to="+65" + str(phone_num),
         from_="+15178269570",
         body=
-        "You are currently 3 places away from the Seat Selection Page! \n Do take note that you will have 10 mins to select your seats after entering!"
+        "You have purchased the ticket successfully!"
     )
-
 
     return jsonify({"code": 200, "message": "notification is sent"})
 
