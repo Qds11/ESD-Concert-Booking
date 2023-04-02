@@ -408,9 +408,7 @@ export default {
     this.concert_id = this.$route.params.concertid
     this.userid = JSON.parse(localStorage.getItem('userid'))
     localStorage.setItem('concert_id', JSON.stringify(this.concert_id))
-
-    this.timeSec = JSON.parse(localStorage.getItem('timeSec'))
-
+    
     this.seconds(); // start timer immediately
     await this.get_concert();
     await this.get_hall();
@@ -464,8 +462,6 @@ export default {
               time.end();
           } else {
               time.timeSec--;
-              // store new time every sec
-              localStorage.setItem('timeSec', JSON.stringify(time.timeSec));
           }
       }, 1000);
     },
@@ -481,7 +477,6 @@ export default {
       try{
         console.log("trying delete_from_queue()");
 
-        
         const response = await axios.delete(`http://127.0.0.1:5009/delete-from-queue/${this.userid}/${this.concert_id}`);
         console.log("response", response);
 
