@@ -65,5 +65,5 @@ app.get("/concert/:genre", async (req, res) => {
 
 //PORT
 app.listen(5005, () => {
-  console.log("Server is running on port 5003");
+  console.log("Server is running on port 5005");
 });

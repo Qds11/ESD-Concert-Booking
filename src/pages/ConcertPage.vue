@@ -26,7 +26,7 @@
     </div>
     <div v-else>
 
-        <router-link :to="{ path: '/seatSelectionPage/' + id }" class="link-style">
+        <router-link :to="{ path: '/queuePage/' + id }" class="link-style">
               <v-btn color="orange-lighten-2" variant="text"> Buy Tickets </v-btn>
             </router-link>
 
