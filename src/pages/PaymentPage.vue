@@ -5,7 +5,7 @@
         <v-container>
           <div :style="{ paddingLeft: '55%' }">
             <h1 :style="{ fontSize: '40px', color: 'white' }">
-              Ticket Details
+              Checkout
             </h1>
           </div>
         </v-container>
@@ -96,6 +96,8 @@ export default {
     this.timeSec = JSON.parse(localStorage.getItem('timeSec'));
 
     await this.get_concert();
+
+    this.timeSec = JSON.parse(localStorage.getItem('timeSec'));
     this.seconds(); // start timer immediately, continue from seat selection pg
   },
   data() {
@@ -132,6 +134,8 @@ export default {
               time.end();
           } else {
               time.timeSec--;
+              // store new time every sec
+              localStorage.setItem('timeSec', JSON.stringify(time.timeSec));
           }
       }, 1000);
     },
