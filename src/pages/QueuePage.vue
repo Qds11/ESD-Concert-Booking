@@ -30,7 +30,7 @@
                   people ahead of you
                 </p>
               </div>
-              
+<!--               
               <v-progress-linear
                 bg-color="deep-purple-lighten-5"
                 color="deep-purple-accent-1"
@@ -38,7 +38,7 @@
                 rounded
                 model-value="80"
                 striped
-              ></v-progress-linear>
+              ></v-progress-linear> -->
             </v-container>
           </v-sheet>
         </v-col>
