@@ -2,6 +2,12 @@ from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from datetime import datetime
+import amqp_setup
+import json
+import requests
+from invokes import invoke_http
+import pika
+
 
 app = Flask(__name__)
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://sql12606226:61vMwF9lhJ@sql12.freesqldatabase.com:3306/sql12606226'
@@ -53,6 +59,11 @@ def waiting_queue(user_id, concert_id):
             return jsonify({'queue_position': 0, 'status': 'serving'}), 200
 
         waiting_count = Queue.query.filter(Queue.status == 'waiting', Queue.concert_id == user.concert_id, Queue.created_at < user.created_at).count()
+        
+        if waiting_count == 3:
+            print("waiting...")
+            sendNotif(user_id)
+
         return jsonify({'queue_position': waiting_count + 1, 'status': 'waiting'}), 200
 
     except Exception as e:
@@ -92,6 +103,20 @@ def delete_from_queue(user_id,concert_id):
         return jsonify({'status': 'error', 'message': 'Error occurred when deleting from queue: ' + str(e)}), 500
 
 
+def sendNotif(user_id):
+    # 2. calls notification 
+    print('\n-----Invoking notification microservice-----')
+    print('\n\n-----Publishing the notif message with routing_key=queue.notif-----')
+
+    # notif_result = invoke_http('http://127.0.0.1:5100/sendQueueNotification/' + user_id, method='POST', json=user_id)
+    
+    message = json.dumps(user_id)
+
+    amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename, routing_key="queue.notif", 
+    body=message, properties=pika.BasicProperties(delivery_mode = 2)) 
+    
+    print("\nRequest published to RabbitMQ Exchange.\n")
+    
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5009, debug=True)

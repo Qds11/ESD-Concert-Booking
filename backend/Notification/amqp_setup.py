@@ -24,7 +24,7 @@ queue_name = 'Notification'
 channel.queue_declare(queue=queue_name, durable=True) 
     # 'durable' makes the queue survive broker restarts
 
-#bind Error queue
+#bind notif queue
 channel.queue_bind(exchange=exchangename, queue=queue_name, routing_key='*.notif') 
     # bind the queue to the exchange via the key
     # any routing_key with two words and ending with '.notif' will be matched

@@ -84,8 +84,6 @@ def get_availability(concert_id):
 
 
 
-
-
 # get prices by providing concert id 
 @app.route('/price/<string:concert_id>', methods=['GET'])
 def get_prices(concert_id):
