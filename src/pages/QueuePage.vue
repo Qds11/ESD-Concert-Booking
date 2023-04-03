@@ -61,15 +61,23 @@
       await this.add_to_queue();
       await this.get_concert();
       await this.get_queue_position();
+      this.callRepeatedly(); // start calling queue position repeatedly
+
       
-      // const intervalId = 
-      // window.setInterval(function(){
-      //   // call your function here
-      //   this.get_queue_position()
-      // }, 60000); // -> can change time interval
+      // this.getQueuePositionRepeatedly = 
+      //   setInterval(function(){
+      //     // call your function here
+      //     this.call_get_queue_position();
+      //     console.log("queue ms called repeatedly");
+      //   }, 2000); // -> can change time interval
+
+        // this.getQueuePositionRepeatedly = setInterval(function () {
+        //   this.call_get_queue_position();
+        //   console.log("queue ms called repeatedly");
+        // }, 2000);
 
       // stop calling
-      //clearInterval(intervalId);
+      // clearInterval(this.getQueuePositionRepeatedly);
 
     },
     components: {
@@ -101,6 +109,17 @@
           // service offline, etc
           console.log(error);
         }
+      },
+      callRepeatedly(){  
+        var time = this;
+      
+        this.getQueuePositionRepeatedly = setInterval(function () {
+          time.triggerQueuePositionMS();
+          console.log("queue ms called repeatedly");
+        }, 60000);
+      },
+      async triggerQueuePositionMS(){
+        await this.get_queue_position();
       },
       // get queue position: freqeuently call this to updated queue position
       async get_queue_position() {
