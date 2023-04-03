@@ -93,6 +93,5 @@ def delete_from_queue(user_id,concert_id):
 
 
 
-
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5009, debug=True)

@@ -29,7 +29,7 @@ def send_notif_queue(user_id):
 
     result = invoke_http(user_URL + user_id, method='GET')
     code = result['code']
-    phone_num = result['data']
+    phone_num = result['phone_num']
 
     # Your Account SID from twilio.com/console
     account_sid = "ACb73a42a689c04ad6bf175a645cfa9282"
