@@ -18,7 +18,7 @@ class Queue(db.Model):
     user_id = db.Column(db.Integer, primary_key=True)
     status = db.Column(db.Enum('waiting', 'serving'), nullable=False)
     concert_id = db.Column(db.Integer, nullable=False, primary_key=True)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=datetime.now(tz=None))
 
 ###### queue ui call this once to queue user regardless whether they actually need to queue####
 @app.route('/queue', methods=['POST'])
