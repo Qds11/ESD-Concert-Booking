@@ -12,32 +12,28 @@
       </v-col>
       <v-col cols="4" align-self="center" class="pa-5">
         <div class="timer">
-          {{min}}:{{sec}}
+          {{ min }}:{{ sec }}
         </div>
       </v-col>
-      
+
       <v-container>
         <v-row>
           <v-col cols="6">
-            <v-img
-              fluid
-              :src="require('../assets/payment/bp_concert.png')"
-              class="img h-screen"
-            ></v-img>
+            <v-img fluid :src="require('../assets/payment/bp_concert.png')" class="img h-screen"></v-img>
           </v-col>
           <v-col cols="6" align-self="center" class="pa-5">
             <v-sheet color="black" fluid>
               <v-container>
-                <p class="text-h5 mb-5" style="columns: white"> 
+                <p class="text-h5 mb-5" style="columns: white">
                   Concert Name:
                   {{ concertDetails.concert_name }}
                 </p>
                 <p class="text-h5 mb-5" style="columns: white">
-                  Number of tickets: 
+                  Number of tickets:
                   {{ this.tix_quantity }}
                 </p>
                 <p class="text-h5 mb-5" style="columns: white">
-                  Total Price: 
+                  Total Price:
                   ${{ this.totalPrice }}
                 </p>
               </v-container>
@@ -73,12 +69,12 @@ html {
 }
 
 .timer {
-      color: white;
-      font-size: 2rem;
-      font-weight: bolder;
-      text-align: center;
-      margin: 15px 0;
-    }
+  color: white;
+  font-size: 2rem;
+  font-weight: bolder;
+  text-align: center;
+  margin: 15px 0;
+}
 </style>
 
 <script>
@@ -111,35 +107,35 @@ export default {
     };
   },
   computed: {
-      min() {
-        return String(Math.floor(this.timeSec/60)).padStart(2, '0');
-      },
-      sec() {
-        return String(this.timeSec%60).padStart(2, '0');
-      },
+    min() {
+      return String(Math.floor(this.timeSec / 60)).padStart(2, '0');
+    },
+    sec() {
+      return String(this.timeSec % 60).padStart(2, '0');
+    },
   },
   methods: {
     seconds() {
       this.timeSec--;
-      
+
       var time = this;
       if (this.timer != null) {
-          clearInterval(this.timer);
-          this.timer = null;
+        clearInterval(this.timer);
+        this.timer = null;
       }
       this.timer = setInterval(function () {
-          if (time.timeSec == 0) { 
-            // if time is up
-              time.end();
-          } else {
-              time.timeSec--;
-              // store new time every sec
-              localStorage.setItem('timeSec', JSON.stringify(time.timeSec));
-          }
+        if (time.timeSec == 0) {
+          // if time is up
+          time.end();
+        } else {
+          time.timeSec--;
+          // store new time every sec
+          localStorage.setItem('timeSec', JSON.stringify(time.timeSec));
+        }
       }, 1000);
     },
     //if user exceeded 10mins
-    async end(){
+    async end() {
       clearInterval(this.timer);
       this.timer = null;
       this.timeSec = 0;
@@ -147,7 +143,7 @@ export default {
     },
     //DELETE delete_from_queue: seat selection UI call this if user exceed 10mins
     async delete_from_queue() {
-      try{
+      try {
         console.log("trying delete_from_queue()");
 
         const response = await axios.delete(`http://127.0.0.1:5009/delete-from-queue/${this.userid}/${this.concert_id}`);
@@ -156,9 +152,9 @@ export default {
         if (response.data.length < 1) { //no data
           console.log("totally not cryin");
         }
-        else{
+        else {
           console.log("delete_from_queue() works!");
-          window.location='/concert/' + this.concert_id; // go to concert pg when time exceeds
+          window.location = '/concert/' + this.concert_id; // go to concert pg when time exceeds
         }
       } catch (error) {
         // Errors when calling the service; such as network error, 
@@ -181,28 +177,28 @@ export default {
       }
     },
     async get_concert() {
-        //console.log("this.concert_id", this.concert_id);
-        try{
-          console.log("trying get_concert()");
+      //console.log("this.concert_id", this.concert_id);
+      try {
+        console.log("trying get_concert()");
 
-          const response = await axios.get(`http://127.0.0.1:5005/concert/${this.concert_id}`);
-          console.log("response", response);
+        const response = await axios.get(`http://127.0.0.1:5005/concert/${this.concert_id}`);
+        console.log("response", response);
 
-          if (response.data.length < 1) { //no data
-            console.log("totally not cryin");
-          }
-          else{
-            console.log("get_concert() works!");
-            this.concertDetails=response.data[0];
-
-          }
-        } catch (error) {
-          // Errors when calling the service; such as network error, 
-          // service offline, etc
-          console.log(error);
+        if (response.data.length < 1) { //no data
+          console.log("totally not cryin");
         }
+        else {
+          console.log("get_concert() works!");
+          this.concertDetails = response.data[0];
 
-      },
+        }
+      } catch (error) {
+        // Errors when calling the service; such as network error, 
+        // service offline, etc
+        console.log(error);
+      }
+
+    },
   },
   mounted() {
     loadScript({ "client-id": "test" })
@@ -210,56 +206,56 @@ export default {
         console.log(paypal.data);
         paypal
           .Buttons({
-            createOrder: function(data, actions) {
-        return actions.order.create({
-          purchase_units: [{
-            amount: {
-              value: '0.1'
-            }
-          }],
-          application_context: {
-            return_url: "https://localhost:8080/PaymentPage/"+this.concert_id, // sets the return URL to the current page
-           
-          }
-        });
-      },
-      onApprove(data,actions) {
-            console.log(data)
-            // This function captures the funds from the transaction.
-          
-            return actions.order.capture({
-        commit: true
-      })
-              // .then((response) => response.json())
-              .then((details) => {
-                // This function shows a transaction success message to your buyer.
-                this.paymentStatus = true
-                // this.sendNotif(this.paymentStatus)
-                alert(
-                  "Transaction completed by " + details.payer.name.given_name
-                );
-               
-                window.location.href='/BookingStatus/true'
+            createOrder: function (data, actions) {
+              return actions.order.create({
+                purchase_units: [{
+                  amount: {
+                    value: '0.1'
+                  }
+                }],
+                application_context: {
+                  return_url: "https://localhost:8080/PaymentPage/" + this.concert_id, // sets the return URL to the current page
 
-
-
-
+                }
               });
-          },
-          onCancel: function() {
-       // Payment cancelled
-       alert('Payment cancelled');
-       // Replace with your cancel URL
-       window.location.href='/BookingStatus/false'
-     },
-     onError: function(err) {
-       // Payment failed
-       console.log(err);
-       alert('Payment failed');
-       window.location.href = '/BookingStatus/false'; // Replace with your error URL
-     }
+            },
+            onApprove(data, actions) {
+              console.log(data)
+              // This function captures the funds from the transaction.
 
-         })
+              return actions.order.capture({
+                commit: true
+              })
+                // .then((response) => response.json())
+                .then((details) => {
+                  // This function shows a transaction success message to your buyer.
+                  this.paymentStatus = true
+                  // this.sendNotif(this.paymentStatus)
+                  alert(
+                    "Transaction completed by " + details.payer.name.given_name
+                  );
+
+                  window.location.href = '/BookingStatus/true'
+
+
+
+
+                });
+            },
+            onCancel: function () {
+              // Payment cancelled
+              alert('Payment cancelled');
+              // Replace with your cancel URL
+              window.location.href = '/BookingStatus/false'
+            },
+            onError: function (err) {
+              // Payment failed
+              console.log(err);
+              alert('Payment failed');
+              window.location.href = '/BookingStatus/false'; // Replace with your error URL
+            }
+
+          })
 
 
           .render("#paypal-button-container")
