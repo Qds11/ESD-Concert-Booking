@@ -21,6 +21,7 @@
 
 
         <div :class="['text-h6', 'pa-2']">Date: {{ getDateTime(targetConcert.date_time) }}</div>
+        <div :class="['text-h6', 'pa-2']">Venue: {{targetConcert.hall_name}}</div>
 
         <div :class="['text-h6', 'pa-2']">Starting at ${{ targetConcert.price }}</div>
     <div>
@@ -33,7 +34,7 @@
                   <v-btn color="orange-lighten-2" variant="text"> Buy Tickets </v-btn>
             </router-link>
 
-            <v-btn color="orange-lighten-2" variant="text" v-else-if="targetConcert.status.includes('sold out')" disabled> Ticket Sold Out </v-btn>
+            <v-btn color="white" variant="text" v-else-if="targetConcert.status.includes('sold out')" disabled> Ticket Sold Out </v-btn>
                 <b v-else>Past Concert</b>
         </div>
     </div>
