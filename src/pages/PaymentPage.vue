@@ -53,6 +53,28 @@
           </v-col>
         </v-row>
       </v-container>
+      <!-- TIMER EXCEEDED POPUP -->
+      <div class="text-center">
+        <v-dialog
+            v-model="timerExceeded"
+            width="auto"
+            persistent
+          >
+          <v-flex xs12 sm8 md6>
+            <v-card class="pa-10">
+              <v-card-text>
+                  <v-icon color="red" size="48" class="ml-10 pl-16">
+                    mdi-timer-outline
+                  </v-icon>
+              <h1 class="text-center mt-3 mb-5">Time Exceeded</h1>
+              <p class="text-center">Redirecting to Concert Page in 5 sec...</p>
+              {{ this.triggerRedirect() }}
+            </v-card-text>
+            </v-card>
+          </v-flex>
+
+          </v-dialog>
+      </div>
     </v-row>
   </v-container>
 </template>
@@ -104,6 +126,7 @@ export default {
       totalPrice: 0,
       paymentStatus: false,
       timeSec: 5, // timer duration
+      timerExceeded: false
     };
   },
   computed: {
@@ -160,13 +183,19 @@ export default {
         }
         else {
           console.log("delete_from_queue() works!");
-          //window.location = '/concert/' + this.concert_id; // go to concert pg when time exceeds
+          this.timerExceeded=true;
         }
       } catch (error) {
         // Errors when calling the service; such as network error, 
         // service offline, etc
         console.log(error);
       }
+    },
+    triggerRedirect(){
+      setTimeout(this.redirectToConcertPg, 5000);
+    },
+    redirectToConcertPg(){
+      window.location='/concert/' + this.concert_id; // go to concert pg when time exceeds
     },
     // Send notification if payment is successful
     async sendNotif(paymentStatus) {
