@@ -408,9 +408,12 @@ export default {
     this.concert_id = this.$route.params.concertid
     this.userid = JSON.parse(localStorage.getItem('userid'))
     localStorage.setItem('concert_id', JSON.stringify(this.concert_id))
-    
+    console.log("localStorage",localStorage);
+    //localStorage.setItem('timeSec', JSON.stringify(20));  // timer duration, CHANGE THIS FOR DIFF TIME   
+
     this.timeSec = JSON.parse(localStorage.getItem('timeSec'))
 
+    console.log("this.timeSec",this.timeSec);
     this.seconds(); // start timer immediately
     await this.get_concert();
     await this.get_hall();
@@ -446,7 +449,7 @@ export default {
         quantityZero: false,
         //select_seat_popup: false,
         totalPrice: 0,
-        timeSec: 600, // timer duration
+        timeSec: 20, // timer duration, CHANGE THIS FOR DIFF TIME
       };
   },
   methods: {
@@ -472,9 +475,15 @@ export default {
     //if user exceeded 10mins
     async end(){
       clearInterval(this.timer);
-      this.timer = null;
       this.timeSec = 0;
+      this.timer = null;
+      this.clearTimer();
+
       await this.delete_from_queue();
+    },
+    clearTimer(){
+      localStorage.setItem('timeSec', JSON.stringify(20));  // timer duration, CHANGE THIS FOR DIFF TIME   
+      console.log("localStorage",localStorage);
     },
     //DELETE delete_from_queue: seat selection UI call this if user exceed 10mins
     async delete_from_queue() {
@@ -489,7 +498,7 @@ export default {
         }
         else{
           console.log("delete_from_queue() works!");
-          window.location='/concert/' + this.concert_id; // go to concert pg when time exceeds
+          //window.location='/concert/' + this.concert_id; // go to concert pg when time exceeds
         }
       } catch (error) {
         // Errors when calling the service; such as network error, 

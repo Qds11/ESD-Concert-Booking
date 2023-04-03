@@ -137,9 +137,15 @@ export default {
     //if user exceeded 10mins
     async end() {
       clearInterval(this.timer);
-      this.timer = null;
       this.timeSec = 0;
+      this.clearTimer();
+      this.timer = null;
+      
       await this.delete_from_queue();
+    },
+    clearTimer(){
+      localStorage.setItem('timeSec', JSON.stringify(20));  // timer duration, CHANGE THIS FOR DIFF TIME   
+      console.log("localStorage",localStorage);
     },
     //DELETE delete_from_queue: seat selection UI call this if user exceed 10mins
     async delete_from_queue() {
@@ -154,7 +160,7 @@ export default {
         }
         else {
           console.log("delete_from_queue() works!");
-          window.location = '/concert/' + this.concert_id; // go to concert pg when time exceeds
+          //window.location = '/concert/' + this.concert_id; // go to concert pg when time exceeds
         }
       } catch (error) {
         // Errors when calling the service; such as network error, 
