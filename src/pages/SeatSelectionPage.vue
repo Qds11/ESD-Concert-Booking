@@ -409,6 +409,8 @@ export default {
     this.userid = JSON.parse(localStorage.getItem('userid'))
     localStorage.setItem('concert_id', JSON.stringify(this.concert_id))
     
+    this.timeSec = JSON.parse(localStorage.getItem('timeSec'))
+
     this.seconds(); // start timer immediately
     await this.get_concert();
     await this.get_hall();
@@ -462,6 +464,8 @@ export default {
               time.end();
           } else {
               time.timeSec--;
+              // store new time every sec
+              localStorage.setItem('timeSec', JSON.stringify(time.timeSec));     
           }
       }, 1000);
     },

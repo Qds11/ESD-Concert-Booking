@@ -96,6 +96,7 @@ export default {
     this.timeSec = JSON.parse(localStorage.getItem('timeSec'));
 
     await this.get_concert();
+    this.timeSec = JSON.parse(localStorage.getItem('timeSec'));
     this.seconds(); // start timer immediately, continue from seat selection pg
   },
   data() {
@@ -132,6 +133,8 @@ export default {
               time.end();
           } else {
               time.timeSec--;
+              // store new time every sec
+              localStorage.setItem('timeSec', JSON.stringify(time.timeSec));
           }
       }, 1000);
     },
