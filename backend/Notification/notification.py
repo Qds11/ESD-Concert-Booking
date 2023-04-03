@@ -5,6 +5,7 @@ import os
 import requests
 import json
 import amqp_setup
+from invokes import invoke_http
 
 
 monitorBindingKey='*.notif'
@@ -18,29 +19,6 @@ user_url = "http://127.0.0.1:5000/user/phoneNum/"
 TWILIO_ACCOUNT_SID = "ACb73a42a689c04ad6bf175a645cfa9282"
 TWILIO_AUTH_TOKEN = "72769e6ae2bb619d91fd600733634fbb"
 TWILIO_PHONE_NUMBER = "+15178269570"
-
-# send user reminder when they are 3 places away from the seat selection page
-def send_notif_queue(user_id):
-    try:
-        result = invoke_http(user_url + user_id, method='GET')
-        code = result['code']
-        phone_num = result['phone_num']
-
-        client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
-
-        if code in (200, 300):
-            message = client.messages.create(
-                to="+65" + str(phone_num),
-                from_=TWILIO_PHONE_NUMBER,
-                body="You are currently 3 places away from the Seat Selection Page! "
-                     "\nDo take note that you will have 10 mins to select your seats after entering!"
-            )
-            return jsonify({"code": 200, "message": "Notification is sent"})
-        else:
-            return jsonify({"code": 404, "message": "Notification is not found"})
-        
-    except Exception as e:
-        return jsonify({"code": 500, "message": "Failed to send notification: " + str(e)})
 
 
 # send payment notification to user
@@ -61,11 +39,11 @@ def send_payment_notification(user_id):
     except Exception as e:
         return jsonify({"code": 500, "message": "Failed to send notification: " + str(e)})
 
-        
 def recieveQueue():
     amqp_setup.check_setup()
-    print("entered notif")
     queue_name = 'Notification'
+
+    print("Starting recieve queue\n")
     
     # set up a consumer and start to wait for coming messages
     amqp_setup.channel.basic_consume(queue=queue_name, on_message_callback=callback, auto_ack=True)
@@ -75,10 +53,37 @@ def recieveQueue():
 def callback(channel, method, properties, body): # required signature for the callback; no return
     print("\nReceived an order log by " + __file__)
 
-    channel.basic_ack(delivery_tag=method.delivery_tag)
     send_notif_queue(json.loads(body))
     print() # print a new line feed
+ 
+# send user reminder when they are 3 places away from the seat selection page
+def send_notif_queue(user_id):
+    try:
+        result = invoke_http(user_url + user_id, method='GET')
+        code = result['code']
+        phone_num = result['phone_num']
+
+        client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+
+        if code in (200, 300):
+            message = client.messages.create(
+                to="+65" + str(phone_num),
+                from_=TWILIO_PHONE_NUMBER,
+                body="You are currently 3 places away from the Seat Selection Page!"
+                     "\nDo take note that you will have 10 mins to select your seats after entering!"
+            )
+            return jsonify({"code": 200, "message": "Notification is sent"})
+        else:
+            return jsonify({"code": 404, "message": "Notification is not found"})
+        
+    except Exception as e:
+        return jsonify({"code": 500, "message": "Failed to send notification: " + str(e)})
 
 if __name__ == '__main__':
-    print("This is flask " + os.path.basename(__file__) + " for sending a notification...")
+    print("\nThis is " + os.path.basename(__file__), end='')
+    print(": monitoring routing key '{}' in exchange '{}' ...".format(monitorBindingKey, amqp_setup.exchangename))
+
+    from threading import Thread
+    Thread(target=recieveQueue).start()
+
     app.run(debug=True, port=5100)
