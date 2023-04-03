@@ -434,7 +434,6 @@ export default {
     this.userid = JSON.parse(localStorage.getItem('userid'))
     localStorage.setItem('concert_id', JSON.stringify(this.concert_id))
     // console.log("localStorage",localStorage);
-    //localStorage.setItem('timeSec', JSON.stringify(20));  // timer duration, CHANGE THIS FOR DIFF TIME   
 
     this.timeSec = JSON.parse(localStorage.getItem('timeSec'))
 
@@ -474,7 +473,7 @@ export default {
         quantityZero: false,
         //select_seat_popup: false,
         totalPrice: 0,
-        timeSec: 20, // timer duration, CHANGE THIS FOR DIFF TIME
+        timeSec: 600, // timer duration, CHANGE THIS FOR DIFF TIME
         timerExceeded: false
       };
   },
@@ -508,7 +507,7 @@ export default {
       await this.delete_from_queue();
     },
     clearTimer(){
-      localStorage.setItem('timeSec', JSON.stringify(20));  // timer duration, CHANGE THIS FOR DIFF TIME   
+      localStorage.setItem('timeSec', JSON.stringify(600));  // timer duration, CHANGE THIS FOR DIFF TIME   
       console.log("localStorage",localStorage);
     },
     //DELETE delete_from_queue: seat selection UI call this if user exceed 10mins

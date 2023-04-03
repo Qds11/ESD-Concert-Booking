@@ -167,7 +167,7 @@ export default {
       await this.delete_from_queue();
     },
     clearTimer(){
-      localStorage.setItem('timeSec', JSON.stringify(20));  // timer duration, CHANGE THIS FOR DIFF TIME   
+      localStorage.setItem('timeSec', JSON.stringify(600));  // timer duration, CHANGE THIS FOR DIFF TIME   
       console.log("localStorage",localStorage);
     },
     //DELETE delete_from_queue: seat selection UI call this if user exceed 10mins
