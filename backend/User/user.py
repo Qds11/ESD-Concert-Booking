@@ -5,10 +5,10 @@ from os import environ
 
 app = Flask(__name__)
 cors = CORS(app)
-# app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
 
 # # need to change DB uri accordingly
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:8889/users'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:8889/users'
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/users'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -43,28 +43,28 @@ class User(db.Model):
 
 cors = CORS(app, resources={r'/*': {'origins': '*'}})
 
-# get all users
-@app.route('/user', methods=['GET'])
-def get_all():
-    users = User.query.all()
-    if len(users):
-        return jsonify(
-            {
-                "code": 200,
-                "data": {
-                    "users": [user.json() for user in users]
-                }
-            }
-        )
-    return jsonify(
-        {
-            "code": 404,
-            "message": "There are no users."
-        }
-    ), 404
+# # get all users
+# @app.route('/user', methods=['GET'])
+# def get_all():
+#     users = User.query.all()
+#     if len(users):
+#         return jsonify(
+#             {
+#                 "code": 200,
+#                 "data": {
+#                     "users": [user.json() for user in users]
+#                 }
+#             }
+#         )
+#     return jsonify(
+#         {
+#             "code": 404,
+#             "message": "There are no users."
+#         }
+#     ), 404
 
 # get username and userid with email
-@app.route('/user/<string:email>', methods=['GET'])
+@app.route('/user/email/<string:email>', methods=['GET'])
 def get_username_with_email(email):
     user = User.query.filter_by(email=email).first()
     if user:
@@ -85,7 +85,7 @@ def get_username_with_email(email):
 
 
 #get specific user based on user_id
-@app.route("/genre/<string:user_id>")
+@app.route("/user/genre/<string:user_id>")
 def find_genre_by_user_id(user_id):
     print(user_id)
     user = User.query.filter_by(user_id=user_id).first()
