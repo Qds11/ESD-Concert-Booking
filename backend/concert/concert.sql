@@ -63,3 +63,15 @@ BEGIN
   END IF;
 END$$
 DELIMITER ;
+
+
+DELIMITER $$
+CREATE TRIGGER delete_concert
+BEFORE INSERT ON concert
+FOR EACH ROW
+BEGIN
+    IF DATE_ADD(NEW.date_time, INTERVAL 7 DAY) <= NOW() THEN
+        DELETE FROM concert WHERE concert_id = NEW.concert_id;
+    END IF;
+END $$
+DELIMITER ;

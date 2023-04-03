@@ -1,7 +1,7 @@
 <template>
 
 
-  <h1 class="title">Concerts Available</h1>
+  <h1 class="title">Concerts</h1>
   <!-- <v-img :src="require('../assets/concerts/concert1.jpg')"></v-img> -->
   <v-container>
     <v-row align="start" no-gutters style="height: 150px" class="my-7">

@@ -7,7 +7,6 @@ import {
 import {
   getConcertById,
   getAllConcertData,
-  getConcertByGenre,
   updateConcertStatus,
 } from "./model.js";
 import bodyParser from "body-parser";
@@ -59,35 +58,6 @@ app.get("/concert/:id", async (req, res) => {
   }
   res.json(concert);
 });
-
-//get concert by genre (for recommendation)
-app.get("/concert/:genre", async (req, res) => {
-  const genre = req.params.genre;
-  const concert = await getConcertByGenre(genre);
-  res.json(concert);
-});
-
-
-// app.get("/reco/:id", async (req, res) => {
-//   try {
-//     const userId = req.params.id;
-//    // console.log(userId)
-//     //const userId=1
-//     const url = `${RECOMMENDATION_MICROSERVICE_URL}/${userId}`;
-//     const response = await axios.get(url);
-//     const genre = response.data.message
-//     const concert = await getConcertByGenre(genre);
-
-//     // Send the response back to the frontend
-//     console.log(concert)
-//     res.send(concert)
-//     console.log(response.data);
-//     // res.send(response.data);
-//   } catch (error) {
-//     console.error(error);
-//     res.sendStatus(500);
-//   }
-// });
 
 //PORT
 app.listen(5005, () => {
