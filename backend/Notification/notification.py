@@ -7,7 +7,6 @@ import json
 import amqp_setup
 from invokes import invoke_http
 
-
 monitorBindingKey='*.notif'
 
 app = Flask(__name__)
@@ -47,6 +46,8 @@ def recieveQueue():
     
     # set up a consumer and start to wait for coming messages
     amqp_setup.channel.basic_consume(queue=queue_name, on_message_callback=callback, auto_ack=True)
+    print('Start consuming...')
+
     amqp_setup.channel.start_consuming() # an implicit loop waiting to receive messages; 
     #it doesn't exit by default. Use Ctrl+C in the command window to terminate it.
 
