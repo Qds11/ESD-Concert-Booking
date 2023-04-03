@@ -1,6 +1,6 @@
 <template>
   <v-tabs v-model="tab" bg-color="primary" class="navbar">
-    <router-link :to="{ path: '/' }" class="link-style">
+    <router-link :to="{ path: '/concert' }" class="link-style">
 
       <v-tab value="one" class="ml-3"><b>TicketPRO</b></v-tab>
     </router-link>
@@ -8,7 +8,7 @@
     <v-spacer></v-spacer>
     <v-tab value="three" class="mr-3" v-if="!isLoggedIn">
 
-      <router-link :to="{ path: '/login' }" class="link-style">
+      <router-link :to="{ path: '/' }" class="link-style">
         Login/ Sign Up
       </router-link>
 
@@ -27,11 +27,11 @@ export default {
 
     // localStorage.setItem("username", 3);
 
-   // localStorage.removeItem('username');
-    // if(localStorage.getItem('username')){
-    //   this.username = JSON.parse(localStorage.getItem('username'))
-    //   this.isLoggedIn=true
-    // }
+    // localStorage.removeItem('username');
+    if(localStorage.getItem('username')){
+      this.username = JSON.parse(localStorage.getItem('username'))
+      this.isLoggedIn=true
+    }
 
   },
 
