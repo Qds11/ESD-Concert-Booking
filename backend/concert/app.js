@@ -47,7 +47,7 @@ app.get("/concert/:id", async (req, res) => {
     try {
       const {
         data: { status },
-      } = await axios.get(`${TICKETING_MICROSERVICE_URL}/${id.toString()}`);
+      } = await axios.get(`${TICKETING_MICROSERVICE_URL}/concert/status/${id.toString()}`);
       if (status.includes("sold out")) {
         await updateConcertStatus(id, status);
         concert[0].status = status;
@@ -55,6 +55,16 @@ app.get("/concert/:id", async (req, res) => {
     } catch (err) {
       console.log(err);
     }
+  }
+  try {
+    const {data} = await axios.get(
+      `${TICKETING_MICROSERVICE_URL}/hall/${id.toString()}`
+    );
+    concert[0]["hall_name"] = data.hall_name;
+    concert[0]["hall_plan"] = data.hall_plan;
+    console.log(concert)
+  } catch (err) {
+    console.log(err)
   }
   res.json(concert);
 });

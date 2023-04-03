@@ -163,15 +163,15 @@ export default {
       this.timeSec = 0;
       this.clearTimer();
       this.timer = null;
-      
-      await this.delete_from_queue();
+
+      await this.delete_from_queue("timer");
     },
     clearTimer(){
-      localStorage.setItem('timeSec', JSON.stringify(600));  // timer duration, CHANGE THIS FOR DIFF TIME   
+      localStorage.setItem('timeSec', JSON.stringify(600));  // timer duration, CHANGE THIS FOR DIFF TIME
       console.log("localStorage",localStorage);
     },
     //DELETE delete_from_queue: seat selection UI call this if user exceed 10mins
-    async delete_from_queue() {
+    async delete_from_queue(type) {
       try {
         console.log("trying delete_from_queue()");
 
@@ -183,10 +183,12 @@ export default {
         }
         else {
           console.log("delete_from_queue() works!");
-          this.timerExceeded=true;
+          if (type === 'timer') {
+            this.timerExceeded=true;
+          }
         }
       } catch (error) {
-        // Errors when calling the service; such as network error, 
+        // Errors when calling the service; such as network error,
         // service offline, etc
         console.log(error);
       }
@@ -228,7 +230,7 @@ export default {
 
         }
       } catch (error) {
-        // Errors when calling the service; such as network error, 
+        // Errors when calling the service; such as network error,
         // service offline, etc
         console.log(error);
       }
@@ -262,13 +264,14 @@ export default {
                 commit: true
               })
                 // .then((response) => response.json())
-                .then((details) => {
+                .then( (details) => {
                   // This function shows a transaction success message to your buyer.
                   this.paymentStatus = true
                   // this.sendNotif(this.paymentStatus)
                   alert(
                     "Transaction completed by " + details.payer.name.given_name
                   );
+                  this.delete_from_queue('payment');
 
                   window.location.href = '/BookingStatus/true'
 
