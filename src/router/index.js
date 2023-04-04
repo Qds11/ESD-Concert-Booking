@@ -11,7 +11,12 @@ import PaymentPage from "../pages/PaymentPage.vue";
 
 const routes = [
   {
-    path: "/concert",
+    path: "/test",
+    name: "TestComponent",
+    component: TestComponent,
+  },
+  {
+    path: "/",
     name: "HomePage",
     component: HomePage,
   },
@@ -49,9 +54,27 @@ const routes = [
 
 ];
 
+
 const router = createRouter({
   history: createWebHistory(),
   routes
 });
+
+router.beforeEach(async (to, from, next) => {
+  var username = JSON.parse(localStorage.getItem('username'))
+
+  if (
+    // make sure the user is not authenticated (they haven't logged in)
+    !username &&
+    // Avoid an infinite redirect
+    to.name !== 'LoginPage'
+  ) {
+    // redirect the user to the login page
+    next({ name: 'LoginPage' })
+  } else {
+    // allow the user to access the destination route
+    next()
+  }
+})
 
 export default router;
