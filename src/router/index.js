@@ -8,6 +8,8 @@ import QueuePage from "../pages/QueuePage.vue";
 import SeatSelectionPage from "../pages/SeatSelectionPage.vue";
 import PaymentPage from "../pages/PaymentPage.vue";
 
+
+
 const routes = [
   {
     path: "/test",
@@ -15,12 +17,12 @@ const routes = [
     component: TestComponent,
   },
   {
-    path: "/",
+    path: "/concert",
     name: "HomePage",
     component: HomePage,
   },
   {
-    path: "/login",
+    path: "/",
     name: "LoginPage",
     component: LoginPage,
   },
@@ -30,7 +32,7 @@ const routes = [
     component: ConcertPage,
   },
   {
-    path: "/BookingStatus",
+    path: "/BookingStatus/:paymentStatus",
     name: "BookingStatus",
     component: BookingStatus,
   },
@@ -52,30 +54,28 @@ const routes = [
 
 
 ];
-// Check if user is authorized to access the route
-const isAuthorized = () => {
-  // Implement your logic to check if the user is authorized
-  // For example, check if the user has a valid session token
-  // If the user is authorized, return true. Otherwise, return false.
-};
 
-// Handle the request to the route
-const handleRoute = (route) => {
-  if (isAuthorized()) {
-    // If user is authorized, show the requested route
-    const page = routes[route];
-    page.show();
-  } else {
-    // If user is not authorized, redirect to login page
-    window.location.href = '/login';
-  }
-};
-// Call handleRoute with the requested route
-handleRoute('/HomePage');
 
 const router = createRouter({
   history: createWebHistory(),
   routes
 });
+
+router.beforeEach(async (to, from, next) => {
+  var username = JSON.parse(localStorage.getItem('username'))
+
+  if (
+    // make sure the user is not authenticated (they haven't logged in)
+    !username &&
+    // Avoid an infinite redirect
+    to.name !== 'LoginPage'
+  ) {
+    // redirect the user to the login page
+    next({ name: 'LoginPage' })
+  } else {
+    // allow the user to access the destination route
+    next()
+  }
+})
 
 export default router;
