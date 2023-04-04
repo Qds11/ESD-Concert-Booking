@@ -11,24 +11,38 @@ volumes:
 
 services:
 
+  
+  db:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: concertdata
+      MYSQL_PASSWORD: root
+    volumes:
+      - ./mysql:/var/lib/mysql
+
+
   ###################################
   # Notification: The Notification microservice
   ###################################
   notification:
     build:
       context: ./backend/Notification
-      dockerfile: Notification.Dockerfile
+      dockerfile: Dockerfile
     image: xhihyu/notification:1.0
     restart: always
+    depends_on:
+      - rabbitmq
+      - queue
     environment:
       PYTHONUNBUFFERED: 1
       user_url : http://user:5000/user/phoneNum/
       RABBITMQ_HOST: rabbitmq
       RABBITMQ_PORT: 5672
-      RABBITMQ_USER: guest
-      RABBITMQ_PASSWORD: guest
-    depends_on:
-      - rabbitmq
+
+    ports:
+    - "5100:5100"
  
   #######################################################
   # Queue: The Queue microservice
@@ -36,18 +50,20 @@ services:
   queue:
     build:
       context: ./backend/queue
-      dockerfile: queue.Dockerfile
+      dockerfile: Dockerfile
     image: xhihyu/queue:1.0
     restart: always
+    depends_on:
+      - rabbitmq
     environment:
       dbURL: mysql+mysqlconnector://root:root@host.docker.internal:8889/queue_database
       PYTHONUNBUFFERED: 1
       RABBITMQ_HOST: rabbitmq
       RABBITMQ_PORT: 5672
-      RABBITMQ_USER: guest
-      RABBITMQ_PASSWORD: guest
-    depends_on:
-      - rabbitmq
+    ports: 
+    - "5009:5009"
+
+
     
   #######################################################
   # Recommendation: The Recommendation microservice
@@ -55,14 +71,18 @@ services:
   recommendation:
     build:
       context: ./backend/Recommender
-      dockerfile: recommendation.Dockerfile
+      dockerfile: Dockerfile
     image: xhihyu/recommendation:1.0
     restart: always
     depends_on:
       - ticketing
+      - user
     environment:
       PYTHONUNBUFFERED: 1
+    ports:
+    - "5003:5003"
 
+  
   ####################################
   # RabbitMQ: The messaging broker   
   ####################################
@@ -81,12 +101,14 @@ services:
   #################################################
   ticketing:
     build:
-      context: ./backend/Recommender
-      dockerfile: ticketing.Dockerfile
+      context: ./backend/Ticket
+      dockerfile: Dockerfile
     image: xhihyu/ticketing:1.0
     restart: always
     environment:
       PYTHONUNBUFFERED: 1
+    ports:
+    - "5004:5004"
 
   ###################################
   # User: The User microservice
@@ -94,13 +116,15 @@ services:
   user:
     build:
       context: ./backend/User
-      dockerfile: user.Dockerfile
+      dockerfile: Dockerfile
     image: xhihyu/user:1.0
     restart: always
 
     environment:
-      dburl: mysql+mysqlconnector://root:root@host.docker.internal:8889/usersd
+      dbURL: mysql+mysqlconnector://is213@host.docker.internal:8889/users
       PYTHONUNBUFFERED: 1
+    ports:
+    - "5000:5000"
 
 
   ###############################################
@@ -109,99 +133,21 @@ services:
   concert:
     build:
       context: ./backend/concert
-      dockerfile: concert.Dockerfile
+      dockerfile: Dockerfile
     image: xhihyu/concert:1.0
     restart: always
     depends_on:
       - recommendation
       - queue
       - ticketing
+      - db
     environment:
-      PYTHONUNBUFFERED: 1
+      - host=db
+      - port=8889
+      - user=root
+      - password=root
+      - database=concertdata
     ports:
-      - "5100:5100"
+      - "5005:5005"
 
  
-
-  # #######################################
-  # # Postgres: The database used by Kong
-  # #######################################
-  # kong-database:
-  #   image: postgres:9.6
-  #   platform: linux/amd64
-  #   restart: always
-  #   networks:
-  #     - backend_kong-net
-  #   environment:
-  #     POSTGRES_DB: kong
-  #     POSTGRES_USER: kong
-  #     POSTGRES_PASSWORD: password
-  #   ports:
-  #     - "5432:5432"
-  #   healthcheck:
-  #     test: ["CMD", "pg_isready", "-U", "kong"]
-  #     interval: 10s
-  #     timeout: 5s
-  #     retries: 5
-  #   volumes:
-  #     - pgdata:/var/lib/postgresql/data
-
-  # #######################################
-  # # Kong database migration
-  # #######################################
-  # kong-migration:
-  #   image: kong:2.0.4
-  #   platform: linux/amd64
-  #   command: "kong migrations bootstrap"
-  #   restart: on-failure
-  #   networks:
-  #     - backend_kong-net
-  #   environment:
-  #     KONG_DATABASE: postgres
-  #     KONG_PG_HOST: kong-database
-  #     KONG_PG_USER: kong
-  #     KONG_PG_PASSWORD: password
-  #   depends_on:
-  #     - kong-database
-
-  # #######################################
-  # # Kong: The API Gateway
-  # #######################################
-  # kong:
-  #   image: kong:2.0.4
-  #   platform: linux/amd64
-  #   restart: always
-  #   networks:
-  #     - backend_kong-net
-  #   environment:
-  #     KONG_DATABASE: postgres
-  #     KONG_PG_HOST: kong-database
-  #     KONG_PG_USER: kong
-  #     KONG_PG_PASSWORD: password
-  #     KONG_PROXY_LISTEN: 0.0.0.0:8000
-  #     KONG_ADMIN_LISTEN: 0.0.0.0:8001
-  #   depends_on:
-  #     - kong-migration
-  #   ports:
-  #     - "8000:8000"
-  
-  # #######################################
-  # # Konga: Kong GUI
-  # #######################################
-  # konga:
-  #   image: pantsel/konga
-  #   restart: always
-  #   networks:
-  #       - backend_kong-net
-  #   environment:
-  #     DB_ADAPTER: postgres
-  #     DB_HOST: kong-database
-  #     DB_USER: jigglypuff1
-  #     DB_PASSWORD: jigglypuff
-  #     DB_DATABASE: konga_db
-  #   depends_on:
-  #     - kong
-  #   ports:
-  #     - "1337:1337"
-  #   volumes:
-  #     - kongadata:/app/kongadata

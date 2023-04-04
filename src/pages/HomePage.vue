@@ -37,22 +37,15 @@
 
 <script>
   import axios from "axios";
-  import {
-    API_BASE_URL_NODEJS
-  } from "../config.js";
+
 
   export default {
     name: "HomePage",
     async mounted() {
 
-      this.userid = JSON.parse(localStorage.getItem('username'))
-      // this.username = JSON.parse(localStorage.getItem('username'))
+      this.userid = JSON.parse(localStorage.getItem('userid'))
 
       await this.getAllConcertData(this.userid);
-
-      // const userId = 2;
-      // const response = await axios.get(`${API_BASE_URL_NODEJS}/reco/${userId}`);
-      // this.recommended = response.data[0];
     },
     data() {
       return {
@@ -69,17 +62,11 @@
           if (localStorage.getItem('userid')) {
             this.userid = JSON.parse(localStorage.getItem('userid'))
           }
-          const response = await axios.get(API_BASE_URL_NODEJS, {
-            params: {
-              userid: this.userid
-            }
-          });
-          console.log(response);
-          this.concerts = response.data.concerts;
-          if (response.data.recommended) {
-            this.recommended = response.data.recommended.message;
+         const response = await axios.get(`http://localhost:5005/?userId=${this.userid}`);
+          this.concerts = response.data.data.concerts;
+          if (response.data.data.recommended) {
+            this.recommended = response.data.data.recommended;
           }
-          console.log(this.recommended)
           //return data;
         } catch (err) {
           console.log(err);
