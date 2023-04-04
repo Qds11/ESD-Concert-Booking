@@ -41,14 +41,16 @@ npm run serve
 ## Web Application Flow
 
   1) Users can choose to log in using google authentication or can directly go to the homepage
-  2) Homepage will display list of concerts 
-  3) If user clicks 'Explore' for a specific concert, they will be directed to this page where they can purchase the tickets if tickets are still available and ticket sales are open
-  4) Once user clicks on 'Buy Tickets' button, they will be directed to the virtual queue page where if there are 4 or more other users currently purchasing tickets for the same concert, they will have to wait for their turn. 
-  5) If user is at queue position 4, they will receive an SMS that notifies them that they are nearing the front of the queue.
-  6) Once they are at queue position 0, they will be directed to seat selection page. They have a total of 10 minutes to complete selecting seats and payment.
-  7) If they try to checkout with more than 10 tickets or if the tickets are sold out, they will be notified and cannot proceed to payment.
-  8) At checkout, they will be directed to payment page where paypal is used.
-  9) If payment is successful, they will receive a payment success notification through SMS
+  ![image](https://user-images.githubusercontent.com/101784318/229823358-f545b53b-658e-4a67-b080-09fa17ef4f85.png)
+
+  3) Homepage will display list of concerts 
+  4) If user clicks 'Explore' for a specific concert, they will be directed to this page where they can purchase the tickets if tickets are still available and ticket sales are open
+  5) Once user clicks on 'Buy Tickets' button, they will be directed to the virtual queue page where if there are 4 or more other users currently purchasing tickets for the same concert, they will have to wait for their turn. 
+  6) If user is at queue position 4, they will receive an SMS that notifies them that they are nearing the front of the queue.
+  7) Once they are at queue position 0, they will be directed to seat selection page. They have a total of 10 minutes to complete selecting seats and payment.
+  8) If they try to checkout with more than 10 tickets or if the tickets are sold out, they will be notified and cannot proceed to payment.
+  9) At checkout, they will be directed to payment page where paypal is used.
+  10) If payment is successful, they will receive a payment success notification through SMS
   
 
 
