@@ -75,6 +75,8 @@ npm run serve
 
 
   10) If payment is successful, they will receive a payment success notification through SMS
+  ![image](https://user-images.githubusercontent.com/101784318/229852820-f0cdc559-b178-4feb-90c1-344bcd7d034e.png)
+
   
 
 
