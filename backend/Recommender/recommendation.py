@@ -4,6 +4,7 @@ from flask_cors import CORS
 from datetime import datetime, date
 import requests
 from invokes import invoke_http
+import json
 from os import environ
 
 app = Flask(__name__)
@@ -18,7 +19,8 @@ CORS(app)
 #api endpoint for concert ms to call, will call user ms and return the result from user to concert
 @app.route("/recommendations/user/<string:user_id>")
 def find_genre_by_calling_user(user_id):
-    results = invoke_http("http://localhost:8000/api/v1/user/genre/"+user_id +"?apikey=QRp2hItGLsgHXWD0CHVGBSHxJB6wEO7i", method='GET')
+    # results = invoke_http("http://localhost:8000/api/v1/user/genre/"+user_id +"?apikey=QRp2hItGLsgHXWD0CHVGBSHxJB6wEO7i", method='GET')
+    results=invoke_http("http://localhost:5000/user/genre"+user_id, method='GET')
     print(results)
     if results['code']==200:
         global current_user_id
@@ -43,7 +45,9 @@ def find_genre_by_calling_user(user_id):
 #find recommendation with concert id
 @app.route("/recommendations/concert/<string:concert_id>")
 def find_recommendation(concert_id):
-    results = invoke_http("http://localhost:8000/api/v1/user/birthday/"+concert_id+"?apikey=QRp2hItGLsgHXWD0CHVGBSHxJB6wEO7i", method='GET')
+    user_id=json.loads(localStorage.getItem('user_id'))
+    # results = invoke_http("http://localhost:8000/api/v1/user/birthday/"+concert_id+"?apikey=QRp2hItGLsgHXWD0CHVGBSHxJB6wEO7i", method='GET')
+    results=invoke_http("http://localhost:5000/user/birthday"+user_id, method='GET')
     birthdate=results['message']
     # convert to datetime object
     date_obj = datetime.strptime(birthdate, "%a, %d %b %Y %H:%M:%S %Z")
