@@ -51,12 +51,10 @@ npm run serve
  ![image](https://user-images.githubusercontent.com/101784318/229833012-35a40378-0e01-4b13-bf58-6d1ad55ba01e.png)
 
   4) If user clicks 'Explore' for a specific concert, they will be directed to this page where they can purchase the tickets if tickets are still available and ticket sales are open
-  ![image](https://user-images.githubusercontent.com/101784318/229824930-53788599-cfcd-4856-8bae-f9baede49427.png)
+  ![image](https://user-images.githubusercontent.com/101784318/229832715-d59fafa9-2c29-4561-bec5-eabc8d8c7f48.png)
 
   5) Once user clicks on 'Buy Tickets' button, they will be directed to the virtual queue page where if there are 4 or more other users currently purchasing tickets for the same concert, they will have to wait for their turn. 
-  ![image](https://user-images.githubusercontent.com/101784318/229832715-d59fafa9-2c29-4561-bec5-eabc8d8c7f48.png)
   ![image](https://user-images.githubusercontent.com/101784318/229836742-c5aae28b-75f0-4727-a429-77ef66566775.png)
-
 
 
   6) If user is at queue position 4, they will receive an SMS that notifies them that they are nearing the front of the queue.
