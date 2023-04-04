@@ -42,7 +42,8 @@ npm run serve
 
   1) Users can choose to log in using google authentication or can directly go to the homepage
   
-  ![image](https://user-images.githubusercontent.com/101784318/229823358-f545b53b-658e-4a67-b080-09fa17ef4f85.png)
+![image](https://user-images.githubusercontent.com/101784318/229842130-6062a318-b7cc-48f4-b6f8-f671165fc7b6.png)
+
   ![image](https://user-images.githubusercontent.com/101784318/229825589-da735d46-56a2-4a7f-9189-4d7e1e887d39.png)
 
 
