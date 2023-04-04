@@ -9,7 +9,29 @@ To protect sensitive user data such as email addresses and phone numbers, an API
 
 Finally, this web application is designed to be containerized using Docker into individual microservices, enabling better scalability, flexibility, and maintainability. 
 
+## Requirements
+1) Have Docker installed in your host system
+
+3) A compatible host operating system that supports Docker, such as Linux, macOS, or Windows.
+
+2) Sufficient resources on the host system to run the container, including CPU, RAM, and storage.
+
+3) A network connection to access the container registry and to communicate with the web application.
+
+4. Any required environment variables such as API keys or credentials to configure the web application. These can be passed to the container using the -e option when running docker run.
+
 ## Project setup
+1) Clone the GitHub repository using the git clone command.
+
+2) Navigate to the directory containing the docker-compose.yml file.
+
+3) Run the docker-compose up command to start all services defined in the docker-compose.yml file.
+
+4) Access the web application by navigating to the container's IP address or hostname on the specified port.
+
+5) npm install in root directory
+
+6) npm run dev in root directory to start up frontend  
 ```
 npm install
 ```
