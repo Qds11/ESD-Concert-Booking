@@ -71,8 +71,7 @@ const errorMsg = ref({
 
     var email = userEmail._rawValue.email;
     // calls the user microservice to check if email exists in the database
-    const path = `http://127.0.0.1:5000/user/email/
-    ${email}`;
+    const path = `http://127.0.0.1:5000/user/email/${email}`;
     // const path = 'http://localhost:8000/api/v1/user/email/'+email+'?apikey=QRp2hItGLsgHXWD0CHVGBSHxJB6wEO7i'
     axios
       .get(path)
