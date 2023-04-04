@@ -25,8 +25,14 @@ TWILIO_PHONE_NUMBER = "+15178269570"
 
 
 def recieveQueue():
+    hostname = "localhost" 
+    port = 5672 
     connection = pika.BlockingConnection(
-    pika.ConnectionParameters(host=os.environ.get('RABBITMQ_HOST')))
+        pika.ConnectionParameters(
+            host=hostname, port=port,
+            heartbeat=3600, blocked_connection_timeout=3600,
+    ))
+
     channel = connection.channel()
 
     channel.exchange_declare(exchange='notif_topic', exchange_type='topic')
