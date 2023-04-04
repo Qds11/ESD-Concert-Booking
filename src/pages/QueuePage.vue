@@ -15,18 +15,22 @@
               </p>
             </v-container>
             <v-container>
-              <p v-if='(queue_position.queue_position)==0' class="text-h3 mb-2" style="columns: white">
-                {{queue_position.queue_position}}
+              <p v-if='(queue_position.queue_position)==1' class="text-h3 mb-4" style="columns: white">
+                <!-- {{queue_position.queue_position}} -->
+                You're next!
               </p>
               <p v-else class="text-h3 mb-2" style="columns: white">
                 {{queue_position.queue_position-1}}
               </p>
-              <p v-if='(queue_position.queue_position-1)==1' class="text-h7 mb-5" style="columns: white">
-                person ahead of you
-              </p>
-              <p v-else class="text-h7 mb-5" style="columns: white">
-                people ahead of you
-              </p>
+              <div v-if='(queue_position.queue_position)!=1'>
+                <p v-if='(queue_position.queue_position-1)==1' class="text-h7 mb-5" style="columns: white">
+                  person ahead of you
+                </p>
+                <p v-else class="text-h7 mb-5" style="columns: white">
+                  people ahead of you
+                </p>
+              </div>
+<!--               
               <v-progress-linear
                 bg-color="deep-purple-lighten-5"
                 color="deep-purple-accent-1"
@@ -34,7 +38,7 @@
                 rounded
                 model-value="80"
                 striped
-              ></v-progress-linear>
+              ></v-progress-linear> -->
             </v-container>
           </v-sheet>
         </v-col>
@@ -59,18 +63,25 @@
       //console.log("this.userid",this.userid);
 
       await this.add_to_queue();
-      await this.get_queue_position();
       await this.get_concert();
-      
+      await this.get_queue_position();
+      this.callRepeatedly(); // start calling queue position repeatedly
 
-      // const intervalId = 
-      // window.setInterval(function(){
-      //   // call your function here
-      //   this.get_queue_position()
-      // }, 60000); // -> can change time interval
+      
+      // this.getQueuePositionRepeatedly = 
+      //   setInterval(function(){
+      //     // call your function here
+      //     this.call_get_queue_position();
+      //     console.log("queue ms called repeatedly");
+      //   }, 2000); // -> can change time interval
+
+        // this.getQueuePositionRepeatedly = setInterval(function () {
+        //   this.call_get_queue_position();
+        //   console.log("queue ms called repeatedly");
+        // }, 2000);
 
       // stop calling
-      //clearInterval(intervalId);
+      // clearInterval(this.getQueuePositionRepeatedly);
 
     },
     components: {
@@ -103,6 +114,17 @@
           console.log(error);
         }
       },
+      callRepeatedly(){  
+        var time = this;
+      
+        this.getQueuePositionRepeatedly = setInterval(function () {
+          time.triggerQueuePositionMS();
+          console.log("queue ms called again");
+        }, 60000);
+      },
+      async triggerQueuePositionMS(){
+        await this.get_queue_position();
+      },
       // get queue position: freqeuently call this to updated queue position
       async get_queue_position() {
         //var queue_id = 10; // QUEUE ID
@@ -119,6 +141,9 @@
           else{
             console.log("get_queue_position() works!");
             this.queue_position=response.data;
+            if((this.queue_position.queue_position)==0){
+              window.location='/seatSelectionPage/' + this.concert_id;
+            }
           }
         } catch (error) {
           // Errors when calling the service; such as network error, 

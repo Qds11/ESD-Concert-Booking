@@ -1,104 +1,110 @@
 from flask import Flask, jsonify
 from flask_cors import CORS
-
+from twilio.rest import Client
 import os
 import requests
-from invokes import invoke_http
-import twilio
-
-from twilio.rest import Client
-
-import amqp_setup
-import pika
 import json
+from invokes import invoke_http
+import pika 
+import multiprocessing
+
+monitorBindingKey='*.notif'
 
 app = Flask(__name__)
 CORS(app)
 
-# Download the helper library from https://www.twilio.com/docs/python/install
 
-# Set environment variables for your credentials
-# Read more at http://twil.io/secure
+# user_URL="http://localhost:8000/api/v1/user/phoneNum/" + user_id + "?apikey=QRp2hItGLsgHXWD0CHVGBSHxJB6wEO7i"
 
-user_URL = "http://127.0.0.1:5000/user/phoneNum//"
+user_url = "http://127.0.0.1:5000/user/phoneNum/"
 
-
-# get phone num frm user id and find the user phone number
-@app.route('/sendQueueNotification/<string:user_id>', methods=['GET'])
-def send_notif_queue(user_id):
-
-    result = invoke_http(user_URL + user_id, method='GET')
-    code = result["code"]
-    phone_num = result["phone_num"]
-
-    # Your Account SID from twilio.com/console
-    account_sid = "ACb73a42a689c04ad6bf175a645cfa9282"
-    # Your Auth Token from twilio.com/console
-    auth_token = "72769e6ae2bb619d91fd600733634fbb"
-    code = 500
-
-    client = Client(account_sid, auth_token)
-    if code not in range(200, 300):
-
-        message = json.dumps(result)
-
-        amqp_setup.channel.basic_publish(
-            exchange=amqp_setup.exchangename,
-            routing_key="queue.error_notif",
-            body=message,
-            properties=pika.BasicProperties(delivery_mode=2))
-
-        return jsonify({"code": 404, "message": "message not sent"}), 404
-
-    message = client.messages.create(
-        to="+65" + str(phone_num),
-        from_="+15178269570",
-        body=
-        "You are currently 3 places away from the Seat Selection Page! \n Do take note that you will have 10 mins to select your seats after entering!"
-    )
-
-    return jsonify({"code": 200, "message": "Notification is sent"})
+# Twilio account credentials
+TWILIO_ACCOUNT_SID = "ACb73a42a689c04ad6bf175a645cfa9282"
+TWILIO_AUTH_TOKEN = "72769e6ae2bb619d91fd600733634fbb"
+TWILIO_PHONE_NUMBER = "+15178269570"
 
 
-# get phone num frm user queue and find the user phone number
+def recieveQueue():
+    hostname = "localhost" 
+    port = 5672 
+    connection = pika.BlockingConnection(
+        pika.ConnectionParameters(
+            host=hostname, port=port,
+            heartbeat=3600, blocked_connection_timeout=3600,
+    ))
+
+    channel = connection.channel()
+
+    channel.exchange_declare(exchange='notif_topic', exchange_type='topic')
+    
+    queue_name = "Notification"
+
+    channel.queue_declare(queue_name, durable=True)
+
+    queue_name = "Notification"
+
+    binding_key = "*.notif"
+
+    channel.queue_bind(exchange='notif_topic', queue=queue_name, routing_key=binding_key)
+
+    channel.basic_consume(
+    queue=queue_name, on_message_callback=callback, auto_ack=True)
+
+    channel.start_consuming()
+
+    print(' [*] Waiting for logs. To exit press CTRL+C')
+    pass
+
+# send payment notification to user
 @app.route('/sendPaymentNotification/<string:user_id>', methods=['GET'])
-def send_payment_queue(user_id):
+def send_payment_notification(user_id):
+    try:
+        # result = invoke_http(user_URL + user_id + "?apikey=QRp2hItGLsgHXWD0CHVGBSHxJB6wEO7i", method='GET')
+        result = invoke_http(user_url + str(user_id), method='GET')
+        code = result['code']
+        phone_num = result['data']
 
-    result = invoke_http("http://127.0.0.1:5000/user/phoneNum/" + user_id,
-                         method='GET')
+        client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+        message = client.messages.create(
+            to="+65" + str(phone_num),
+            from_=TWILIO_PHONE_NUMBER,
+            body="You have purchased the ticket successfully"
+        )
+        print(message.sid)
+        return jsonify({"code": 200, "message": "Notification has been sent"})
 
-    code = result['code']
-    phone_num = result['phone_num']
+    except Exception as e:
+        return jsonify({"code": 500, "message": "Failed to send notification: " + str(e)})
 
-    # Your Account SID from twilio.com/console
-    account_sid = "ACb73a42a689c04ad6bf175a645cfa9282"
-    # Your Auth Token from twilio.com/console
-    auth_token = "72769e6ae2bb619d91fd600733634fbb"
 
-    client = Client(account_sid, auth_token)
-    if code not in range(200, 300):
+def callback(channel, method, properties, body): # required signature for the callback; no return
+    print("\nReceived an notification requrest by " + __file__)
 
-        message = json.dumps(result)
-        amqp_setup.channel.basic_publish(exchange=amqp_setup.exchangename,
-        routing_key="payment.error_notif",
-        body=message,
-        properties=pika.BasicProperties(delivery_mode=2))
+    send_notif_queue(json.loads(body))
+    print() # print a new line feed
+ 
 
-        return jsonify({"code": 404, "message": "message not sent"}), 404
+# send user reminder when they are 3 places away from the seat selection page
+def send_notif_queue(user_id):
+    print("inside send_notif_queue")
+    result = invoke_http(user_url + str(user_id), method='GET')
+    phone_num = result['data']
 
+    client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 
     message = client.messages.create(
-        to="+65" + str(phone_num),
-        from_="+15178269570",
-        body=
-        "You are currently 3 places away from the Seat Selection Page! \n Do take note that you will have 10 mins to select your seats after entering!"
+            to="+65" + str(phone_num),
+            from_=TWILIO_PHONE_NUMBER,
+            body="You are currently 3 places away from the Seat Selection Page!"
+                    "\nDo take note that you will have 10 mins to select your seats after entering!"
     )
-
-
-    return jsonify({"code": 200, "message": "notification is sent"})
-
+    print(message.sid)
 
 if __name__ == '__main__':
-    print("This is flask " + os.path.basename(__file__) +
-          " for sending a notification...")
-    app.run(debug=True, port=5100)
+    print("\nThis is " + os.path.basename(__file__), end='')
+    print(": monitoring routing key '{}' in exchange '{}' ...".format(monitorBindingKey, "notif_topic"))
+    p = multiprocessing.Process(target=recieveQueue)
+    p.start()
+
+    app.run(host='0.0.0.0', port=5100, debug=True)
+

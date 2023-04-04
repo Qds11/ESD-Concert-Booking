@@ -10,28 +10,30 @@
           </div>
         </v-container>
       </v-col>
+      <v-col cols="4" align-self="center" class="pa-5">
+        <div class="timer">
+          {{ min }}:{{ sec }}
+        </div>
+      </v-col>
+
       <v-container>
         <v-row>
           <v-col cols="6">
-            <v-img
-              fluid
-              :src="require('../assets/payment/bp_concert.png')"
-              class="img h-screen"
-            ></v-img>
+            <v-img fluid :src="require('../assets/payment/bp_concert.png')" class="img h-screen"></v-img>
           </v-col>
           <v-col cols="6" align-self="center" class="pa-5">
             <v-sheet color="black" fluid>
               <v-container>
-                <p class="text-h5 mb-5" style="columns: white"> 
+                <p class="text-h5 mb-5" style="columns: white">
                   Concert Name:
-                   {{ concertDetails.concert_name }}
+                  {{ concertDetails.concert_name }}
                 </p>
                 <p class="text-h5 mb-5" style="columns: white">
-                  Number of tickets: 
+                  Number of tickets:
                   {{ this.tix_quantity }}
                 </p>
                 <p class="text-h5 mb-5" style="columns: white">
-                  Total Price: 
+                  Total Price:
                   ${{ this.totalPrice }}
                 </p>
               </v-container>
@@ -40,17 +42,29 @@
                   <div id="paypal-button-container"></div>
                 </div>
 
-                
-                <!-- <div>
-                <PayPalScriptProvider :options="{ 'client-id': AYX78yVruw2aUiVYzwFdKMlWR9P771QpGLZqTdxbBBlkizAMYYzAP16GK4SPI63L4ih7Nhu9wm9BDpxu }">
-                  <PayPalButtons :create-order="createOrder" :on-approve="onApprove" />
-                </PayPalScriptProvider>
-              </div> -->
               </v-container>
             </v-sheet>
           </v-col>
         </v-row>
       </v-container>
+      <!-- TIMER EXCEEDED POPUP -->
+      <div class="text-center">
+        <v-dialog v-model="timerExceeded" width="auto" persistent>
+          <v-flex xs12 sm8 md6>
+            <v-card class="pa-10">
+              <v-card-text>
+                <v-icon color="red" size="48" class="ml-10 pl-16">
+                  mdi-timer-outline
+                </v-icon>
+                <h1 class="text-center mt-3 mb-5">Time Exceeded</h1>
+                <p class="text-center">Redirecting to Concert Page in 5 sec...</p>
+                {{ this.triggerRedirect() }}
+              </v-card-text>
+            </v-card>
+          </v-flex>
+
+        </v-dialog>
+      </div>
     </v-row>
   </v-container>
 </template>
@@ -65,6 +79,14 @@
 html {
   background-color: black;
 }
+
+.timer {
+  color: white;
+  font-size: 2rem;
+  font-weight: bolder;
+  text-align: center;
+  margin: 15px 0;
+}
 </style>
 
 <script>
@@ -75,9 +97,15 @@ export default {
   name: "PaymentPage",
   async created() {
     this.concert_id = this.$route.params.concertid;
-    this.tix_quantity = JSON.parse(localStorage.getItem('tix_quantity'))
-    this.totalPrice = JSON.parse(localStorage.getItem('totalPrice')) 
+    this.userid = JSON.parse(localStorage.getItem('userid'));
+
+    this.tix_quantity = JSON.parse(localStorage.getItem('tix_quantity'));
+    this.totalPrice = JSON.parse(localStorage.getItem('totalPrice'));
+    this.timeSec = JSON.parse(localStorage.getItem('timeSec'));
+
     await this.get_concert();
+    this.timeSec = JSON.parse(localStorage.getItem('timeSec'));
+    this.seconds(); // start timer immediately, continue from seat selection pg
   },
   data() {
     return {
@@ -87,13 +115,84 @@ export default {
       ticketPrices: "",
       totalPrice: 0,
       paymentStatus: false,
+      timeSec: 5, // timer duration
+      timerExceeded: false
     };
   },
+  computed: {
+    min() {
+      return String(Math.floor(this.timeSec / 60)).padStart(2, '0');
+    },
+    sec() {
+      return String(this.timeSec % 60).padStart(2, '0');
+    },
+  },
   methods: {
+    seconds() {
+      this.timeSec--;
+
+      var time = this;
+      if (this.timer != null) {
+        clearInterval(this.timer);
+        this.timer = null;
+      }
+      this.timer = setInterval(function () {
+        if (time.timeSec == 0) {
+          // if time is up
+          time.end();
+        } else {
+          time.timeSec--;
+          // store new time every sec
+          localStorage.setItem('timeSec', JSON.stringify(time.timeSec));
+        }
+      }, 1000);
+    },
+    //if user exceeded 10mins
+    async end() {
+      clearInterval(this.timer);
+      this.timeSec = 0;
+      this.clearTimer();
+      this.timer = null;
+
+      await this.delete_from_queue("timer");
+    },
+    clearTimer() {
+      localStorage.setItem('timeSec', JSON.stringify(600));  // timer duration, CHANGE THIS FOR DIFF TIME
+      console.log("localStorage", localStorage);
+    },
+    //DELETE delete_from_queue: seat selection UI call this if user exceed 10mins
+    async delete_from_queue(type) {
+      try {
+        console.log("trying delete_from_queue()");
+
+        const response = await axios.delete(`http://127.0.0.1:5009/delete-from-queue/${this.userid}/${this.concert_id}`);
+        console.log("response", response);
+
+        if (response.data.length < 1) { //no data
+          console.log("totally not cryin");
+        }
+        else {
+          console.log("delete_from_queue() works!");
+          if (type === 'timer') {
+            this.timerExceeded = true;
+          }
+        }
+      } catch (error) {
+        // Errors when calling the service; such as network error,
+        // service offline, etc
+        console.log(error);
+      }
+    },
+    triggerRedirect() {
+      setTimeout(this.redirectToConcertPg, 5000);
+    },
+    redirectToConcertPg() {
+      window.location = '/concert/' + this.concert_id; // go to concert pg when time exceeds
+    },
     // Send notification if payment is successful
-    async sendNotif(paymentStatus) {
+    async send_Notif(paymentStatus) {
       if (paymentStatus) {
-        const path = `http://127.0.0.1:5100/testing`;
+        const path = `http://127.0.0.1:5100/sendPaymentNotification/${this.userid}`;
         axios
           .get(path)
           .then((res) => {
@@ -105,28 +204,28 @@ export default {
       }
     },
     async get_concert() {
-        //console.log("this.concert_id", this.concert_id);
-        try{
-          console.log("trying get_concert()");
+      //console.log("this.concert_id", this.concert_id);
+      try {
+        console.log("trying get_concert()");
 
-          const response = await axios.get(`http://127.0.0.1:5005/concert/${this.concert_id}`);
-          console.log("response", response);
+        const response = await axios.get(`http://127.0.0.1:5005/concert/${this.concert_id}`);
+        console.log("response", response);
 
-          if (response.data.length < 1) { //no data
-            console.log("totally not cryin");
-          }
-          else{
-            console.log("get_concert() works!");
-            this.concertDetails=response.data[0];
-
-          }
-        } catch (error) {
-          // Errors when calling the service; such as network error, 
-          // service offline, etc
-          console.log(error);
+        if (response.data.length < 1) { //no data
+          console.log("totally not cryin");
         }
+        else {
+          console.log("get_concert() works!");
+          this.concertDetails = response.data[0];
 
-      },
+        }
+      } catch (error) {
+        // Errors when calling the service; such as network error,
+        // service offline, etc
+        console.log(error);
+      }
+
+    },
   },
   mounted() {
     loadScript({ "client-id": "test" })
@@ -134,24 +233,54 @@ export default {
         console.log(paypal.data);
         paypal
           .Buttons({
-            onApprove: (data) => {
-              console.log(data);
-              // Capture the funds from the transaction
-              return fetch("/my-server/capture-paypal-order", {
-                method: "POST",
+            createOrder: function (data, actions) {
+              return actions.order.create({
+                purchase_units: [{
+                  amount: {
+                    value: '0.1'
+                  }
+                }],
+                application_context: {
+                  return_url: "https://localhost:8080/PaymentPage/" + this.concert_id, // sets the return URL to the current page
+
+                }
+              });
+            },
+            onApprove: (data, actions) => {
+              console.log(data)
+              // This function captures the funds from the transaction.
+
+              return actions.order.capture({
+                commit: true
               })
-                .then((response) => response.json())
                 .then((details) => {
-                  // Show a transaction success message to the buyer
-                  this.paymentStatus = true;
-                  this.sendNotif(this.paymentStatus);
+                  // This function shows a transaction success message to your buyer.
+                  this.paymentStatus = true
                   alert(
-                    "Transaction completed by " +
-                      details.payer.name.given_name
+                    "Transaction completed by " + details.payer.name.given_name
                   );
+
+                  this.send_Notif(this.paymentStatus)
+                  this.delete_from_queue('payment')
+
+                  window.location.href = '/BookingStatus/true'
                 });
             },
+            onCancel: function () {
+              // Payment cancelled
+              alert('Payment cancelled');
+              // Replace with your cancel URL
+              window.location.href = '/BookingStatus/false'
+            },
+            onError: function (err) {
+              // Payment failed
+              console.log(err);
+              alert('Payment failed');
+              window.location.href = '/BookingStatus/false'; // Replace with your error URL
+            }
+
           })
+
           .render("#paypal-button-container")
           .catch((error) => {
             console.error("Failed to render the PayPal buttons", error);

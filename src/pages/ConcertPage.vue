@@ -1,56 +1,58 @@
 <template>
 
 <!-- <v-img :src="require('../assets/concerts/concert1.jpg')"></v-img> -->
- <v-container
-    >
-<div :class="['text-h2', 'pa-2']">{{ targetConcert.concert_name }}</div>
-    <v-img
-    :src="require('../assets/concerts/'+ targetConcert.image_path)"
-    width="500"
-    cover
-    class="align-center"
-    ></v-img>
-
-<div :class="['text-h5', 'pa-2']">
-
-       {{ targetConcert.description }}
-</div>
-
-
-    <div :class="['text-h6', 'pa-2']">Date: {{ getDateTime(targetConcert.date_time) }}</div>
-
-    <div :class="['text-h6', 'pa-2']">Starting at ${{ targetConcert.price }}</div>
 <div>
-    <div v-if="!isTicketSaleOpen">
-    Ticket Sales Open on {{ getDateTime(targetConcert.ticket_sale_date_time) }}
-    </div>
-    <div v-else>
+    <h1 v-if="typeof targetConcert==='string'">
+    No concert found
+    </h1>
+     <v-container v-else>
+    <div :class="['text-h2', 'pa-2']">{{ targetConcert.concert_name }}</div>
+        <v-img
+        :src="require('../assets/concerts/'+ targetConcert.image_path)"
+        width="500"
+        cover
+        class="align-center"
+        ></v-img>
 
-        <router-link :to="{ path: '/seatSelectionPage/' + id }" class="link-style">
-              <v-btn color="orange-lighten-2" variant="text"> Buy Tickets </v-btn>
+            <div :class="['text-h5', 'pa-2']">
+
+                {{ targetConcert.description }}
+            </div>
+
+
+        <div :class="['text-h6', 'pa-2']">Date: {{ getDateTime(targetConcert.date_time) }}</div>
+        <div :class="['text-h6', 'pa-2']">Venue: {{targetConcert.hall_name}}</div>
+
+        <div :class="['text-h6', 'pa-2']">Starting at ${{ targetConcert.price }}</div>
+    <div>
+        <div v-if="!isTicketSaleOpen">
+        Ticket Sales Open on {{ getDateTime(targetConcert.ticket_sale_date_time) }}
+        </div>
+        <div v-else>
+
+            <router-link :to="{ path: '/queuePage/' + id }" class="link-style" v-if="targetConcert.status.includes('available')">
+                  <v-btn color="orange-lighten-2" variant="text"> Buy Tickets </v-btn>
             </router-link>
-    
 
+            <v-btn color="white" variant="text" v-else-if="targetConcert.status.includes('sold out')" disabled> Ticket Sold Out </v-btn>
+                <b v-else>Past Concert</b>
+        </div>
     </div>
-</div>
 
-  </v-container>
+</v-container>
+</div>
 </template>
 
 <script>
 
 import axios from "axios";
-   import { API_BASE_URL_NODEJS } from '../config.js';
+import { API_BASE_URL_NODEJS } from '../config.js';
 export default {
   name: 'ConcertPage',
 
   async created() {
       this.id = this.$route.params.id
       await this.getConcertById();
-      //find concert with id, if not exist then redirect to homepage
-    // this.targetConcert = this.concerts.find((c) => c.id == this.id)
-    // //find out if ticket sale is open
-    // this.isTicketSaleOpen=this.compareDateTime(this.targetConcert.date)
 
   },
   data() {
@@ -58,7 +60,7 @@ export default {
         recommended: 'txt',
         id: null,
         isTicketSaleOpen:false,
-         targetConcert:null,
+        targetConcert:null,
     };
     },
     computed: {
@@ -78,20 +80,24 @@ export default {
         compareDateTime(date) {
             const currentDate = new Date(); //current date and time
             const myDate = new Date(date); //date and time to compare
+            console.log(myDate)
             if (myDate.getTime() < currentDate.getTime()) {
                 return true;
             } else {
-             return false
+               return false
             }
         },
         async getConcertById() {
             try {
                 const response = await axios.get(`${API_BASE_URL_NODEJS}/concert/${this.id}`);
-                // console.log("RESPONSE");
-                if (response.data.length < 1) {
-                this.$router.replace(this.$route.query.redirect || '/');
+
+                if (typeof response.data === 'string') {
+                    this.targetConcert = response.data
+                    console.log(this.targetConcert)
+                     return
                }
-               this.targetConcert=response.data[0]
+                this.targetConcert = response.data[0]
+                this.isTicketSaleOpen = this.compareDateTime(this.targetConcert.ticket_sale_date_time)
 
             } catch (err) {
                 console.log(err)

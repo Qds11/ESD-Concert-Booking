@@ -13,17 +13,7 @@
         <div class="timer">
             {{min}}:{{sec}}
         </div>
-        <div class="text-center mb-1">
-            <v-btn-toggle v-if="!active" dark>
-                <v-btn v-on:click="seconds()"><v-icon>mdi-play</v-icon></v-btn>
-                <v-btn disabled><v-icon>mdi-stop</v-icon></v-btn>
-            </v-btn-toggle>
-            <v-btn-toggle v-model="toggle_none" v-else dark>
-                <v-btn v-on:click="pause" v-if="!paused"><v-icon>mdi-pause</v-icon></v-btn>
-                <v-btn v-on:click="seconds()" v-else><v-icon>mdi-pause</v-icon></v-btn>
-                <v-btn v-on:click="end"><v-icon>mdi-stop</v-icon></v-btn>
-            </v-btn-toggle>
-        </div>
+
         <div v-if='hallDetails.data==1'>
           <v-img
             fluid
@@ -99,7 +89,7 @@
               </v-row>
 
               <!-- SEATS POPUP -->
-              <v-dialog
+              <!-- <v-dialog
                 v-model="select_seat_popup"
                 width="auto"
                 persistent
@@ -130,8 +120,8 @@
                     </v-container>
                   </v-card-text>
                   <v-card-actions>
-                    <!-- <v-btn color="primary" block @click="dialog = false">Close Dialog</v-btn> -->
-                    <v-spacer></v-spacer>
+                    <v-btn color="primary" block @click="dialog = false">Close Dialog</v-btn> -->
+                    <!-- <v-spacer></v-spacer>
                     <v-btn
                       color="deep-purple-accent-1"
                       variant="text"
@@ -148,7 +138,8 @@
                     </v-btn>
                   </v-card-actions>
                 </v-card>
-              </v-dialog>
+              </v-dialog> -->
+
             <!-- Cat 2 -->
 
             <v-row>
@@ -396,6 +387,31 @@
           </v-form>
         </v-sheet>
       </v-col>
+
+      <!-- TIMER EXCEEDED POPUP -->
+      <div class="text-center">
+        <v-dialog
+            v-model="timerExceeded"
+            width="auto"
+            persistent
+          >
+          <v-flex xs12 sm8 md6>
+            <v-card class="pa-10">
+              <v-card-text>
+                  <v-icon color="red" size="48" class="ml-10 pl-16">
+                    mdi-timer-outline
+                  </v-icon>
+              <h1 class="text-center mt-3 mb-5">Time Exceeded</h1>
+              <p class="text-center">Redirecting to Concert Page in 5 sec...</p>
+              {{ this.triggerRedirect() }}
+            </v-card-text>
+            </v-card>
+          </v-flex>
+
+          </v-dialog>
+      </div>
+          
+
     </v-row>
   </v-container>
 </template>
@@ -414,21 +430,34 @@ import axios from "axios";
 export default {
   name: "SeatSelectionPage",
   async created() {
+    this.clearTimer();
     this.concert_id = this.$route.params.concertid
+    this.userid = JSON.parse(localStorage.getItem('userid'))
+    localStorage.setItem('concert_id', JSON.stringify(this.concert_id))
+    // console.log("localStorage",localStorage);
+
+    this.timeSec = JSON.parse(localStorage.getItem('timeSec'))
+
+    console.log("this.timeSec",this.timeSec);
+    this.seconds(); // start timer immediately
     await this.get_concert();
     await this.get_hall();
     await this.get_availability();
     await this.get_prices();
     await this.get_recommendation();
+    console.log("localstorage",localStorage)
 
   },
   components: {
     SubmitButton,
   },
   computed: {
-      // hasBooks: function () {
-      //     return this.books.length > 0;
-      // }
+      min() {
+        return String(Math.floor(this.timeSec/60)).padStart(2, '0');
+      },
+      sec() {
+        return String(this.timeSec%60).padStart(2, '0');
+      },
   },
   data() {
       return {
@@ -437,7 +466,6 @@ export default {
         ticketAvailability: "",
         ticketPrices: "",
         recommendations: "",
-        //concert_id: null, //hardcoded
         cat1_quantity: 0,
         cat2_quantity: 0,
         cat3_quantity: 0,
@@ -445,21 +473,82 @@ export default {
         cat5_quantity: 0,
         quantityExceeded: false,
         quantityZero: false,
-        select_seat_popup: false,
-        totalPrice: 0
+        //select_seat_popup: false,
+        totalPrice: 0,
+        timeSec: 600, // timer duration, CHANGE THIS FOR DIFF TIME
+        timerExceeded: false
       };
   },
   methods: {
+    seconds() {
+      this.timeSec--;
+      
+      var time = this;
+      if (this.timer != null) {
+          clearInterval(this.timer);
+          this.timer = null;
+      }
+      this.timer = setInterval(function () {
+          if (time.timeSec == 0) { 
+            // if time is up
+              time.end();
+          } else {
+              time.timeSec--;
+              // store new time every sec
+              localStorage.setItem('timeSec', JSON.stringify(time.timeSec));     
+          }
+      }, 1000);
+    },
+    //if user exceeded 10mins
+    async end(){
+      clearInterval(this.timer);
+      this.timeSec = 0;
+      this.timer = null;
+      this.clearTimer();
+
+      await this.delete_from_queue();
+    },
+    clearTimer(){
+      localStorage.setItem('timeSec', JSON.stringify(600));  // timer duration, CHANGE THIS FOR DIFF TIME   
+      console.log("localStorage",localStorage);
+    },
+    //DELETE delete_from_queue: seat selection UI call this if user exceed 10mins
+    async delete_from_queue() {
+      try{
+        console.log("trying delete_from_queue()");
+
+        const response = await axios.delete(`http://127.0.0.1:5009/delete-from-queue/${this.userid}/${this.concert_id}`);
+        console.log("response", response);
+
+        if (response.data.length < 1) { //no data
+          console.log("totally not cryin");
+        }
+        else{
+          console.log("delete_from_queue() works!");
+          this.timerExceeded=true;
+        }
+      } catch (error) {
+        // Errors when calling the service; such as network error, 
+        // service offline, etc
+        console.log(error);
+      }
+    },
+    triggerRedirect(){
+      setTimeout(this.redirectToConcertPg, 5000);
+    },
+    redirectToConcertPg(){
+      window.location='/concert/' + this.concert_id; // go to concert pg when time exceeds
+    },
     getDateTime(datetime) {
-            const date = new Date(datetime);
-            const day = date.getDate().toString().padStart(2, '0'); // get the day of the month (1-31) and pad with leading zeros if necessary
-            const month = (date.getMonth() + 1).toString().padStart(2, '0'); // get the month (0-11) and add 1 to get the correct month number, then pad with leading zeros if necessary
-            const year = date.getFullYear().toString(); // get the year (4 digits)
-            const hours = date.getHours().toString().padStart(2, '0'); // get the hours (0-23) and pad with leading zeros if necessary
-            const minutes = date.getMinutes().toString().padStart(2, '0'); // get the minutes (0-59) and pad with leading zeros if necessary
-            const formattedDate = `${day}/${month}/${year}, ${hours}:${minutes}`;
-            return formattedDate;
-        },
+      const date = new Date(datetime);
+      const day = date.getDate().toString().padStart(2, '0'); // get the day of the month (1-31) and pad with leading zeros if necessary
+      const month = (date.getMonth() + 1).toString().padStart(2, '0'); // get the month (0-11) and add 1 to get the correct month number, then pad with leading zeros if necessary
+      const year = date.getFullYear().toString(); // get the year (4 digits)
+      const hours = date.getHours().toString().padStart(2, '0'); // get the hours (0-23) and pad with leading zeros if necessary
+      const minutes = date.getMinutes().toString().padStart(2, '0'); // get the minutes (0-59) and pad with leading zeros if necessary
+      const formattedDate = `${day}/${month}/${year}, ${hours}:${minutes}`;
+      return formattedDate;
+    },
     //get concert
     async get_concert() {
         //console.log("this.concert_id", this.concert_id);
@@ -486,7 +575,7 @@ export default {
       },
     //get hall_details
     async get_hall() {
-      console.log("this.concert_id", this.concert_id);
+      // console.log("this.concert_id", this.concert_id);
       try{
         console.log("trying get_hall()");
 
@@ -509,7 +598,7 @@ export default {
     },
     //get availability by providing concert_id
     async get_availability() {
-      console.log("this.concert_id", this.concert_id);
+      // console.log("this.concert_id", this.concert_id);
       try{
         console.log("trying get_availability()");
 
@@ -533,7 +622,7 @@ export default {
     },
     //get prices by providing concert_id
     async get_prices() {
-      console.log("this.concert_id", this.concert_id);
+      // console.log("this.concert_id", this.concert_id);
       try{
         console.log("trying get_prices()");
 
@@ -556,7 +645,7 @@ export default {
     },
     //get recommendation
     async get_recommendation() {
-      console.log("this.concert_id", this.concert_id);
+      // console.log("this.concert_id", this.concert_id);
       try{
         console.log("trying get_recommendation()");
 
@@ -702,6 +791,9 @@ export default {
         localStorage.setItem('tix_quantity', JSON.stringify(tix_quantity))
         localStorage.setItem('totalPrice', JSON.stringify(this.totalPrice))
 
+        localStorage.setItem('timeSec', JSON.stringify(this.timeSec))
+
+        console.log(this.concert_id)
         console.log("can proceed to payment pg now")
 
 

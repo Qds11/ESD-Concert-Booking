@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from "vue-router";
-import TestComponent from '../components/TestComponent.vue'
 import HomePage from "../pages/HomePage.vue";
 import LoginPage from "../pages/LoginPage.vue"
 import ConcertPage from "../pages/ConcertPage.vue";
@@ -17,7 +16,7 @@ const routes = [
     component: TestComponent,
   },
   {
-    path: "/concert",
+    path: "/",
     name: "HomePage",
     component: HomePage,
   },
@@ -37,7 +36,7 @@ const routes = [
     component: BookingStatus,
   },
   {
-    path: "/queuePage/:concertid/",
+    path: "/queuePage/:concertid",
     name: "QueuePage",
     component: QueuePage,
   },
