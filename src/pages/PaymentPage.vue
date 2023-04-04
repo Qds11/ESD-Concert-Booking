@@ -256,41 +256,40 @@ export default {
                 }
               });
             },
-            onApprove(data, actions) {
-              console.log(data)
-              // This function captures the funds from the transaction.
-
-              return actions.order.capture({
-                commit: true
-              })
-                // .then((response) => response.json())
-                .then( (details) => {
-                  // This function shows a transaction success message to your buyer.
-                  this.paymentStatus = true
-                  // this.sendNotif(this.paymentStatus)
-                  alert(
-                    "Transaction completed by " + details.payer.name.given_name
-                  );
-                  this.delete_from_queue('payment');
-
-                  window.location.href = '/BookingStatus/true'
-
+            onApprove(data,actions) {
+            console.log(data)
+            // This function captures the funds from the transaction.
+          
+            return actions.order.capture({
+        commit: true
+      })
+              // .then((response) => response.json())
+              .then((details) => {
+                // This function shows a transaction success message to your buyer.
+                this.paymentStatus = true
+                // this.sendNotif(this.paymentStatus)
+                alert(
+                  "Transaction completed by " + details.payer.name.given_name
+                );
+               
+                window.location.href='/BookingStatus/true'
 
 
 
-                });
-            },
-            onCancel: function () {
-              // Payment cancelled
-              alert('Payment cancelled');
-              // Replace with your cancel URL
-              window.location.href = '/BookingStatus/false'
-            },
-            onError: function (err) {
-              // Payment failed
-              console.log(err);
-              alert('Payment failed');
-              window.location.href = '/BookingStatus/false'; // Replace with your error URL
+
+              });
+          },
+          onCancel: function() {
+       // Payment cancelled
+       alert('Payment cancelled');
+       // Replace with your cancel URL
+       window.location.href='/BookingStatus/false'
+     },
+     onError: function(err) {
+       // Payment failed
+       console.log(err);
+       alert('Payment failed');
+       window.location.href = '/BookingStatus/false'; // Replace with your error URL
             }
 
           })
