@@ -13,6 +13,7 @@ RUN npm install
 
 # Copy the rest of the application files to the container
 COPY config.js ./
+COPY db.js ./
 COPY model.js ./
 COPY node_modules ./
 
