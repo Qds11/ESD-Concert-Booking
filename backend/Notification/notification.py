@@ -13,7 +13,7 @@ monitorBindingKey='*.notif'
 # app = Flask(__name__)
 # CORS(app)
 
-user_url = "http://127.0.0.1:5000/user/phoneNum/"
+user_URL="http://localhost:8000/api/v1/user/phoneNum/" + user_id + "?apikey=QRp2hItGLsgHXWD0CHVGBSHxJB6wEO7i"
 
 # Twilio account credentials
 TWILIO_ACCOUNT_SID = "ACb73a42a689c04ad6bf175a645cfa9282"
@@ -85,13 +85,6 @@ def send_notif_queue(user_id):
                      "\nDo take note that you will have 10 mins to select your seats after entering!"
         )
         print(message.sid)
-            # return jsonify({"code": 200, "message": "Notification is sent"})
-        # else:
-    #         return jsonify({"code": 404, "message": "Notification is not found"})
-        
-    # except Exception as e:
-    #     return jsonify({"code": 500, "message": "Failed to send notification: " + str(e)})
-    
 
 
 if __name__ == '__main__':
@@ -100,4 +93,3 @@ if __name__ == '__main__':
 
     recieveQueue()
 
-    # app.run(debug=True, port=5100)

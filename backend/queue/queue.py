@@ -171,7 +171,9 @@ def sendNotif(user_id):
     message = json.dumps(user_id)
     channel.basic_publish(exchange='notif_topic',
                         routing_key=routing_key,
-                        body=message)
+                        body=message,
+                        properties=pika.BasicProperties(delivery_mode=2)
+                        )
     
     print(" [x] Sent %r:%r" % (routing_key, message))
     connection.close()
