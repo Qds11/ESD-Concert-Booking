@@ -54,6 +54,26 @@ const routes = [
 
 
 ];
+// Check if user is authorized to access the route
+const isAuthorized = () => {
+  // Implement your logic to check if the user is authorized
+  // For example, check if the user has a valid session token
+  // If the user is authorized, return true. Otherwise, return false.
+};
+
+// Handle the request to the route
+const handleRoute = (route) => {
+  if (isAuthorized()) {
+    // If user is authorized, show the requested route
+    const page = routes[route];
+    page.show();
+  } else {
+    // If user is not authorized, redirect to login page
+    window.location.href = '/login';
+  }
+};
+// Call handleRoute with the requested route
+handleRoute('/HomePage');
 
 const router = createRouter({
   history: createWebHistory(),
