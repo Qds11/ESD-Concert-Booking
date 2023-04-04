@@ -16,13 +16,12 @@ CORS(app)
 
 # user_URL="http://localhost:8000/api/v1/user/phoneNum/" + user_id + "?apikey=QRp2hItGLsgHXWD0CHVGBSHxJB6wEO7i"
 
-user_url = "http://user:5000/user/phoneNum/"
+user_url = "http://127.0.0.1:5000/user/phoneNum/"
 
 # Twilio account credentials
 TWILIO_ACCOUNT_SID = "ACb73a42a689c04ad6bf175a645cfa9282"
 TWILIO_AUTH_TOKEN = "72769e6ae2bb619d91fd600733634fbb"
 TWILIO_PHONE_NUMBER = "+15178269570"
-
 
 
 def recieveQueue():
@@ -82,7 +81,7 @@ def callback(channel, method, properties, body): # required signature for the ca
 # send user reminder when they are 3 places away from the seat selection page
 def send_notif_queue(user_id):
     print("inside send_notif_queue")
-    result = invoke_http(user_URL + str(user_id) + "?apikey=QRp2hItGLsgHXWD0CHVGBSHxJB6wEO7i", method='GET')
+    result = invoke_http(user_url + str(user_id) + "?apikey=QRp2hItGLsgHXWD0CHVGBSHxJB6wEO7i", method='GET')
     phone_num = result['data']
 
     client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
