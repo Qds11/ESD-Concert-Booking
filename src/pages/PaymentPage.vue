@@ -49,21 +49,25 @@
       </v-container>
       <!-- TIMER EXCEEDED POPUP -->
       <div class="text-center">
-        <v-dialog v-model="timerExceeded" width="auto" persistent>
+        <v-dialog
+            v-model="timerExceeded"
+            width="auto"
+            persistent
+          >
           <v-flex xs12 sm8 md6>
             <v-card class="pa-10">
               <v-card-text>
-                <v-icon color="red" size="48" class="ml-10 pl-16">
-                  mdi-timer-outline
-                </v-icon>
-                <h1 class="text-center mt-3 mb-5">Time Exceeded</h1>
-                <p class="text-center">Redirecting to Concert Page in 5 sec...</p>
-                {{ this.triggerRedirect() }}
-              </v-card-text>
+                  <v-icon color="red" size="48" class="ml-10 pl-16">
+                    mdi-timer-outline
+                  </v-icon>
+              <h1 class="text-center mt-3 mb-5">Time Exceeded</h1>
+              <p class="text-center">Redirecting to Concert Page in 5 sec...</p>
+              {{ this.triggerRedirect() }}
+            </v-card-text>
             </v-card>
           </v-flex>
 
-        </v-dialog>
+          </v-dialog>
       </div>
     </v-row>
   </v-container>
@@ -156,9 +160,9 @@ export default {
 
       await this.delete_from_queue("timer");
     },
-    clearTimer() {
+    clearTimer(){
       localStorage.setItem('timeSec', JSON.stringify(600));  // timer duration, CHANGE THIS FOR DIFF TIME
-      console.log("localStorage", localStorage);
+      console.log("localStorage",localStorage);
     },
     //DELETE delete_from_queue: seat selection UI call this if user exceed 10mins
     async delete_from_queue(type) {
@@ -174,7 +178,7 @@ export default {
         else {
           console.log("delete_from_queue() works!");
           if (type === 'timer') {
-            this.timerExceeded = true;
+            this.timerExceeded=true;
           }
         }
       } catch (error) {
@@ -183,14 +187,14 @@ export default {
         console.log(error);
       }
     },
-    triggerRedirect() {
+    triggerRedirect(){
       setTimeout(this.redirectToConcertPg, 5000);
     },
-    redirectToConcertPg() {
-      window.location = '/concert/' + this.concert_id; // go to concert pg when time exceeds
+    redirectToConcertPg(){
+      window.location='/concert/' + this.concert_id; // go to concert pg when time exceeds
     },
     // Send notification if payment is successful
-    async send_Notif(paymentStatus) {
+    async sendNotif(paymentStatus) {
       if (paymentStatus) {
         const path = `http://127.0.0.1:5100/sendPaymentNotification/${this.userid}`;
         axios
@@ -230,6 +234,7 @@ export default {
   mounted() {
     loadScript({ "client-id": "test" })
       .then((paypal) => {
+        console.log(paypal.data);
         paypal
           .Buttons({
             createOrder: function (data, actions) {
@@ -245,43 +250,42 @@ export default {
                 }
               });
             },
-            onApprove: (data, actions) => {
-              console.log(data)
-              // This function captures the funds from the transaction.
+            onApprove(data,actions) {
+            console.log(data)
+            // This function captures the funds from the transaction.
+          
+            return actions.order.capture({
+        commit: true
+      })
+              // .then((response) => response.json())
+              .then((details) => {
+                // This function shows a transaction success message to your buyer.
+                this.paymentStatus = true
+                this.sendNotif(this.paymentStatus)
+                alert(
+                  "Transaction completed by " + details.payer.name.given_name
+                );
+               
+                window.location.href='/BookingStatus/true'
 
-              return actions.order.capture({
-                commit: true
-              })
-                .then((details) => {
-                  // This function shows a transaction success message to your buyer.
-                  this.paymentStatus = true
-                  alert(
-                    "Transaction completed by " + details.payer.name.given_name
-                  );
 
-                  this.send_Notif(this.paymentStatus)
-                  this.delete_from_queue('payment')
-
-                  window.location.href = '/BookingStatus/true'
-                });
-            },
-
-            onCancel: function () {
-              // Payment cancelled
-              alert('Payment cancelled');
-              // Replace with your cancel URL
-              window.location.href = '/BookingStatus/false'
-            },
-
-            onError: function (err) {
-              // Payment failed
-              console.log(err);
-              alert(err)
-              alert('Payment failed');
-              window.location.href = '/BookingStatus/false';
+              });
+          },
+          onCancel: function() {
+       // Payment cancelled
+       alert('Payment cancelled');
+       // Replace with your cancel URL
+       window.location.href='/BookingStatus/false'
+     },
+     onError: function(err) {
+       // Payment failed
+       console.log(err);
+       alert('Payment failed');
+       window.location.href = '/BookingStatus/false'; // Replace with your error URL
             }
 
           })
+
 
           .render("#paypal-button-container")
           .catch((error) => {
