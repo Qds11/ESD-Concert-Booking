@@ -64,7 +64,7 @@ def recieveQueue():
 
 
 def callback(channel, method, properties, body): # required signature for the callback; no return
-    print("\nReceived an order log by " + __file__)
+    print("\nReceived an notification requrest by " + __file__)
 
     send_notif_queue(json.loads(body))
     print() # print a new line feed
