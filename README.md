@@ -10,7 +10,7 @@ To protect sensitive user data such as email addresses and phone numbers, an API
 Finally, this web application is designed to be containerized using Docker into individual microservices, enabling better scalability, flexibility, and maintainability. 
 
 ## Requirements
-1) Have Docker installed in your host system
+1) Have Docker and Docker Compose installed in your host system.
 
 3) A compatible host operating system that supports Docker, such as Linux, macOS, or Windows.
 
@@ -29,29 +29,15 @@ Finally, this web application is designed to be containerized using Docker into 
 
 4) Access the web application by navigating to the container's IP address or hostname on the specified port.
 
-5) npm install in root directory
-
-6) npm run dev in root directory to start up frontend  
+5) Install dependencies in root directory:
 ```
 npm install
 ```
-
-### Compiles and hot-reloads for development
+6) Start up the frontend by running the following command in the root directory:  
 ```
 npm run serve
 ```
 
-### Compiles and minifies for production
-```
-npm run build
-```
 
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
 
 
