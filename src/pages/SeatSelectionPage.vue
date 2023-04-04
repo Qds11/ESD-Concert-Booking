@@ -430,6 +430,7 @@ import axios from "axios";
 export default {
   name: "SeatSelectionPage",
   async created() {
+    this.clearTimer();
     this.concert_id = this.$route.params.concertid
     this.userid = JSON.parse(localStorage.getItem('userid'))
     localStorage.setItem('concert_id', JSON.stringify(this.concert_id))
@@ -444,6 +445,7 @@ export default {
     await this.get_availability();
     await this.get_prices();
     await this.get_recommendation();
+    console.log("localstorage",localStorage)
 
   },
   components: {
