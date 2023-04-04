@@ -99,7 +99,7 @@ services:
     restart: always
 
     environment:
-      dburl: mysql+mysqlconnector://root:root@host.docker.internal:8889/usersd
+      dburl: mysql+mysqlconnector://root:root@host.docker.internal:8889/users
       PYTHONUNBUFFERED: 1
 
 

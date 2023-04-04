@@ -7,11 +7,11 @@ const db = mysql
     user: "root",
     password: "root",
     database: "concertdata",
+    port: 8889,
     // host: "sql12.freesqldatabase.com",
     // user: "sql12606226",
     // password: "61vMwF9lhJ",
     // database: "sql12606226",
-    port:8889,
   })
   .promise();
 

@@ -64,7 +64,6 @@ def add_to_queue():
         }), 400
 
 
-
 ##### queue iu freqeuently call this to updated queue position #####
 @app.route('/waiting-queue/<int:user_id>/<int:concert_id>')
 def waiting_queue(user_id, concert_id):
