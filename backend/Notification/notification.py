@@ -54,7 +54,7 @@ def recieveQueue():
 def send_payment_notification(user_id):
     try:
         # result = invoke_http(user_URL + user_id + "?apikey=QRp2hItGLsgHXWD0CHVGBSHxJB6wEO7i", method='GET')
-        result = invoke_http("http://127.0.0.1:5000/user/phoneNum/" + str(user_id), method='GET')
+        result = invoke_http(user_url + str(user_id), method='GET')
         code = result['code']
         phone_num = result['data']
 
@@ -81,7 +81,7 @@ def callback(channel, method, properties, body): # required signature for the ca
 # send user reminder when they are 3 places away from the seat selection page
 def send_notif_queue(user_id):
     print("inside send_notif_queue")
-    result = invoke_http(user_url + str(user_id) + "?apikey=QRp2hItGLsgHXWD0CHVGBSHxJB6wEO7i", method='GET')
+    result = invoke_http(user_url + str(user_id), method='GET')
     phone_num = result['data']
 
     client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
