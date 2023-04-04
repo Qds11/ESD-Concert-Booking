@@ -13,7 +13,10 @@ monitorBindingKey='*.notif'
 # app = Flask(__name__)
 # CORS(app)
 
+
 # user_URL="http://localhost:8000/api/v1/user/phoneNum/" + user_id + "?apikey=QRp2hItGLsgHXWD0CHVGBSHxJB6wEO7i"
+
+user_url = "http://user:5000/user/phoneNum/"
 
 # Twilio account credentials
 TWILIO_ACCOUNT_SID = "ACb73a42a689c04ad6bf175a645cfa9282"
@@ -40,7 +43,7 @@ TWILIO_PHONE_NUMBER = "+15178269570"
 
 def recieveQueue():
     connection = pika.BlockingConnection(
-    pika.ConnectionParameters(host='localhost'))
+    pika.ConnectionParameters(host=os.environ.get('RABBITMQ_HOST')))
     channel = connection.channel()
 
     channel.exchange_declare(exchange='notif_topic', exchange_type='topic')
