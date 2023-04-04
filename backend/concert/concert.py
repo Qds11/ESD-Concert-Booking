@@ -19,7 +19,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-
 CORS(app)
 
 
@@ -149,5 +148,5 @@ def get_concert_by_id(id):
         }), 500
 
 
-if __name__ == 'main':
+if __name__ == '__main__':
    app.run(host='0.0.0.0', port=5005, debug=True)
