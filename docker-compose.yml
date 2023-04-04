@@ -9,16 +9,6 @@ volumes:
 services:
 
   
-  db:
-    image: mysql:latest
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: concertdata
-      MYSQL_PASSWORD: root
-    volumes:
-      - ./mysql:/var/lib/mysql
-
 
   ###################################
   # Notification: The Notification microservice
@@ -104,6 +94,7 @@ services:
     restart: always
     environment:
       PYTHONUNBUFFERED: 1
+      dbURL: mysql+mysqlconnector://is213@host.docker.internal:8889/halldata      
     ports:
     - "5004:5004"
 
@@ -118,11 +109,7 @@ services:
     restart: always
 
     environment:
-<<<<<<< HEAD
-      dburl: mysql+mysqlconnector://root:root@host.docker.internal:8889/users
-=======
       dbURL: mysql+mysqlconnector://is213@host.docker.internal:8889/users
->>>>>>> a8072b2148271f9f4ff50ac928ab38585aa0e7a3
       PYTHONUNBUFFERED: 1
     ports:
     - "5000:5000"

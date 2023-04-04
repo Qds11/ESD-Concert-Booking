@@ -7,8 +7,8 @@ app = Flask(__name__)
 cors = CORS(app)
 
 # need to change DB uri accordingly
-# app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:8889/halldata'
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:8889/halldata'
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/halldata'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
