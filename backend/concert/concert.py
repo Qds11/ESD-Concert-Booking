@@ -7,13 +7,15 @@ import requests
 from invokes import invoke_http
 import pika
 import sys
+from os import environ
 
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://sql12606226:61vMwF9lhJ@sql12.freesqldatabase.com:3306/sql12606226'
 # for local db
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:8889/queue_database'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:8889/concertdata'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:8889/concertdata'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 

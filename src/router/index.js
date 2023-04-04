@@ -9,10 +9,11 @@ import PaymentPage from "../pages/PaymentPage.vue";
 
 
 
+
 const routes = [
 
   {
-    path: "/",
+    path: "/concert",
     name: "HomePage",
     component: HomePage,
   },
