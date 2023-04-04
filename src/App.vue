@@ -1,11 +1,9 @@
 <template>
 <NavBar />
-  <!-- <HelloWorld msg="Welcome to Your Vue.js App"/> -->
 <router-view></router-view>
 </template>
 
 <script>
-// import HelloWorld from './components/HelloWorld.vue'
 import NavBar from './components/shared/NavBar.vue'
 export default {
   name: 'App',

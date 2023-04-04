@@ -42,12 +42,6 @@
                   <div id="paypal-button-container"></div>
                 </div>
 
-                <!-- peishan i disable this one first ah cos i dunno what this does haha, if u need it just uncomment -->
-                <!-- <div>
-                <PayPalScriptProvider :options="{ 'client-id': AYX78yVruw2aUiVYzwFdKMlWR9P771QpGLZqTdxbBBlkizAMYYzAP16GK4SPI63L4ih7Nhu9wm9BDpxu }">
-                  <PayPalButtons :create-order="createOrder" :on-approve="onApprove" />
-                </PayPalScriptProvider>
-              </div> -->
               </v-container>
             </v-sheet>
           </v-col>
