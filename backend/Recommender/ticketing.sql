@@ -30,7 +30,8 @@ INSERT INTO hall (hall_id,hall_plan,hall_name,concert_id,concert_date,cat1_avail
 (2,'../../src/assets/halls/f9f85ae0-fb2f-11eb-a641-4e23b81c2c33.jpg','Victoria Theatre',4,'2023-11-05', 0,0,0,null, null, 50,40,30,null,null),
 (1,'../../src/assets/halls/seating_plan_2.jpg','Singapore Stadium',5,'2023-09-15', 200,134,10,0,200,80,60,50,40,30),
 (2,'../../src/assets/halls/f9f85ae0-fb2f-11eb-a641-4e23b81c2c33.jpg','Victoria Theatre',6,'2023-11-25', 50,40,32,null,null,30,20,15,null,null),
-(1,'../../src/assets/halls/seating_plan_2.jpg','Singapore Stadium',7,'2022-10-01', 888,234,120,345,55,75,65,55,45,35);
+(1,'../../src/assets/halls/seating_plan_2.jpg','Singapore Stadium',7,'2022-12-31',500,123,455,788,111,100,88,68,48,30),
+(1,'../../src/assets/halls/seating_plan_2.jpg','Singapore Stadium',8,'2022-10-01', 888,234,120,345,55,75,65,55,45,35);
 
 
 

@@ -53,6 +53,28 @@
           </v-col>
         </v-row>
       </v-container>
+      <!-- TIMER EXCEEDED POPUP -->
+      <div class="text-center">
+        <v-dialog
+            v-model="timerExceeded"
+            width="auto"
+            persistent
+          >
+          <v-flex xs12 sm8 md6>
+            <v-card class="pa-10">
+              <v-card-text>
+                  <v-icon color="red" size="48" class="ml-10 pl-16">
+                    mdi-timer-outline
+                  </v-icon>
+              <h1 class="text-center mt-3 mb-5">Time Exceeded</h1>
+              <p class="text-center">Redirecting to Concert Page in 5 sec...</p>
+              {{ this.triggerRedirect() }}
+            </v-card-text>
+            </v-card>
+          </v-flex>
+
+          </v-dialog>
+      </div>
     </v-row>
   </v-container>
 </template>
@@ -104,6 +126,7 @@ export default {
       totalPrice: 0,
       paymentStatus: false,
       timeSec: 5, // timer duration
+      timerExceeded: false
     };
   },
   computed: {
@@ -137,12 +160,18 @@ export default {
     //if user exceeded 10mins
     async end() {
       clearInterval(this.timer);
-      this.timer = null;
       this.timeSec = 0;
-      await this.delete_from_queue();
+      this.clearTimer();
+      this.timer = null;
+
+      await this.delete_from_queue("timer");
+    },
+    clearTimer(){
+      localStorage.setItem('timeSec', JSON.stringify(600));  // timer duration, CHANGE THIS FOR DIFF TIME
+      console.log("localStorage",localStorage);
     },
     //DELETE delete_from_queue: seat selection UI call this if user exceed 10mins
-    async delete_from_queue() {
+    async delete_from_queue(type) {
       try {
         console.log("trying delete_from_queue()");
 
@@ -154,13 +183,21 @@ export default {
         }
         else {
           console.log("delete_from_queue() works!");
-          window.location = '/concert/' + this.concert_id; // go to concert pg when time exceeds
+          if (type === 'timer') {
+            this.timerExceeded=true;
+          }
         }
       } catch (error) {
-        // Errors when calling the service; such as network error, 
+        // Errors when calling the service; such as network error,
         // service offline, etc
         console.log(error);
       }
+    },
+    triggerRedirect(){
+      setTimeout(this.redirectToConcertPg, 5000);
+    },
+    redirectToConcertPg(){
+      window.location='/concert/' + this.concert_id; // go to concert pg when time exceeds
     },
     // Send notification if payment is successful
     async sendNotif(paymentStatus) {
@@ -193,7 +230,7 @@ export default {
 
         }
       } catch (error) {
-        // Errors when calling the service; such as network error, 
+        // Errors when calling the service; such as network error,
         // service offline, etc
         console.log(error);
       }
@@ -227,13 +264,14 @@ export default {
                 commit: true
               })
                 // .then((response) => response.json())
-                .then((details) => {
+                .then( (details) => {
                   // This function shows a transaction success message to your buyer.
                   this.paymentStatus = true
                   // this.sendNotif(this.paymentStatus)
                   alert(
                     "Transaction completed by " + details.payer.name.given_name
                   );
+                  this.delete_from_queue('payment');
 
                   window.location.href = '/BookingStatus/true'
 
