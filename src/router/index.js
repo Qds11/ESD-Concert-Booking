@@ -10,11 +10,7 @@ import PaymentPage from "../pages/PaymentPage.vue";
 
 
 const routes = [
-  {
-    path: "/test",
-    name: "TestComponent",
-    component: TestComponent,
-  },
+
   {
     path: "/",
     name: "HomePage",
