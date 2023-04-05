@@ -7,7 +7,8 @@
           <br>
           {{ getDateTime(concertDetails.date_time) }}
           <br>
-          {{ hallDetails.hall_name}}
+          
+          {{ hallDetails}}
 
         </p>
         <div class="timer">
@@ -429,23 +430,23 @@ import axios from "axios";
 
 export default {
   name: "SeatSelectionPage",
-  async created() {
+  async mounted() {
     this.clearTimer();
     this.concert_id = this.$route.params.concertid
     this.userid = JSON.parse(localStorage.getItem('userid'))
     localStorage.setItem('concert_id', JSON.stringify(this.concert_id))
     // console.log("localStorage",localStorage);
-
-    this.timeSec = JSON.parse(localStorage.getItem('timeSec'))
-
-    console.log("this.timeSec",this.timeSec);
-    this.seconds(); // start timer immediately
     await this.get_concert();
     await this.get_hall();
     await this.get_availability();
     await this.get_prices();
     await this.get_recommendation();
-    console.log("localstorage",localStorage)
+
+    this.timeSec = JSON.parse(localStorage.getItem('timeSec'))
+
+    //console.log("this.timeSec",this.timeSec);
+    this.seconds(); // start timer immediately
+    //console.log("localstorage",localStorage)
 
   },
   components: {
@@ -463,6 +464,7 @@ export default {
       return {
         concertDetails: "",
         hallDetails: "",
+        hallName: '',
         ticketAvailability: "",
         ticketPrices: "",
         recommendations: "",
@@ -510,7 +512,7 @@ export default {
     },
     clearTimer(){
       localStorage.setItem('timeSec', JSON.stringify(600));  // timer duration, CHANGE THIS FOR DIFF TIME   
-      console.log("localStorage",localStorage);
+     // console.log("localStorage",localStorage);
     },
     //DELETE delete_from_queue: seat selection UI call this if user exceed 10mins
     async delete_from_queue() {
@@ -553,17 +555,18 @@ export default {
     async get_concert() {
         //console.log("this.concert_id", this.concert_id);
         try{
-          console.log("trying get_concert()");
+        //  console.log("trying get_concert()");
 
           const response = await axios.get(`http://127.0.0.1:5005/concert/${this.concert_id}`);
-          console.log("response", response);
+          //console.log("response", response);
 
           if (response.data.length < 1) { //no data
-            console.log("totally not cryin");
+          //  console.log("totally not cryin");
           }
           else{
-            console.log("get_concert() works!");
-            this.concertDetails=response.data[0];
+            //console.log("get_concert() works!");
+            this.concertDetails=response.data.data[0];
+            //console.log(this.concertDetails)
 
           }
         } catch (error) {
@@ -580,14 +583,18 @@ export default {
         console.log("trying get_hall()");
 
         const response = await axios.get(`http://127.0.0.1:5004/hall/${this.concert_id}`);
-        console.log("response", response);
+        console.log("hallName", response.data.hall_name);
 
         if (response.data.length < 1) { //no data
-          console.log("totally not cryin");
+          //console.log("totally not cryin");
+          console.log("lenght less tgen")
         }
         else{
           console.log("get_hall() works!");
           this.hallDetails=response.data;
+          //console.log(this.hallDetails.hall_name)
+          //this.hallName=this.hallDetails.hall_name
+          //console.log(this.hallName)
         }
       } catch (error) {
         // Errors when calling the service; such as network error, 
@@ -600,16 +607,16 @@ export default {
     async get_availability() {
       // console.log("this.concert_id", this.concert_id);
       try{
-        console.log("trying get_availability()");
+        //console.log("trying get_availability()");
 
         const response = await axios.get(`http://127.0.0.1:5004/avail/${this.concert_id}`);
-        console.log("response", response);
+       // console.log("response", response);
 
         if (response.data.length < 1) { //no data
-          console.log("totally not cryin");
+         //console.log("totally not cryin");
         }
         else{
-          console.log("get_availability() works!");
+          //console.log("get_availability() works!");
           this.ticketAvailability=response.data;
 
         }
@@ -624,17 +631,17 @@ export default {
     async get_prices() {
       // console.log("this.concert_id", this.concert_id);
       try{
-        console.log("trying get_prices()");
+        //console.log("trying get_prices()");
 
         const response = await axios.get(`http://127.0.0.1:5004/price/${this.concert_id}`);
-        console.log("response", response);
+       // console.log("response", response);
 
         if (response.data.length < 1) { //no data
-          console.log("totally not cryin");
+          //console.log("totally not cryin");
         }
         else{
           console.log("get_prices() works!");
-          this.ticketPrices=response.data;
+          //this.ticketPrices=response.data;
         }
       } catch (error) {
         // Errors when calling the service; such as network error, 
@@ -647,10 +654,10 @@ export default {
     async get_recommendation() {
       // console.log("this.concert_id", this.concert_id);
       try{
-        console.log("trying get_recommendation()");
+        //console.log("trying get_recommendation()");
 
         const response = await axios.get(`http://127.0.0.1:5003/recommendations/concert/${this.concert_id}`);
-        console.log("response", response);
+        //console.log("response", response);
 
         if (response.data.length < 1) { //no data
           console.log("totally not cryin");

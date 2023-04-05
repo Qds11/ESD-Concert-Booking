@@ -49,6 +49,7 @@ def find_recommendation(concert_id):
     # results = invoke_http("http://localhost:8000/api/v1/user/birthday/"+user_id+"?apikey=QRp2hItGLsgHXWD0CHVGBSHxJB6wEO7i", method='GET')
     results=invoke_http("http://user:5000/user/birthday/1", method='GET')
     birthyear=results['message'][12:16]
+    print(birthyear)
     
     # # convert to datetime object
     # date_obj = datetime.strptime(birthdate, "%a, %d %b %Y %H:%M:%S %Z")
@@ -60,10 +61,10 @@ def find_recommendation(concert_id):
     # date_obj = datetime.strptime(formatted_date, "%d/%m/%Y")
 
     # calculate age
-    age = datetime.now().year-birthyear
+    age = datetime.now().year-int(birthyear)
     
     
-    results = invoke_http("http://http://ticketing:5004/avail/"+concert_id, method='GET')
+    results = invoke_http("http://ticketing:5004/avail/"+concert_id, method='GET')
     
   
     
