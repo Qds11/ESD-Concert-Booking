@@ -15,16 +15,16 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 CORS(app)
 
 
+current_userid=''
 #api endpoint for concert ms to call, will call user ms and return the result from user to concert
 @app.route("/recommendations/user/<string:user_id>")
 def find_genre_by_calling_user(user_id):
 
-    results=invoke_http("http://127.0.0.1:5000/user/genre/"+str(user_id), method='GET')
+    results=invoke_http("http://user:5000/user/genre/"+str(user_id), method='GET')
     print(results)
     if results['code']==200:
-        global current_user_id
-        current_user_id=user_id
-        print(current_user_id)
+
+        current_userid=user_id
         return jsonify(
         {
             "code": 200,
@@ -44,28 +44,30 @@ def find_genre_by_calling_user(user_id):
 #find recommendation with concert id
 @app.route("/recommendations/concert/<string:concert_id>")
 def find_recommendation(concert_id):
-    user_id=current_user_id
+
+
     # results = invoke_http("http://localhost:8000/api/v1/user/birthday/"+user_id+"?apikey=QRp2hItGLsgHXWD0CHVGBSHxJB6wEO7i", method='GET')
-    results=invoke_http("http://127.0.0.1:5000/user/birthday/"+user_id, method='GET')
-    birthdate=results['message']
-    # convert to datetime object
-    date_obj = datetime.strptime(birthdate, "%a, %d %b %Y %H:%M:%S %Z")
+    results=invoke_http("http://user:5000/user/birthday/1", method='GET')
+    birthyear=results['message'][12:16]
+    
+    # # convert to datetime object
+    # date_obj = datetime.strptime(birthdate, "%a, %d %b %Y %H:%M:%S %Z")
 
-    # format the datetime object to desired format
-    formatted_date = date_obj.strftime("%d/%m/%Y")
+    # # format the datetime object to desired format
+    # formatted_date = date_obj.strftime("%d/%m/%Y")
 
-    # convert to datetime object
-    date_obj = datetime.strptime(formatted_date, "%d/%m/%Y")
+    # # convert to datetime object
+    # date_obj = datetime.strptime(formatted_date, "%d/%m/%Y")
 
     # calculate age
-    age = (date.today() - date_obj.date()).days // 365
+    age = datetime.now().year-birthyear
     
     
-    results = invoke_http("http://http://127.0.0.1:5004/avail/"+concert_id, method='GET')
+    results = invoke_http("http://http://ticketing:5004/avail/"+concert_id, method='GET')
     
   
     
-    hall_results = invoke_http("http://127.0.0.1:5004/hall/"+concert_id, method='GET')
+    hall_results = invoke_http("http://ticketing:5004/hall/"+concert_id, method='GET')
 
    
 

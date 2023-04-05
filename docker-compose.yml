@@ -43,7 +43,7 @@ services:
     depends_on:
       - rabbitmq
     environment:
-      dbURL: mysql+mysqlconnector://root:root@host.docker.internal:8889/queue_database
+      dbURL: mysql+mysqlconnector://is213@host.docker.internal:8889/queue_database
       PYTHONUNBUFFERED: 1
       RABBITMQ_HOST: rabbitmq
       RABBITMQ_PORT: 5672

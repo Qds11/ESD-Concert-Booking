@@ -16,7 +16,7 @@ CORS(app)
 
 # user_URL="http://localhost:8000/api/v1/user/phoneNum/" + user_id + "?apikey=QRp2hItGLsgHXWD0CHVGBSHxJB6wEO7i"
 
-user_url = "http://127.0.0.1:5000/user/phoneNum/"
+user_url = "http://user:5000/user/phoneNum/"
 
 # Twilio account credentials
 TWILIO_ACCOUNT_SID = "ACb73a42a689c04ad6bf175a645cfa9282"

@@ -110,7 +110,7 @@ def get_concert_by_id(id):
             }), 200
         if concert.status == 'Concert available':
             try:
-                results=invoke_http("http://127.0.0.1:5004/concert/status/"+str(id), method='GET')
+                results=invoke_http("http://ticketing:5004/concert/status/"+str(id), method='GET')
                 status=results['status']
                 if status == 'Concert sold out':
                     concert.status='Concert sold out'
@@ -123,7 +123,7 @@ def get_concert_by_id(id):
                     "Error occurred when getting concert status: " + str(e)
                 }), 500
         try:
-            hall_data=invoke_http("http://127.0.0.1:5004/hall/"+str(id), method='GET')
+            hall_data=invoke_http("http://ticketing:5004/hall/"+str(id), method='GET')
             concert_dict = concert.json()
             concert_dict["hall_name"] = hall_data["hall_name"]
             concert_dict["hall_plan"] = hall_data["hall_plan"]
