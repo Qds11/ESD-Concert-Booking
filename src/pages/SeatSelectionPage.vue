@@ -592,6 +592,8 @@ export default {
         else{
           console.log("get_hall() works!");
           this.hallDetails=response.data;
+          console.log(this.hallDetails['hall_name'])
+          this.hallName=this.hallDetails['hall_name']
           //console.log(this.hallDetails.hall_name)
           //this.hallName=this.hallDetails.hall_name
           //console.log(this.hallName)
@@ -641,7 +643,8 @@ export default {
         }
         else{
           console.log("get_prices() works!");
-          //this.ticketPrices=response.data;
+          console.log(this.ticketPrices)
+          this.ticketPrices=response.data;
         }
       } catch (error) {
         // Errors when calling the service; such as network error, 

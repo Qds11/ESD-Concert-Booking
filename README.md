@@ -20,6 +20,26 @@ Finally, this web application is designed to be containerized using Docker into 
 
 5) Any required environment variables such as API keys or credentials to configure the web application. These can be passed to the container using the -e option when running docker run.
 
+6) Import the sql files into your local database, this includes queue.sql, user.sql, concert.sql, ticketing.sql in the respective folders queue, concert, User, Ticket.
+
+6)Change dbURL in the yml file to your own database configuration
+
+## Requirements
+1) Have Docker and Docker Compose installed in your host system.
+
+2) A compatible host operating system that supports Docker, such as Linux, macOS, or Windows.
+
+3) Sufficient resources on the host system to run the container, including CPU, RAM, and storage.
+
+4) A network connection to access the container registry and to communicate with the web application.
+
+5) Any required environment variables such as API keys or credentials to configure the web application. These can be passed to the container using the -e option when running docker run.
+
+6) Import the sql files into your local database, this includes queue.sql, user.sql, concert.sql, ticketing.sql in the respective folders queue, concert, User, Ticket.
+
+6)Change dbURL in the yml file to your own database configuration
+
+
 ## Project setup
 1) Clone the GitHub repository using the git clone command.
 

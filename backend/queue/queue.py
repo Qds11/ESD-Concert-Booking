@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 import requests
 from invokes import invoke_http
@@ -9,11 +9,11 @@ import pika
 import sys
 from os import environ
 
+
 app = Flask(__name__)
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://sql12606226:61vMwF9lhJ@sql12.freesqldatabase.com:3306/sql12606226'
 # for local db
-# app.config[
-#     'SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:8889/queue_database'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:8889/queue_database'
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost:3306/queue_database'
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('dbURL')
 
@@ -27,10 +27,11 @@ CORS(app)
 
 
 class Queue(db.Model):
+   queue_id = db.Column(db.Integer, nullable=False)
    user_id = db.Column(db.Integer, primary_key=True)
    status = db.Column(db.Enum('waiting', 'serving'), nullable=False)
    concert_id = db.Column(db.Integer, nullable=False, primary_key=True)
-   created_at = db.Column(db.DateTime, default=datetime.now(tz=None))
+   expiration_time=db.Column(db.DateTime, nullable=True)
 
 
 
@@ -39,18 +40,23 @@ class Queue(db.Model):
 def add_to_queue():
     try:
         # Check the number of rows with the status 'serving' (add seat selection page)
-        serving_count = Queue.query.filter_by(
-            status='serving', concert_id=request.json['concert_id']).count()
+        serving_count = Queue.query.filter(
+    Queue.status == 'serving',
+    Queue.concert_id == request.json['concert_id'],
+    Queue.expiration_time > datetime.now()
+).count()
         #can only have 4 users at buying tix at once, if more than join queue
         # If more than 3 users at selection page then user to queue with 'waiting' status
+        print(serving_count)
         if serving_count > 3:  #can change the limit in the future
             new_queue = Queue(status='waiting',
                               concert_id=request.json['concert_id'],
-                              user_id=request.json['user_id'])
+                              user_id=request.json['user_id'], expiration_time=None)
         else:  #else add user to queue with 'serving' status
             new_queue = Queue(status='serving',
                               concert_id=request.json['concert_id'],
-                              user_id=request.json['user_id'])
+                              user_id=request.json['user_id'], expiration_time=datetime.now() + timedelta(minutes=11))
+
 
         # Add new_queue to database
         db.session.add(new_queue)
@@ -64,6 +70,7 @@ def add_to_queue():
             'message':
             "Error occurred when enqueueing user" + str(e)
         }), 400
+
 
 
 ##### queue iu freqeuently call this to updated queue position #####
@@ -80,12 +87,14 @@ def waiting_queue(user_id, concert_id):
 
 
         if user.status == 'serving':
+           user.expiration_time=datetime.now() + timedelta(minutes=11)
+           db.session.commit()
            return jsonify({'queue_position': 0, 'status': 'serving'}), 200
 
 
         waiting_count = Queue.query.filter(
             Queue.status == 'waiting', Queue.concert_id == user.concert_id,
-            Queue.created_at < user.created_at).count()
+            Queue.queue_id < user.queue_id).count()
 
         if waiting_count == 3:
             print("waiting...")
@@ -138,11 +147,12 @@ def delete_from_queue(user_id, concert_id):
             })
 
         # else update status of the person next in line to 'serving'
-        serving_count = Queue.query.filter_by(status='serving', concert_id=user.concert_id).count()
+        serving_count = Queue.query.filter(Queue.status=='serving', Queue.concert_id==user.concert_id, Queue.expiration_time > datetime.now()).count()
         if serving_count < 4:
-            earliest_waiting = Queue.query.filter_by(status='waiting', concert_id=user.concert_id).order_by(Queue.created_at.asc()).first()
+            earliest_waiting = Queue.query.filter_by(status='waiting', concert_id=user.concert_id).order_by(Queue.queue_id.asc()).first()
             if earliest_waiting:
                 earliest_waiting.status = 'serving'
+                earliest_waiting.expiration_time=datetime.now() + timedelta(minutes=11)
             db.session.commit()
 
         return jsonify({'status': 'success','message': 'User with user_id ' + str(user_id) + ' queueing for concert_id '+str(concert_id) +' has been deleted and queue status updated'})
@@ -175,7 +185,7 @@ def sendNotif(user_id):
                         body=message,
                         properties=pika.BasicProperties(delivery_mode=2)
                         )
-    
+
     print(" [x] Sent %r:%r" % (routing_key, message))
     connection.close()
 
