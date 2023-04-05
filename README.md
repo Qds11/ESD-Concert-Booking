@@ -61,8 +61,13 @@ npm run serve
 ## Web Application Flow
 
   1) Users can choose to log in using google authentication or can directly go to the homepage
+
+  ### Login Credentials:
+  Gmail: teamjigglypuff335@gmail.com
+  Password: jigglypuff335
+
   
-![image](https://user-images.githubusercontent.com/101784318/229842130-6062a318-b7cc-48f4-b6f8-f671165fc7b6.png)
+  ![image](https://user-images.githubusercontent.com/101784318/229842130-6062a318-b7cc-48f4-b6f8-f671165fc7b6.png)
 
   ![image](https://user-images.githubusercontent.com/101784318/229825589-da735d46-56a2-4a7f-9189-4d7e1e887d39.png)
 
@@ -88,6 +93,9 @@ npm run serve
   8) If they try to checkout with more than 10 tickets or if the tickets are sold out, they will be notified and cannot proceed to payment.
   ![image](https://user-images.githubusercontent.com/101784318/229839678-3c0f712f-bebd-47de-9fd0-06c82eab9682.png)
 
+  ### Login Credentials:
+  Gmail: teamjigglypuff335@gmail.com
+  Password: jigglypuff335
   
   9) At checkout, they will be directed to payment page where paypal is used.
   ![image](https://user-images.githubusercontent.com/101784318/229840933-03a06132-c4b0-43da-a94f-1181415713af.png)

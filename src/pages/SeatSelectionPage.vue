@@ -15,7 +15,7 @@
             {{min}}:{{sec}}
         </div>
 
-        <div v-if='hallDetails.data==1'>
+        <div v-if='hallDetails.data=="1"'>
           <v-img
             fluid
             :src="require('../../src/assets/halls/seating_plan_2.jpg')"
